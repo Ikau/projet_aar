@@ -32,6 +32,7 @@ public class ClientWebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureViewResolvers(ViewResolverRegistry viewResolverRegistry) {
         viewResolverRegistry.jsp("/WEB-INF/",".jsp");
+
     }
 
     @Override
