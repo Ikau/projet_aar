@@ -1,3 +1,13 @@
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -7,9 +17,6 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-
-# IntelliJ
-.idea/
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
