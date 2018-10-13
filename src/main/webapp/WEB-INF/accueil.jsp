@@ -3,27 +3,112 @@
 <html>
 <head>
     <title>Test</title>
-
-    <link rel="stylesheet" href="<c:url value="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/w3css/4/w3.css"/>">
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/lib/w3-theme-indigo.css"/>">
 </head>
 <body>
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-sm-offset-3">
-            <div id="imaginary_container">
-                <div class="input-group stylish-input-group">
-                    <input type="text" class="form-control"  placeholder="Search" >
-                    <span class="input-group-addon">
-                        <button type="submit">
-                            <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
+
+<!--- Barre de navigation -->
+<% if (1 == 0) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
+<div class="w3-bar w3-theme-dark">
+    <a href="#" class="w3-bar-item w3-button">Home</a>
+    <a href="#" class="w3-bar-item w3-button">Mon profil</a>
+    <a href="#" class="w3-bar-item w3-button">Lancer un projet</a>
+    <a href="#" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
+<% } else { %>
+<div class="w3-bar w3-theme-dark">
+    <a href="/" class="w3-bar-item w3-button">Home</a>
+    <a href="/co" class="w3-bar-item w3-button">Se connecter</a>
+    <a href="/insc" class="w3-bar-item w3-button">S'inscrire</a>
+</div>
+<% } %>
+
+
+<div class="w3-row">
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
+
+    <div class="w3-col" style="width:60%"><p>
+        <!-- Recherche par catégorie -->
+        <select class="w3-select w3-border w3-text-theme" name="option">
+            <option value="" disabled selected>Rechercher par catégorie</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+        </select>
+
+        <!-- Les 3 derniers projets -->
+        <div class="w3-card-4">
+            <header class="w3-container w3-theme-d3 ">
+                <h1>Titre Projet</h1>
+            </header>
+            <div class="w3-container">
+                <p>
+                    Description
+                </p>
+            </div>
+            <footer class="w3-container">
+                    <div class="w3-row">
+                        <div class="w3-col s9 w3-center"><p>
+                            <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:75%">Avancement du financement</div></div>
+                            </p></div>
+                        <div class="w3-col s3 w3-center"><p>
+                            <a href="/pro"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" value="Voir le projet"/></a>
+                        </p></div>
+                    </div>
+             </footer>
+        </div>
+        <br>
+        <div class="w3-card-4">
+            <header class="w3-container w3-theme-d3 ">
+                <h1>Titre Projet</h1>
+            </header>
+            <div class="w3-container">
+                <p>
+                    Description
+                </p>
+            </div>
+            <footer class="w3-container">
+                <div class="w3-row">
+                    <div class="w3-col s9 w3-center"><p>
+                        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:75%">Avancement du financement</div></div>
+                        </p></div>
+                    <div class="w3-col s3 w3-center"><p>
+                        <a href="/pro"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" value="Voir le projet"/></a>
+                    </p></div>
+                </div>
+            </footer>
+        </div>
+        <br>
+        <div class="w3-card-4">
+            <header class="w3-container w3-theme-d3 ">
+                <h1>Titre Projet</h1>
+            </header>
+            <div class="w3-container">
+                <p>
+                    Description
+                </p>
+            </div>
+            <footer class="w3-container">
+                <div class="w3-row">
+                    <div class="w3-col s9 w3-center"><p>
+                        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:75%">Avancement du financement</div></div>
+                        </p></div>
+                    <div class="w3-col s3 w3-center"><p>
+                        <a href="/pro"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" value="Voir le projet"/></a>
+                    </p></div>
+                </div>
+            </footer>
+        </div>
+
+    </p></div>
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
+</div>
+
 
 </body>
 </html>
