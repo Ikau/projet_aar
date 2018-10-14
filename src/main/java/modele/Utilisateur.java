@@ -1,12 +1,22 @@
 package modele;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import services.CryptoService;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Modele de l'Entity 'Utilisateur' present dans la base de donnees.
+ *
+ * Un Utilisateur est represente par un login/mot de passe et un niveau de privilege.
+ * Le mot de passe de l'utilisateur est stocke sous forme de hache.
+ */
 @Entity
 public class Utilisateur {
     /* ===========================================================
@@ -29,13 +39,19 @@ public class Utilisateur {
     private String login;
 
     /**
+     * Le sel utilise pour le mot de passe.
+     */
+    private String sel;
+
+    /**
      * Le mot de passe hache de l'utilisateur.
      */
     @NotEmpty
     @NotBlank
+    //@JsonIgnore de la librairie Jackson
     // 8 caracteres, 1 minuscule, 1 majuscule et 1 chiffre
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
-             message = "Le mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre")
+    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+    //         message = "Le mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre")
     private String motdepasse;
 
     /**
@@ -86,8 +102,11 @@ public class Utilisateur {
     public Utilisateur(String login, String motdepasse, int privilege)
     {
         // Init primaire
+        CryptoService cryptoService = new CryptoService();
+        byte[] sel      = cryptoService.genereSel();
         this.login      = login;
-        this.motdepasse = motdepasse;
+        this.motdepasse = cryptoService.hacheMdp(motdepasse, sel);
+        this.sel        = String.format("%x", new BigInteger(sel));
         this.privilege  = privilege;
 
         // Init des sets
@@ -95,7 +114,6 @@ public class Utilisateur {
         this.projetsFinances = new HashSet<Projet>();
         this.dons            = new HashSet<Don>();
         this.messages        = new HashSet<Message>();
-
     }
 
     /* ===========================================================
@@ -113,6 +131,10 @@ public class Utilisateur {
 
     public String getMotdepasse() {
         return motdepasse;
+    }
+
+    public String getSel() {
+        return sel;
     }
 
     public int getPrivilege() {

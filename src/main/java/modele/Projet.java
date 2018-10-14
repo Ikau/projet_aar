@@ -53,7 +53,7 @@ public class Projet {
     /**
      * Ensemble des palliers du projet.
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<Pallier> palliers;
 
     /**
@@ -91,9 +91,8 @@ public class Projet {
      * @param resume Le resume de l'intitule.
      * @param description Une description detaillee du projet.
      * @param dateFin La date limite du financement.
-     * @param categories Les categories de ce projet.
      */
-    public Projet(String intitule, String resume, String description, Timestamp dateFin, Set<Categorie> categories)
+    public Projet(String intitule, String resume, String description, Timestamp dateFin)
     {
         // Init primaires
         this.intitule    = intitule;
@@ -101,13 +100,13 @@ public class Projet {
         this.description = description;
         this.dateDepot   = new Timestamp(System.currentTimeMillis());
         this.dateFin     = dateFin;
-        this.categories  = categories;
 
         // Init sets
-        this.palliers        = new HashSet<Pallier>();
-        this.financeurs      = new HashSet<Utilisateur>();
-        this.dons            = new HashSet<Don>();
-        this.messagesRacines = new HashSet<Message>();
+        this.categories      = new HashSet<>();
+        this.palliers        = new HashSet<>();
+        this.financeurs      = new HashSet<>();
+        this.dons            = new HashSet<>();
+        this.messagesRacines = new HashSet<>();
     }
 
     /* ===========================================================
@@ -174,34 +173,6 @@ public class Projet {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setDateDepot(Timestamp dateDepot) {
-        this.dateDepot = dateDepot;
-    }
-
-    public void setDateFin(Timestamp dateFin) {
-        this.dateFin = dateFin;
-    }
-
-    public void setCategories(Set<Categorie> categories) {
-        this.categories = categories;
-    }
-
-    public void setPalliers(Set<Pallier> palliers) {
-        this.palliers = palliers;
-    }
-
-    public void setFinanceurs(Set<Utilisateur> financeurs) {
-        this.financeurs = financeurs;
-    }
-
-    public void setDons(Set<Don> dons) {
-        this.dons = dons;
-    }
-
-    public void setMessagesRacines(Set<Message> messagesRacines) {
-        this.messagesRacines = messagesRacines;
     }
 
     /* ===========================================================

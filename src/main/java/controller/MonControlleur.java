@@ -2,16 +2,28 @@ package controller;
 
 
 import beans.Utilisateur;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import services.FacadeInit;
 
+import javax.annotation.PostConstruct;
 
 
 @Controller
 @RequestMapping("/")
-public class MonControlleur {
+public class MonControlleur
+{
 
+    @Autowired
+    private FacadeInit facadeInit;
+
+    @PostConstruct
+    private void init()
+    {
+        this.facadeInit.initBdd();
+    }
 
 
         @RequestMapping(value="/")
