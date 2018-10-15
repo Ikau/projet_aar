@@ -97,12 +97,13 @@ public class Projet {
      * @param description Une description detaillee du projet.
      * @param dateFin La date limite du financement.
      */
-    public Projet(String intitule, String resume, String description, Timestamp dateFin)
+    public Projet(String intitule, String resume, String description, int objectif, Timestamp dateFin)
     {
         // Init primaires
         this.intitule    = intitule;
         this.resume      = resume;
         this.description = description;
+        this.objectif    = objectif;
         this.dateDepot   = new Timestamp(System.currentTimeMillis());
         this.dateFin     = dateFin;
 
