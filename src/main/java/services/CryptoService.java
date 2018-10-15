@@ -41,10 +41,18 @@ public class CryptoService {
      * ===========================================================
      */
 
+    /**
+     * Hache le mot de passe selon un algorithme de chiffrement hache : PBKDF2-HMAC-SHA1.
+     * @param mdpClair Le mot de passe en clair a hacher.
+     * @param selBytes La sequence de bytes representant un sel aleatoire.
+     * @return Le mot de passe hache avec le sel et une cle aleatoire.
+     */
     public String hacheMdp(String mdpClair, byte[] selBytes)
     {
+        // On va travailler sur chaque caractere
         char[] caracteres = mdpClair.toCharArray();
 
+        // Definition des specifictes de notre algorithme de hachage
         PBEKeySpec specs = new PBEKeySpec(
                 caracteres,
                 selBytes,
@@ -52,6 +60,7 @@ public class CryptoService {
                 TAILLE_CLE
         );
 
+        // Deduction de la cle de hachage
         SecretKeyFactory cle = null;
         try {
             cle = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -59,13 +68,15 @@ public class CryptoService {
             e.printStackTrace();
         }
 
-        byte[] mdpHache = new byte[0];
+        // La sequence de bytes representant le mot de passe hache
+        byte[] mdpHache = null;
         try {
             mdpHache = cle.generateSecret(specs).getEncoded();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
 
+        // On converti les bytes en string pour stocker dans la base de donnes
         return String.format("%x", new BigInteger(mdpHache));
     }
 

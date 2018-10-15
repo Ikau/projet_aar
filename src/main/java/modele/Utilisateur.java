@@ -93,6 +93,29 @@ public class Utilisateur {
      */
     public Utilisateur(){}
 
+
+    /**
+     * Creer un nouvel utilisateur en lui associant un login, un mot de passe et un privilege minimum.
+     * @param login L'identifiant de l'utilisateur.
+     * @param motdepasse Le mot de passe hache de l'utilisateur.
+     */
+    public Utilisateur(String login, String motdepasse)
+    {
+        // Init primaire
+        CryptoService cryptoService = new CryptoService();
+        byte[] sel      = cryptoService.genereSel();
+        this.login      = login;
+        this.motdepasse = cryptoService.hacheMdp(motdepasse, sel);
+        this.sel        = String.format("%x", new BigInteger(sel));
+        this.privilege  = 0;
+
+        // Init des sets
+        this.projetsDeposes  = new HashSet<Projet>();
+        this.projetsFinances = new HashSet<Projet>();
+        this.dons            = new HashSet<Don>();
+        this.messages        = new HashSet<Message>();
+    }
+
     /**
      * Creer un nouvel utilisateur en lui associant un login, un mot de passe et un niveau de privilege.
      * @param login L'identifiant de l'utilisateur.

@@ -1,6 +1,7 @@
 package controller;
 
 
+import config.LoggerConfig;
 import modele.Utilisateur;
 import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @Controller
@@ -34,17 +37,32 @@ public class MonControlleur
     @PersistenceContext
     private EntityManager em;
 
+    /**
+     * Facade gerant les operations d'initialisation et de peuplement de la base.
+     */
     @Autowired
     private FacadeInit facadeInit;
 
+    /**
+     * Facade gerant les operations sur le modele Utilisateur.
+     */
     @Autowired
     private FacadeUtilisateur facadeUtilisateur;
+
+    /**
+     * Logger pour la classe actuelle.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MonControlleur.class.getName());
 
 
     /* ===============================================================
      *                       INITIALISATION
      * ===============================================================
      */
+
+    static {
+        LOGGER.setLevel(LoggerConfig.LEVEL);
+    }
 
     @PostConstruct
     private void init()
@@ -73,7 +91,7 @@ public class MonControlleur
 
     @RequestMapping(value="/insc")
     public String insc() {
-        System.out.println("MonControlleur.insc");
+        LOGGER.fine("return ok");
         return "inscription";
     }
 
@@ -98,7 +116,7 @@ public class MonControlleur
     @GetMapping(value="/membre")
     public String membre()
     {
-        System.out.println("MonControlleur.membre");
+        LOGGER.fine("MonControlleur.membre");
         return "accueil";
     }
 
@@ -113,23 +131,23 @@ public class MonControlleur
      *
      * //TODO Si l'utilisateur existe déjà alors il renvoie l'utilisateur sur la page d'inscription avec un message d'erreur.
      * Sinon, renvoie le membre dans la page de connexion.
-     * @param utilisateur
-     * @param model
-     * @return
+     * @param utilisateur Utilisation deduit du formulaire d'inscription.
+     * @param model Le model de la session.
+     * @return Page de connexion si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/membre/inscription")
     //public void inscription(@ModelAttribute("utilisateur") @Valid Utilisateur utilisateur, Model model)
     public String inscription(Utilisateur utilisateur, Model model)
     {
-        if(!this.facadeUtilisateur.estExistant(utilisateur))
+        if(!this.facadeUtilisateur.estExistant(utilisateur.getLogin()))
         {
-            this.facadeUtilisateur.creer(utilisateur);
-            System.out.println("MonControlleur.inscription:true");
+            this.facadeUtilisateur.creer(utilisateur.getLogin(), utilisateur.getMotdepasse());
+            LOGGER.info("Nouvel utilisateur");
             return "redirect:/co";
         }
         else //TODO
         {
-            System.out.println("MonControlleur.inscription:false");
+            LOGGER.info("Utilisateur deja existant");
             // set des erreurs
             return "redirect:/insc";
         }
