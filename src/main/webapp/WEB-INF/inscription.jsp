@@ -30,22 +30,24 @@
 
     </p></div>
 
-    <div class="w3-col" style="width:50%"><p>
-        <form class="w3-container">
+    <div class="w3-col" style="width:50%">
+        <p>
+        <form class="w3-container" action="/membre/inscription" method="post">
 
             <label>Login</label>
-            <input class="w3-input" type="text">
+            <input class="w3-input" type="text" name="login" name="utilisateur" />
             <br>
             <label>Mot de passe</label>
-            <input class="w3-input" type="password">
+            <input class="w3-input" type="password" name="motdepasse" name="utilisateur" />
 
+            <br>
+            <div class="w3-display-container">
+                <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Inscription"/></div>
+            </div>
         </form>
-        <br>
-        <div class="w3-display-container">
-            <div class="w3-display-middle"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Inscription"/></div>
-        </div>
 
-    </p></div>
+        </p>
+    </div>
 
     <div class="w3-col" style="width:25%"><p>
 

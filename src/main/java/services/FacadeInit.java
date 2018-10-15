@@ -4,13 +4,10 @@ import modele.Categorie;
 import modele.Pallier;
 import modele.Projet;
 import modele.Utilisateur;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -87,6 +84,7 @@ public class FacadeInit {
         Projet p1 = new Projet("Sabre laser",
                                "Que la Force soit enfin avec nous.",
                                "Emparé de moi, la Flemme s'est.",
+                               5000,
                                new Timestamp(System.currentTimeMillis())
         );
         p1.getCategories().add(catSci);
@@ -99,6 +97,7 @@ public class FacadeInit {
         Projet p2 = new Projet("HAL 9000",
                                "Beep boop, boop beepp !",
                                "Création d'une IA éthique pour les voyages spatiaux !",
+                                10000,
                                 new Timestamp(System.currentTimeMillis())
         );
         p2.getCategories().add(catSci);
@@ -130,8 +129,7 @@ public class FacadeInit {
         }
     }
 
-    private void test()
+    public void test()
     {
-
     }
 }
