@@ -59,7 +59,7 @@ public class ClientWebConfig extends WebMvcConfigurerAdapter {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[] { "beans" });
+        em.setPackagesToScan(new String[] { "modele" });
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

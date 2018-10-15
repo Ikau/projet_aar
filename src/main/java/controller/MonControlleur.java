@@ -2,6 +2,7 @@ package controller;
 
 
 import modele.Utilisateur;
+import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @Controller
@@ -57,9 +59,10 @@ public class MonControlleur
      */
 
     @RequestMapping(value="/")
-    public String root(Model model)
-    {
-        return "test";
+    public String root(Model model) {
+        List<Projet> p = facadeInit.test();
+        model.addAttribute("projet",p);
+        return "accueil";
     }
 
     @RequestMapping(value="/co")
@@ -76,7 +79,20 @@ public class MonControlleur
 
     @RequestMapping(value="/pro")
     public String pro() {
+
         return "projet";
+    }
+
+    @RequestMapping(value="/prof")
+    public String prof() {
+
+        return "profil";
+    }
+
+    @RequestMapping(value="/form")
+    public String form() {
+
+        return "formulaire_projet";
     }
 
     @GetMapping(value="/membre")
