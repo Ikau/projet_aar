@@ -44,9 +44,17 @@
         <ul class="w3-ul w3-border" >
             <li><h2>Mes projets</h2></li>
             <li class="w3-hover-theme">Titre p1</li>
-            <li class="w3-hover-theme">Titre p2</li>
-            <li class="w3-hover-theme">Titre p3</li>
+            <li class="w3-hover-theme">Titre p2 </li>
+            <li class="w3-hover-theme">Titre p3 </li>
         </ul>
+        </div>
+            <div class="w3-container w3-cell">
+            <ul class="w3-ul" >
+                <li><h2>Modifier mes projets</h2></li>
+                <li><a href="#" > Modifier p1</a></li>
+                <li><a href="#" > Modifier p2</a></li>
+                <li><a href="#" > Modifier p3</a></li>
+            </ul>
         </div>
             <div class="w3-container w3-cell">
         <ul class="w3-ul w3-border" >

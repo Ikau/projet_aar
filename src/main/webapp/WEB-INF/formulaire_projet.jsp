@@ -10,21 +10,53 @@
 <SCRIPT LANGUAGE="JavaScript">
 
     function ajouter() {
-
-       var boutton = document.getElementById('addC');
-       var newdiv = document.createElement('div');
-       newdiv.class = "w3-container w3-cell";
-       var text = document.createTextNode('De');
-       newdiv.appendChild(text);
-       document.body.insertBefore(newdiv,boutton);
+// pour ajouter une compensation
+        var boutton = document.getElementById('addC');
+        var newdiv = document.createElement('div');
+        newdiv.className = "w3-container w3-cell";
+        var text = document.createTextNode('De');
+        newdiv.appendChild(text);
+        document.getElementById('form1').insertBefore(newdiv,boutton);
 
         var newdiv2 = document.createElement('div');
-        newdiv.class = "w3-container w3-cell";
+        newdiv2.className = "w3-container w3-cell";
         var inp = document.createElement('input');
         inp.type='number';
-        inp.class = "w3-input";
+        inp.className = "w3-input";
         newdiv2.appendChild(inp);
-        document.body.insertBefore(newdiv2,boutton);
+        document.getElementById('form1').insertBefore(newdiv2,boutton);
+
+        var newdiv3 = document.createElement('div');
+        newdiv3.className = "w3-container w3-cell";
+        var text2 = document.createTextNode('à');
+        newdiv3.appendChild(text2);
+        document.getElementById('form1').insertBefore(newdiv3,boutton);
+
+        var newdiv4 = document.createElement('div');
+        var inp3 = document.createElement('input');
+        inp3.type='number';
+        inp3.className = "w3-input";
+        newdiv4.className = "w3-container w3-cell";
+        newdiv4.appendChild(inp3);
+        document.getElementById('form1').insertBefore(newdiv4,boutton);
+
+        var newdiv5 = document.createElement('div');
+        newdiv5.className = "w3-container w3-cell";
+        var text3 = document.createTextNode('Description de la compensation :');
+        newdiv5.appendChild(text3);
+        document.getElementById('form1').insertBefore(newdiv5,boutton);
+
+        var newdiv6 = document.createElement('div');
+        newdiv6.className = "w3-container w3-cell";
+        var inp2 = document.createElement('input');
+        inp2.type='text';
+        inp2.className = "w3-input";
+        newdiv6.appendChild(inp2);
+        document.getElementById('form1').insertBefore(newdiv6,boutton);
+
+
+        document.getElementById('form1').insertBefore(document.createElement('br'),boutton);
+        document.getElementById('form1').insertBefore(document.createElement('br'),boutton);
 
     }
 
@@ -58,7 +90,7 @@
 
         <h1> Formulaire de Lancement de projet</h1>
 
-        <form class="w3-container">
+        <form id="form1" class="w3-container">
 
             <label>Intitulé</label>
             <input class="w3-input w3-animate-input" type="text">
@@ -94,8 +126,8 @@
             <div class="w3-container w3-cell"><input class="w3-input" type="text"></div>
             <br>
             <br>
-            <div class="w3-display-container">
-                <div class="w3-display-middle"><input id="addC" type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Rajouter une compensation" onclick="ajouter()"/></div>
+            <div id="addC" class="w3-display-container">
+                <div class="w3-display-middle"><input  type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Rajouter une compensation" onclick="ajouter()"/></div>
             </div>
 
             <br>
@@ -106,6 +138,9 @@
             </div>
 
         </form>
+
+        <br>
+        <br>
 
         </p></div>
 
