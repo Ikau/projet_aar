@@ -41,7 +41,7 @@ public class Utilisateur {
     /**
      * Le sel utilise pour le mot de passe.
      */
-    private String sel;
+    private byte[] sel;
 
     /**
      * Le mot de passe hache de l'utilisateur.
@@ -103,10 +103,9 @@ public class Utilisateur {
     {
         // Init primaire
         CryptoService cryptoService = new CryptoService();
-        byte[] sel      = cryptoService.genereSel();
         this.login      = login;
-        this.motdepasse = cryptoService.hacheMdp(motdepasse, sel);
-        this.sel        = String.format("%x", new BigInteger(sel));
+        this.sel        = cryptoService.genereSel();
+        this.motdepasse = cryptoService.hacheMdp(motdepasse, this.sel);
         this.privilege  = 0;
 
         // Init des sets
@@ -126,10 +125,9 @@ public class Utilisateur {
     {
         // Init primaire
         CryptoService cryptoService = new CryptoService();
-        byte[] sel      = cryptoService.genereSel();
         this.login      = login;
-        this.motdepasse = cryptoService.hacheMdp(motdepasse, sel);
-        this.sel        = String.format("%x", new BigInteger(sel));
+        this.sel        = cryptoService.genereSel();
+        this.motdepasse = cryptoService.hacheMdp(motdepasse, this.sel);
         this.privilege  = privilege;
 
         // Init des sets
@@ -156,7 +154,7 @@ public class Utilisateur {
         return motdepasse;
     }
 
-    public String getSel() {
+    public byte[] getSel() {
         return sel;
     }
 

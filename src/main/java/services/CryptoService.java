@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 /**
  * Credits https://adambard.com/blog/3-wrong-ways-to-store-a-password/
@@ -77,7 +78,7 @@ public class CryptoService {
         }
 
         // On converti les bytes en string pour stocker dans la base de donnes
-        return String.format("%x", new BigInteger(mdpHache));
+        return Base64.getEncoder().encodeToString(mdpHache);
     }
 
     public byte[] genereSel()
