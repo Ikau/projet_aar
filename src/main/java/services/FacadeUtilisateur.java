@@ -9,7 +9,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.rmi.CORBA.Util;
 import javax.transaction.Transactional;
+import java.util.Base64;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +25,9 @@ public class FacadeUtilisateur {
      */
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private CryptoService cryptoService;
 
     /**
      * Logger pour la classe actuelle.
@@ -70,6 +76,44 @@ public class FacadeUtilisateur {
         this.em.persist(new Utilisateur(login, motdepasse));
         LOGGER.fine("(String, String)");
     }
+
+
+    /* ---------------------------
+     *            READ
+     * ---------------------------
+     */
+    @Transactional
+    public Utilisateur getUtilisateur(String login, String mdpClair)
+    {
+        LOGGER.fine("Recuperation utilisateur [" + login + "]");
+        Query query = this.em.createQuery(
+                "select u from Utilisateur u where u.login = :l"
+        );
+        query.setParameter("l", login);
+        Utilisateur u = (Utilisateur) query.getSingleResult();
+
+        LOGGER.fine("Calcul hache [" + login + "]");
+        String mdpTest = this.cryptoService.hacheMdp(mdpClair, u.getSel());
+
+        if(mdpTest.equals(u.getMotdepasse()))
+        {
+            LOGGER.fine("Utilisateur identifie");
+            return u;
+        }
+        LOGGER.fine("Utilisateur inconnu");
+        return null;
+    }
+
+    /* ---------------------------
+     *           UPDATE
+     * ---------------------------
+     */
+
+
+    /* ---------------------------
+     *           DELETE
+     * ---------------------------
+     */
 
     /* ===========================================================
      *                          METHODES

@@ -8,6 +8,6 @@ import java.util.logging.Level;
 public class LoggerConfig {
 
     //public static Level LEVEL = Level.WARNING;
-    public static Level LEVEL = Level.INFO;
-    //public static Level LEVEL = Level.FINE;
+    //public static Level LEVEL = Level.INFO;
+    public static Level LEVEL = Level.FINE;
 }

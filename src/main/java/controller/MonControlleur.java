@@ -153,6 +153,11 @@ public class MonControlleur
         }
     }
 
-
+    @PostMapping("/membre/connexion")
+    public String connexion(Utilisateur utilisateur, Model model)
+    {
+        this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
+        return "redirect:/co";
+    }
 
 }
