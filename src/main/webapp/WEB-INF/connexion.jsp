@@ -31,20 +31,20 @@
     </p></div>
 
 
-    <div class="w3-col" style="width:50%"><p>
+    <div class="w3-col" style="width:50%" method="post" action="/membre/connexion"><p>
         <form class="w3-container">
 
             <label>Login</label>
-            <input class="w3-input" type="text">
+            <input class="w3-input" type="text" name="login">
         <br>
             <label>Mot de passe</label>
-            <input class="w3-input" type="password">
-
-        </form>
+            <input class="w3-input" type="password" name="motdepasse">
         <br>
-        <div class="w3-display-container">
-            <div class="w3-display-middle"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Connexion"/></div>
-        </div>
+        <br>
+            <div class="w3-display-container">
+                <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Connexion"/></div>
+            </div>
+        </form>
 
 
     </p></div>

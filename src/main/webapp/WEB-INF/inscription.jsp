@@ -36,11 +36,11 @@
 
             <label>Login</label>
             <input class="w3-input" type="text" name="login" name="utilisateur" />
-            <br>
+        <br>
             <label>Mot de passe</label>
             <input class="w3-input" type="password" name="motdepasse" name="utilisateur" />
-
-            <br>
+        <br>
+        <br>
             <div class="w3-display-container">
                 <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Inscription"/></div>
             </div>
