@@ -30,6 +30,11 @@ public class Projet {
     private String resume;
 
     /**
+     * Valeur monetaire a atteindre pour financer le projet.
+     */
+    private int objectif;
+
+    /**
      * Description exhaustive du projet ainsi que des compensations.
      */
     private String description;
@@ -130,6 +135,10 @@ public class Projet {
         return description;
     }
 
+    public int getObjectif() {
+        return objectif;
+    }
+
     public Timestamp getDateDepot() {
         return dateDepot;
     }
@@ -173,6 +182,10 @@ public class Projet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setObjectif(int objectif) {
+        this.objectif = objectif;
     }
 
     /* ===========================================================
