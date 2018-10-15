@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -130,8 +132,10 @@ public class FacadeInit {
         }
     }
 
-    private void test()
+    @Transactional
+    public List<Projet> test()
     {
-
+        Query q = em.createQuery("select p from Projet p");
+        return q.getResultList();
     }
 }

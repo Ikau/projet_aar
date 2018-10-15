@@ -9,11 +9,11 @@
 <body>
 
 <!--- Barre de navigation -->
-<% if (1 == 0) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
+<% if (1 == 1) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
 <div class="w3-bar w3-theme-dark">
-    <a href="#" class="w3-bar-item w3-button">Home</a>
-    <a href="#" class="w3-bar-item w3-button">Mon profil</a>
-    <a href="#" class="w3-bar-item w3-button">Lancer un projet</a>
+    <a href="/" class="w3-bar-item w3-button">Home</a>
+    <a href="/prof" class="w3-bar-item w3-button">Mon profil</a>
+    <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
     <a href="#" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
 <% } else { %>
@@ -40,13 +40,15 @@
         </select>
 
         <!-- Les 3 derniers projets -->
+
+        <c:if test="${projet.size() >= 1}">
         <div class="w3-card-4">
             <header class="w3-container w3-theme-d3 ">
-                <h1>Titre Projet</h1>
+                <h1>${projet.get(0).getIntitule()}</h1>
             </header>
             <div class="w3-container">
                 <p>
-                    Description
+                    ${projet.get(0).getResume()}
                 </p>
             </div>
             <footer class="w3-container">
@@ -60,14 +62,16 @@
                     </div>
              </footer>
         </div>
+        </c:if>
         <br>
+        <c:if test="${projet.size() >= 2 }">
         <div class="w3-card-4">
             <header class="w3-container w3-theme-d3 ">
-                <h1>Titre Projet</h1>
+                <h1>${projet.get(1).getIntitule()}</h1>
             </header>
             <div class="w3-container">
                 <p>
-                    Description
+                    ${projet.get(1).getResume()}
                 </p>
             </div>
             <footer class="w3-container">
@@ -81,14 +85,16 @@
                 </div>
             </footer>
         </div>
+        </c:if>
         <br>
+        <c:if test="${projet.size() >= 3}">
         <div class="w3-card-4">
             <header class="w3-container w3-theme-d3 ">
-                <h1>Titre Projet</h1>
+                <h1>${projet.get(2).getIntitule()}</h1>
             </header>
             <div class="w3-container">
                 <p>
-                    Description
+                    ${projet.get(2).getResume()}
                 </p>
             </div>
             <footer class="w3-container">
@@ -102,6 +108,7 @@
                 </div>
             </footer>
         </div>
+        </c:if>
 
     </p></div>
     <div class="w3-col" style="width:20%"><p>
