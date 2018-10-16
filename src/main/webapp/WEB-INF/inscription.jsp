@@ -33,13 +33,13 @@
 
     <div class="w3-col" style="width:50%">
         <p>
-        <form:form class="w3-container" action="/membre/inscription" method="post" commandName="courant">
+        <form:form class="w3-container" action="/membre/inscription" method="post" modelAttribute="courant">
 
             <label> Login</label>
             <form:input class="w3-input" type="text" path="login"/> <form:errors path="login" cssStyle="color:red;"/>
         <br>
             <label> Mot de passe</label>
-            <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="login" cssStyle="color:red;"/>
+            <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="motdepasse" cssStyle="color:red;"/>
 
             <br>
         <br>
