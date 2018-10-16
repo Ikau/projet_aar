@@ -101,7 +101,7 @@ public class MonControlleur
         {
             model.addAttribute("courant", new Utilisateur());
         }
-        LOGGER.fine("return 'inscription'");
+        LOGGER.fine("[OK] return 'inscription'");
         return "inscription";
     }
 
@@ -144,7 +144,9 @@ public class MonControlleur
      *
      * @param courant Utilisation deduit du formulaire d'inscription.
      * @param model Le model de la session.
-     * @return Page de connexion si succes, rafraichissement de la page sinon.
+     * @param result Valideur de l'objet obtenu en liaison.
+     * @param redicAttr Les attributs à rediriger avec le retour de la fonction.
+     * @return Page d'accueil si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/membre/inscription")
     public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant,
@@ -172,12 +174,35 @@ public class MonControlleur
         }
     }
 
-
+    /**
+     * Prend en charge le processus de connexion d'un utilisateur dans le site.
+     *
+     * Si succès : renvoie à la page d'accueil de l'espace membre.
+     * Sinon renvoie à la page de connexion avec l'erreur de connexion.
+     *
+     * @param utilisateur Les données de l'utilisateur issu du formulaire de connexion.
+     * @param redicAttr Les attributs à rediriger avec la vue.
+     * @param result La validation issue de la liaison avec les données du formulaire.
+     * @param model Le model de la session.
+     * @return Si succès espace membre, sinon page inscription
+     */
     @PostMapping("/membre/connexion")
-    public String connexion(Utilisateur utilisateur, Model model)
+    public String connexion(Utilisateur utilisateur, RedirectAttributes redicAttr, BindingResult result, Model model)
     {
-        this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
-        return "redirect:/co";
+        Utilisateur uTemp = this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
+        if(uTemp != null)
+        {
+            //TODO Ajout dans la session ?
+            //model.addAttribute("courant", uTemp);
+            LOGGER.info("[OK] Utilisateur ["+utilisateur.getLogin()+"] connecte");
+            return "redirect:/";
+        }
+        else
+        {
+            //TODO this.persistError(redicAttr, result, "NOMBINDING", utilisateur);
+            LOGGER.info("[ERR] Connexion echouee");
+            return("redirect:/co");
+        }
     }
 
 

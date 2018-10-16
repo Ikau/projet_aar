@@ -100,7 +100,7 @@ public class FacadeUtilisateur {
             LOGGER.fine("Utilisateur identifie");
             return u;
         }
-        LOGGER.fine("Utilisateur inconnu");
+        LOGGER.fine("[OK] Utilisateur inconnu");
         return null;
     }
 
