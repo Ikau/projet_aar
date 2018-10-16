@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
     <title>Test</title>
@@ -32,19 +33,20 @@
 
     <div class="w3-col" style="width:50%">
         <p>
-        <form class="w3-container" action="/membre/inscription" method="post">
+        <form:form class="w3-container" action="/membre/inscription" method="post" commandName="courant">
 
-            <label>Login</label>
-            <input class="w3-input" type="text" name="login" name="utilisateur" />
+            <label> Login</label>
+            <form:input class="w3-input" type="text" path="login"/> <form:errors path="login" cssStyle="color:red;"/>
         <br>
-            <label>Mot de passe</label>
-            <input class="w3-input" type="password" name="motdepasse" name="utilisateur" />
-        <br>
+            <label> Mot de passe</label>
+            <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="login" cssStyle="color:red;"/>
+
+            <br>
         <br>
             <div class="w3-display-container">
                 <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Inscription"/></div>
             </div>
-        </form>
+        </form:form>
 
         </p>
     </div>

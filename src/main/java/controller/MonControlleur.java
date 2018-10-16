@@ -7,14 +7,13 @@ import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import services.FacadeInit;
 import services.FacadeUtilisateur;
 
 import javax.annotation.PostConstruct;
+import javax.naming.Binding;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -26,6 +25,7 @@ import java.util.logging.Logger;
 
 
 @Controller
+@SessionAttributes(value = "courant", types = {Utilisateur.class})
 @RequestMapping("/")
 public class MonControlleur
 {
@@ -69,7 +69,10 @@ public class MonControlleur
     {
         this.facadeInit.initBdd();
     }
+    @ModelAttribute
+    public void addAttributes(Model model) {
 
+    }
 
     /* ===============================================================
      *                         GET_MAPPING
@@ -85,12 +88,13 @@ public class MonControlleur
 
     @RequestMapping(value="/co")
     public String co(Model model) {
-        model.addAttribute("utilisateur", new Utilisateur());
+        model.addAttribute("courant", new Utilisateur());
         return "connexion";
     }
 
     @RequestMapping(value="/insc")
-    public String insc() {
+    public String insc(Model model) {
+        model.addAttribute("courant", new Utilisateur());
         LOGGER.fine("return ok");
         return "inscription";
     }
@@ -137,13 +141,16 @@ public class MonControlleur
      */
     @PostMapping("/membre/inscription")
     //public void inscription(@ModelAttribute("utilisateur") @Valid Utilisateur utilisateur, Model model)
-    public String inscription(Utilisateur utilisateur, Model model)
+    public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant, BindingResult result, Model model)
     {
-        if(!this.facadeUtilisateur.estExistant(utilisateur.getLogin()))
+        if (result.hasErrors()) {
+            return ("inscription");
+        }
+        else if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         {
-            this.facadeUtilisateur.creer(utilisateur.getLogin(), utilisateur.getMotdepasse());
+            this.facadeUtilisateur.creer(courant.getLogin(), courant.getMotdepasse());
             LOGGER.info("Nouvel utilisateur");
-            return "redirect:/co";
+            return "accueil";
         }
         else //TODO
         {
