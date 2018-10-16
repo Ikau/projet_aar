@@ -48,10 +48,9 @@ public class Utilisateur {
      */
     @NotEmpty
     @NotBlank
-    //@JsonIgnore de la librairie Jackson
     // 8 caracteres, 1 minuscule, 1 majuscule et 1 chiffre
-    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
-    //         message = "Le mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+             message = "Le mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre")
     private String motdepasse;
 
     /**

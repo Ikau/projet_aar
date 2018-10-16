@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import services.FacadeInit;
 import services.FacadeUtilisateur;
 
@@ -94,8 +97,11 @@ public class MonControlleur
 
     @RequestMapping(value="/insc")
     public String insc(Model model) {
-        model.addAttribute("courant", new Utilisateur());
-        LOGGER.fine("return ok");
+        if(!model.containsAttribute("courant"))
+        {
+            model.addAttribute("courant", new Utilisateur());
+        }
+        LOGGER.fine("return 'inscription'");
         return "inscription";
     }
 
@@ -133,38 +139,65 @@ public class MonControlleur
     /**
      * Permet d'inscrire un nouvel utilisateur dans la base de données.
      *
-     * //TODO Si l'utilisateur existe déjà alors il renvoie l'utilisateur sur la page d'inscription avec un message d'erreur.
-     * Sinon, renvoie le membre dans la page de connexion.
-     * @param utilisateur Utilisation deduit du formulaire d'inscription.
+     * Si l'utilisateur existe déjà alors il renvoie l'utilisateur sur la page d'inscription avec un message d'erreur.
+     * Sinon, renvoie le membre dans la page membre.
+     *
+     * @param courant Utilisation deduit du formulaire d'inscription.
      * @param model Le model de la session.
      * @return Page de connexion si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/membre/inscription")
-    //public void inscription(@ModelAttribute("utilisateur") @Valid Utilisateur utilisateur, Model model)
-    public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant, BindingResult result, Model model)
+    public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant,
+                              BindingResult result, RedirectAttributes redicAttr, Model model)
     {
-        if (result.hasErrors()) {
-            return ("inscription");
-        }
-        else if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
+        if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         {
+            // On recupere toutes les erreurs d'un coup (user-experience)
+            if (result.hasErrors()) {
+                this.persistError(redicAttr, result, "courant", courant);
+                LOGGER.info("[ERR] " + result.getFieldError().getDefaultMessage());
+                return "redirect:/insc";
+            }
+
             this.facadeUtilisateur.creer(courant.getLogin(), courant.getMotdepasse());
-            LOGGER.info("Nouvel utilisateur");
-            return "accueil";
+            LOGGER.info("[OK] Nouvel utilisateur");
+            return "redirect:/";
         }
-        else //TODO
+        else
         {
-            LOGGER.info("Utilisateur deja existant");
-            // set des erreurs
+            result.addError(new FieldError("courant", "login", "L'identifiant est déjà utilisé."));
+            this.persistError(redicAttr, result, "courant", courant);
+            LOGGER.info("[ERR] Utilisateur deja existant");
             return "redirect:/insc";
         }
     }
+
 
     @PostMapping("/membre/connexion")
     public String connexion(Utilisateur utilisateur, Model model)
     {
         this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
         return "redirect:/co";
+    }
+
+
+    /* ===============================================================
+     *                         POST_MAPPING
+     * ===============================================================
+     */
+
+    /**
+     * Fonction auxiliaire permettant de garder les erreurs selon le paradigme POST-REDIRECT_ATTRIBUTE-GET.
+     *
+     * @param redicAttr L'ensemble des attributs à rediriger.
+     * @param result Le BindingResult issu du formulaire.
+     * @param nomVar Le nom de la variable issue de la liaison du formulaire.
+     * @param var La variable issue de la liaison du formulaire.
+     */
+    private void persistError(RedirectAttributes redicAttr, BindingResult result, String nomVar, Object var)
+    {
+        redicAttr.addFlashAttribute("org.springframework.validation.BindingResult."+nomVar, result);
+        redicAttr.addFlashAttribute(nomVar, var);
     }
 
 }
