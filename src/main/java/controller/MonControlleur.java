@@ -189,20 +189,21 @@ public class MonControlleur
     @PostMapping("/membre/connexion")
     public String connexion(Utilisateur utilisateur, RedirectAttributes redicAttr, BindingResult result, Model model)
     {
-        Utilisateur uTemp = this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
-        if(uTemp != null)
+        if(this.facadeUtilisateur.estExistant(utilisateur.getLogin()))
         {
-            //TODO Ajout dans la session ?
-            //model.addAttribute("courant", uTemp);
-            LOGGER.info("[OK] Utilisateur ["+utilisateur.getLogin()+"] connecte");
-            return "redirect:/";
+            Utilisateur uTemp = this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
+            if(uTemp != null)
+            {
+                //TODO Ajout dans la session ?
+                //model.addAttribute("courant", uTemp);
+                LOGGER.info("[OK] Utilisateur ["+utilisateur.getLogin()+"] connecte");
+                return "redirect:/";
+            }
         }
-        else
-        {
-            //TODO this.persistError(redicAttr, result, "NOMBINDING", utilisateur);
-            LOGGER.info("[ERR] Connexion echouee");
-            return("redirect:/co");
-        }
+
+        //TODO this.persistError(redicAttr, result, "NOMBINDING", utilisateur);
+        LOGGER.info("[ERR] Connexion echouee");
+        return("redirect:/co");
     }
 
 
