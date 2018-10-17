@@ -106,6 +106,14 @@ public class Pallier {
     }
 
     /**
+     * Renvoie l'intitule du pallier.
+     * @return L'intitule du pallier.
+     */
+    public String getIntitule() {
+        return intitule;
+    }
+
+    /**
      * Renvoie le montant minimum pour obtenir les compensations.
      * @return Le montant minimum pour obtenir les compensations.
      */
@@ -125,7 +133,7 @@ public class Pallier {
      * Renvoie le projet dont depend ce pallier.
      * @return Le projet dont depend ce pallier.
      */
-    public Projet getProjetsoutenu() {
+    public Projet getProjetSoutenu() {
         return projetSoutenu;
     }
 
