@@ -13,7 +13,11 @@
 </head>
 <body>
 
-    <h1>Membres</h1>
+    <h1>Categories</h1>
+    <hr/><br/>
+
+
+    <h1>Projets</h1>
     <hr/><br/>
 
 </body>

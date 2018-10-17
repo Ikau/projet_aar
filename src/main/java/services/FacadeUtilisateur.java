@@ -4,6 +4,7 @@ import config.LoggerConfig;
 import modele.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import repositories.UtilisateurRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -17,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-public class FacadeUtilisateur {
+public class FacadeUtilisateur  {
 
     /* ===========================================================
      *                         PROPRIETES
@@ -28,6 +29,9 @@ public class FacadeUtilisateur {
 
     @Autowired
     private CryptoService cryptoService;
+
+    @Autowired
+    public UtilisateurRepository repository;
 
     /**
      * Logger pour la classe actuelle.
@@ -44,6 +48,7 @@ public class FacadeUtilisateur {
         LOGGER.setLevel(LoggerConfig.LEVEL);
     }
 
+
     /* ===========================================================
      *                            CRUD
      * ===========================================================
@@ -58,10 +63,9 @@ public class FacadeUtilisateur {
      * Ajoute un nouvel utilisateur dans la base de donnees.
      * @param u L'utilisateur a ajouter.
      */
-    @Transactional
     public void creer(Utilisateur u)
     {
-        this.em.persist(u);
+        this.repository.save(u);
         LOGGER.fine("(Utilisateur)");
     }
 
@@ -70,10 +74,9 @@ public class FacadeUtilisateur {
      * @param login Le login du nouvel utilisateur.
      * @param motdepasse Le mot de passe du nouvel utilisateur.
      */
-    @Transactional
     public void creer(String login, String motdepasse)
     {
-        this.em.persist(new Utilisateur(login, motdepasse));
+        this.repository.save(new Utilisateur(login, motdepasse));
         LOGGER.fine("(String, String)");
     }
 
@@ -82,25 +85,21 @@ public class FacadeUtilisateur {
      *            READ
      * ---------------------------
      */
-    @Transactional
     public Utilisateur getUtilisateur(String login, String mdpClair)
     {
         LOGGER.fine("Recuperation utilisateur [" + login + "]");
-        Query query = this.em.createQuery(
-                "select u from Utilisateur u where u.login = :l"
-        );
-        query.setParameter("l", login);
-        Utilisateur u = (Utilisateur) query.getSingleResult();
+        Utilisateur u = this.repository.findUtilisateurByLogin(login);
+        if(u == null) return null;
 
         LOGGER.fine("Calcul hache [" + login + "]");
         String mdpTest = this.cryptoService.hacheMdp(mdpClair, u.getSel());
 
         if(mdpTest.equals(u.getMotdepasse()))
         {
-            LOGGER.fine("Utilisateur identifie");
+            LOGGER.fine("[OK] Utilisateur identifie");
             return u;
         }
-        LOGGER.fine("[OK] Utilisateur inconnu");
+        LOGGER.fine("[ERR] Utilisateur inconnu");
         return null;
     }
 
@@ -121,29 +120,12 @@ public class FacadeUtilisateur {
      */
 
     /**
-     * Verifie si le login entre existe deja dans la base de donnees.
+     * Verifie si le login entré existe deja dans la base de donnees.
      * @param login Le login de l'utilisateur a chercher.
      * @return true s'il existe, false sinon.
      */
-    @Transactional
     public boolean estExistant(String login)
     {
-        // Verification existence utilisateur
-        Query query = this.em.createQuery(
-                "select u from Utilisateur u where u.login = :l"
-        );
-        query.setParameter("l", login);
-
-        // Obligation d'utiliser un try catch dans le cas où il n'existe pas
-        try
-        {
-            query.getSingleResult();
-        } catch(NoResultException e)
-        {
-            LOGGER.fine("false");
-            return false;
-        }
-        LOGGER.fine("true");
-        return true;
+        return this.repository.existsByLogin(login);
     }
 }

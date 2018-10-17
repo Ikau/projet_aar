@@ -130,6 +130,17 @@ public class MonControlleur
         return "accueil";
     }
 
+    /**
+     * TEMPORAIRE : page de test pour les differentes facades.
+     * @return La page de test
+     */
+    @GetMapping(value="/test")
+    public String test()
+    {
+        LOGGER.fine("[OK] return 'test'");
+        return "test";
+    }
+
 
     /* ===============================================================
      *                         POST_MAPPING
@@ -152,6 +163,7 @@ public class MonControlleur
     public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant,
                               BindingResult result, RedirectAttributes redicAttr, Model model)
     {
+        //if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         {
             // On recupere toutes les erreurs d'un coup (user-experience)
@@ -162,7 +174,7 @@ public class MonControlleur
             }
 
             this.facadeUtilisateur.creer(courant.getLogin(), courant.getMotdepasse());
-            LOGGER.info("[OK] Nouvel utilisateur");
+            LOGGER.info("[OK] Nouvel utilisateur {"+courant.getLogin()+"}");
             return "redirect:/";
         }
         else
