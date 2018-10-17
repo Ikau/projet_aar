@@ -13,6 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import services.FacadeInit;
+import services.FacadeProjet;
 import services.FacadeUtilisateur;
 
 import javax.annotation.PostConstruct;
@@ -51,6 +52,12 @@ public class MonControlleur
      */
     @Autowired
     private FacadeUtilisateur facadeUtilisateur;
+
+    /**
+     * Facade gerant les operations sur le modele Projet.
+     */
+    @Autowired
+    private FacadeProjet facadeProjet;
 
     /**
      * Logger pour la classe actuelle.
@@ -135,8 +142,9 @@ public class MonControlleur
      * @return La page de test
      */
     @GetMapping(value="/test")
-    public String test()
+    public String test(Model model)
     {
+        model.addAttribute("projets", this.facadeProjet.getProjets());
         LOGGER.fine("[OK] return 'test'");
         return "test";
     }

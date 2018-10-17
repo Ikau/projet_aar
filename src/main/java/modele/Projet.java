@@ -6,6 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@NamedEntityGraphs({
+        @NamedEntityGraph(name="joinPalliersCategories", attributeNodes = {
+                @NamedAttributeNode("palliers"),
+                @NamedAttributeNode("categories")
+        })
+})
 public class Projet {
     /* ===========================================================
      *                         PROPRIETES
@@ -32,7 +38,7 @@ public class Projet {
     /**
      * Valeur monetaire a atteindre pour financer le projet.
      */
-    private int objectif;
+    private long objectif;
 
     /**
      * Description exhaustive du projet ainsi que des compensations.
@@ -136,7 +142,7 @@ public class Projet {
         return description;
     }
 
-    public int getObjectif() {
+    public long getObjectif() {
         return objectif;
     }
 
@@ -185,7 +191,7 @@ public class Projet {
         this.description = description;
     }
 
-    public void setObjectif(int objectif) {
+    public void setObjectif(long objectif) {
         this.objectif = objectif;
     }
 
