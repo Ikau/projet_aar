@@ -102,20 +102,18 @@ public class MonControlleur
         return "accueil";
     }
 
-    @RequestMapping(value="/co")
+    @RequestMapping(value="/connexion")
     public String co(Model model) {
         model.addAttribute("courant", new Utilisateur());
         return "connexion";
     }
-    @RequestMapping(value="/deco")
+    @RequestMapping(value="/deconnexion")
     public String deco(SessionStatus status, Model model) {
-        List<Projet> p = facadeInit.test();
-        model.addAttribute("projet",p);
         status.setComplete();
-        return "accueil";
+        return "redirect:/";
     }
 
-    @RequestMapping(value="/insc")
+    @RequestMapping(value="/inscription")
     public String insc(Model model) {
         if(!model.containsAttribute("courant"))
         {
@@ -144,21 +142,6 @@ public class MonControlleur
     public String form() {
 
         return "formulaire_projet";
-    }
-
-    /**
-     * Déconnecte l'utilisateur et purge sa session.
-     *
-     * @param model Le model de la session.
-     * @return Redirection vers la page de connexion.
-     */
-    @GetMapping(value="/deconnexion")
-    public String deconnexion(Model model)
-    {
-        //TODO nettoyer session
-        //LOGGER.info("Utilisateur {"+model.asMap().get("courant")+"}");
-        LOGGER.fine("[OK] return 'connexion'");
-        return "redirect:/co";
     }
 
     /**
