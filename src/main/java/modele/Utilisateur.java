@@ -35,6 +35,8 @@ public class Utilisateur {
      * Le login de l'utilisateur.
      */
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9_-]+$",
+             message = "L'identifiant doit être alphanumérique")
     private String login;
 
     /**
