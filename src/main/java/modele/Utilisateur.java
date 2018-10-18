@@ -34,7 +34,6 @@ public class Utilisateur {
     /**
      * Le login de l'utilisateur.
      */
-    @NotEmpty
     @NotBlank
     private String login;
 
@@ -46,7 +45,6 @@ public class Utilisateur {
     /**
      * Le mot de passe hache de l'utilisateur.
      */
-    @NotEmpty
     @NotBlank
     // 8 caracteres, 1 minuscule, 1 majuscule et 1 chiffre
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",

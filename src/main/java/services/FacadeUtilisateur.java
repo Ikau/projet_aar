@@ -87,19 +87,23 @@ public class FacadeUtilisateur  {
      */
     public Utilisateur getUtilisateur(String login, String mdpClair)
     {
-        LOGGER.fine("Recuperation utilisateur [" + login + "]");
+        LOGGER.fine("Recuperation utilisateur {" + login + "}");
         Utilisateur u = this.repository.findUtilisateurByLogin(login);
-        if(u == null) return null;
+        if(u == null)
+        {
+            LOGGER.info("[ERR] Utilisateur inconnu");
+            return null;
+        }
 
-        LOGGER.fine("Calcul hache [" + login + "]");
+        LOGGER.fine("Calcul hache {" + login + "}");
         String mdpTest = this.cryptoService.hacheMdp(mdpClair, u.getSel());
 
         if(mdpTest.equals(u.getMotdepasse()))
         {
-            LOGGER.fine("[OK] Utilisateur identifie");
+            LOGGER.info("[OK] Utilisateur {"+login+"} identifie");
             return u;
         }
-        LOGGER.fine("[ERR] Utilisateur inconnu");
+        LOGGER.info("[ERR] Mot de passe incorrecte {"+login+"} ");
         return null;
     }
 
