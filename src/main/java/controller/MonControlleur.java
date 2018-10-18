@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import services.FacadeCategorie;
 import services.FacadeInit;
 import services.FacadeProjet;
 import services.FacadeUtilisateur;
@@ -38,9 +39,6 @@ public class MonControlleur
      * ===============================================================
      */
 
-    @PersistenceContext
-    private EntityManager em;
-
     /**
      * Facade gerant les operations d'initialisation et de peuplement de la base.
      */
@@ -58,6 +56,12 @@ public class MonControlleur
      */
     @Autowired
     private FacadeProjet facadeProjet;
+
+    /**
+     * Facade gerant les operations sur le modele Categorie.
+     */
+    @Autowired
+    private FacadeCategorie facadeCategorie;
 
     /**
      * Logger pour la classe actuelle.
@@ -91,8 +95,9 @@ public class MonControlleur
 
     @RequestMapping(value="/")
     public String root(Model model) {
-        List<Projet> p = facadeInit.test();
-        model.addAttribute("projet",p);
+        //List<Projet> p = facadeInit.test();
+        model.addAttribute("projets", this.facadeProjet.getTroisDerniersProjets());
+        model.addAttribute("categories", this.facadeCategorie.getCategories());
         return "accueil";
     }
 
@@ -112,9 +117,12 @@ public class MonControlleur
         return "inscription";
     }
 
+    //TODO @GetMapping(value="/projets/{id}")
     @RequestMapping(value="/pro")
-    public String pro() {
-
+    public String pro(Model model) {
+        //TODO nommer la variable JSP
+        //List<Projet> projets = this.facadeProjet.getProjetsPage();
+        //model.addAttribute("VARIABLE_PROJETS", projets);
         return "projet";
     }
 
@@ -130,11 +138,19 @@ public class MonControlleur
         return "formulaire_projet";
     }
 
-    @GetMapping(value="/membre")
-    public String membre()
+    /**
+     * Déconnecte l'utilisateur et purge sa session.
+     *
+     * @param model Le model de la session.
+     * @return Redirection vers la page de connexion.
+     */
+    @GetMapping(value="/deconnexion")
+    public String deconnexion(Model model)
     {
-        LOGGER.fine("MonControlleur.membre");
-        return "accueil";
+        //TODO nettoyer session
+        //LOGGER.info("Utilisateur {"+model.asMap().get("courant")+"}");
+        LOGGER.fine("[OK] return 'connexion'");
+        return "redirect:/co";
     }
 
     /**
@@ -167,11 +183,10 @@ public class MonControlleur
      * @param redicAttr Les attributs à rediriger avec le retour de la fonction.
      * @return Page d'accueil si succes, rafraichissement de la page sinon.
      */
-    @PostMapping("/membre/inscription")
+    @PostMapping("/inscription")
     public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant,
                               BindingResult result, RedirectAttributes redicAttr, Model model)
     {
-        //if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
         {
             // On recupere toutes les erreurs d'un coup (user-experience)
@@ -206,7 +221,7 @@ public class MonControlleur
      * @param model Le model de la session.
      * @return Si succès espace membre, sinon page inscription
      */
-    @PostMapping("/membre/connexion")
+    @PostMapping("/connexion")
     public String connexion(Utilisateur utilisateur, RedirectAttributes redicAttr, BindingResult result, Model model)
     {
         if(this.facadeUtilisateur.estExistant(utilisateur.getLogin()))
@@ -226,9 +241,16 @@ public class MonControlleur
         return("redirect:/co");
     }
 
+    //TODO finir la réponse de message
+    @PostMapping("/projets/{projetId)/messages/{messageId}")
+    public String repondreMessage(@PathVariable String projetId, @PathVariable int messageId)
+    {
+        return "redirect:/projets/"+projetId;
+    }
+
 
     /* ===============================================================
-     *                         POST_MAPPING
+     *                           METHODS
      * ===============================================================
      */
 
