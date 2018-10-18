@@ -184,7 +184,7 @@ public class MonControlleur
             if (result.hasErrors()) {
                 this.persistError(redicAttr, result, "courant", courant);
                 LOGGER.info("[ERR] " + result.getFieldError().getDefaultMessage());
-                return "redirect:/insc";
+                return "redirect:/inscription";
             }
 
             this.facadeUtilisateur.creer(courant.getLogin(), courant.getMotdepasse());
@@ -196,7 +196,7 @@ public class MonControlleur
             result.addError(new FieldError("courant", "login", "L'identifiant est déjà utilisé."));
             this.persistError(redicAttr, result, "courant", courant);
             LOGGER.info("[ERR] Utilisateur deja existant");
-            return "redirect:/insc";
+            return "redirect:/inscription";
         }
     }
 
@@ -229,7 +229,7 @@ public class MonControlleur
 
         //TODO this.persistError(redicAttr, result, "NOMBINDING", utilisateur);
         LOGGER.info("[ERR] Connexion echouee");
-        return("redirect:/co");
+        return("redirect:/connexion");
     }
 
     //TODO finir la réponse de message
