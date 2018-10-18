@@ -33,7 +33,7 @@
 
     <div class="w3-col" style="width:50%">
         <p>
-        <form:form class="w3-container" action="/membre/inscription" method="post" modelAttribute="courant">
+        <form:form class="w3-container" action="/inscription" method="post" modelAttribute="courant">
 
             <label> Login</label>
             <form:input class="w3-input" type="text" path="login"/> <form:errors path="login" cssStyle="color:red;"/>

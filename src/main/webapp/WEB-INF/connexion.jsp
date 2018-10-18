@@ -32,7 +32,7 @@
 
 
     <div class="w3-col" style="width:50%"><p>
-        <form class="w3-container" method="post" action="/membre/connexion">
+        <form class="w3-container" method="post" action="/connexion">
 
             <label>Login</label>
             <input class="w3-input" type="text" name="login">
