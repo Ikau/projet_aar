@@ -1,12 +1,30 @@
 package modele;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @NamedEntityGraphs({
+        @NamedEntityGraph(name="joinAll", attributeNodes = {
+                @NamedAttributeNode("palliers"),
+                @NamedAttributeNode("categories"),
+                @NamedAttributeNode("financeurs"),
+                @NamedAttributeNode("dons"),
+                @NamedAttributeNode("messagesRacines")
+        }),
+        @NamedEntityGraph(name="joinCategoriesDons", attributeNodes = {
+                @NamedAttributeNode("categories"),
+                @NamedAttributeNode("dons")
+        }),
+        @NamedEntityGraph(name="join-categories-dons-messages-palliers", attributeNodes = {
+                @NamedAttributeNode("categories"),
+                @NamedAttributeNode("dons"),
+                @NamedAttributeNode("messagesRacines"),
+                @NamedAttributeNode("palliers")
+        }),
         @NamedEntityGraph(name="joinPalliersCategories", attributeNodes = {
                 @NamedAttributeNode("palliers"),
                 @NamedAttributeNode("categories")
@@ -28,11 +46,13 @@ public class Projet {
     /**
      * Intitule du projet.
      */
+    @NotBlank
     private String intitule;
 
     /**
      * Resume court du projet.
      */
+    @NotBlank
     private String resume;
 
     /**
@@ -43,6 +63,7 @@ public class Projet {
     /**
      * Description exhaustive du projet ainsi que des compensations.
      */
+    @NotBlank
     private String description;
 
     /**
@@ -199,4 +220,20 @@ public class Projet {
      *                           METHODES
      * ===========================================================
      */
+
+    /**
+     * Retourne l'avancement du projet en pourcentages.
+     *
+     * Le pourcentage est au minimum 0 % mais n'a pas de limite supérieure.
+     * @return Le pourcentage en float.
+     */
+    public double getPourcentage()
+    {
+        double somme = 0.0;
+        for(Don d : this.dons)
+        {
+            somme += d.getMontant();
+        }
+        return (100 * somme / this.objectif);
+    }
 }

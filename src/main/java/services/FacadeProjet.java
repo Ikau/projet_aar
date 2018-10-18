@@ -50,9 +50,44 @@ public class FacadeProjet {
      *            READ
      * ---------------------------
      */
+    //TODO Créer les différents getters avec les attributs dans les cas nécessaires
+
+    /**
+     * Renvoie tous les projets avec toutes leurs listes.
+     * @return Tous les projets avec toutes leurs listes.
+     */
     public List<Projet> getProjets()
     {
-        return this.repository.getProjets();
+        return this.repository.getProjetsJoinAll();
     }
+
+    /**
+     * Renvoie les trois derniers projets deposes.
+     * @return Les trois derniers projets deposes.
+     */
+    public List<Projet> getTroisDerniersProjets()
+    {
+        return this.repository.getFirst3ByOrderByDateDepot();
+    }
+
+
+    /**
+     * Renvoie une liste de tous les projets avec tout sauf les financeurs.
+     * @return une liste de tous les projets avec tout sauf les financeurs.
+     */
+    public List<Projet> getProjetsPage()
+    {
+        return this.repository.getProjetsPage();
+    }
+
+
+
+
+
+
+    /* ===========================================================
+     *                         METHODES
+     * ===========================================================
+     */
 
 }
