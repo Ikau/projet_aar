@@ -10,12 +10,12 @@
 <body>
 
 <!--- Barre de navigation -->
-<% if (1 == 1) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
+<% if (session.getAttribute("courant") != null) { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
     <a href="/prof" class="w3-bar-item w3-button">Mon profil</a>
     <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
-    <a href="#" class="w3-bar-item w3-button">Se déconnecter</a>
+    <a href="/deco" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
 <% } else { %>
 <div class="w3-bar w3-theme-dark">
@@ -32,7 +32,7 @@
     </p></div>
 
     <div class="w3-col" style="width:60%"><p>
-         <h1> <i class="fa fa-user-circle"></i> LOGIN UTILISATEUR </h1>
+         <h1> <i class="fa fa-user-circle"></i> LOGIN </h1>
         <br>
         <h3><i class="fa fa-lock"></i> <a href="#">Changer mon mot de passe</a></h3>
         <br>

@@ -10,20 +10,12 @@
 <body>
 
 <!--- Barre de navigation -->
-<% if (1 == 0) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
-<div class="w3-bar w3-theme-dark">
-    <a href="#" class="w3-bar-item w3-button">Home</a>
-    <a href="#" class="w3-bar-item w3-button">Mon profil</a>
-    <a href="#" class="w3-bar-item w3-button">Lancer un projet</a>
-    <a href="#" class="w3-bar-item w3-button">Se déconnecter</a>
-</div>
-<% } else { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
     <a href="/co" class="w3-bar-item w3-button">Se connecter</a>
     <a href="/insc" class="w3-bar-item w3-button">S'inscrire</a>
 </div>
-<% } %>
+
 
 
 <div class="w3-row">
@@ -36,7 +28,7 @@
         <form:form class="w3-container" action="/inscription" method="post" modelAttribute="courant">
 
             <label> Login</label>
-            <form:input class="w3-input" type="text" path="login"/> <form:errors path="login" cssStyle="color:red;"/>
+            <form:input class="w3-input" type="text" path="login"/><form:errors path="login" cssStyle="color:red;"/>
         <br>
             <label> Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="motdepasse" cssStyle="color:red;"/>
