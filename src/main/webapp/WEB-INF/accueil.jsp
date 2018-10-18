@@ -19,8 +19,8 @@
 <% } else { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
-    <a href="/co" class="w3-bar-item w3-button">Se connecter</a>
-    <a href="/insc" class="w3-bar-item w3-button">S'inscrire</a>
+    <a href="/connexion" class="w3-bar-item w3-button">Se connecter</a>
+    <a href="/inscription" class="w3-bar-item w3-button">S'inscrire</a>
 </div>
 <% } %>
 

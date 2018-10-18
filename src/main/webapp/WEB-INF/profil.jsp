@@ -15,13 +15,13 @@
     <a href="/" class="w3-bar-item w3-button">Home</a>
     <a href="/prof" class="w3-bar-item w3-button">Mon profil</a>
     <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
-    <a href="/deco" class="w3-bar-item w3-button">Se déconnecter</a>
+    <a href="/deconnexion" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
 <% } else { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
-    <a href="/co" class="w3-bar-item w3-button">Se connecter</a>
-    <a href="/insc" class="w3-bar-item w3-button">S'inscrire</a>
+    <a href="/connexion" class="w3-bar-item w3-button">Se connecter</a>
+    <a href="/inscription" class="w3-bar-item w3-button">S'inscrire</a>
 </div>
 <% } %>
 
