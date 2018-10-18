@@ -10,20 +10,12 @@
 <body>
 
 <!--- Barre de navigation -->
-<% if (1 == 0) { %> <!-- WIP : à faire par rapport à la connexion ou non de l'utilisateur -->
-<div class="w3-bar w3-theme-dark">
-    <a href="#" class="w3-bar-item w3-button">Home</a>
-    <a href="#" class="w3-bar-item w3-button">Mon profil</a>
-    <a href="#" class="w3-bar-item w3-button">Lancer un projet</a>
-    <a href="#" class="w3-bar-item w3-button">Se déconnecter</a>
-</div>
-<% } else { %>
+
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
     <a href="/co" class="w3-bar-item w3-button">Se connecter</a>
     <a href="/insc" class="w3-bar-item w3-button">S'inscrire</a>
 </div>
-<% } %>
 
 
 <div class="w3-row">
@@ -32,19 +24,19 @@
 
 
     <div class="w3-col" style="width:50%"><p>
-        <form class="w3-container" method="post" action="/membre/connexion">
+        <form:form class="w3-container" action="/membre/connexion" method="post" modelAttribute="courant">
 
-            <label>Login</label>
-            <input class="w3-input" type="text" name="login">
+        <label> Login</label>
+            <form:input class="w3-input" type="text" path="login"/><form:errors path="login" cssStyle="color:red;"/>
         <br>
-            <label>Mot de passe</label>
-            <input class="w3-input" type="password" name="motdepasse">
+        <label> Mot de passe</label>
+            <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="motdepasse" cssStyle="color:red;"/>
         <br>
         <br>
             <div class="w3-display-container">
                 <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Connexion"/></div>
             </div>
-        </form>
+        </form:form>
 
 
     </p></div>

@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import services.FacadeInit;
 import services.FacadeProjet;
@@ -101,12 +102,19 @@ public class MonControlleur
         model.addAttribute("courant", new Utilisateur());
         return "connexion";
     }
+    @RequestMapping(value="/deco")
+    public String deco(SessionStatus status, Model model) {
+        List<Projet> p = facadeInit.test();
+        model.addAttribute("projet",p);
+        status.setComplete();
+        return "accueil";
+    }
 
     @RequestMapping(value="/insc")
     public String insc(Model model) {
         if(!model.containsAttribute("courant"))
         {
-            model.addAttribute("courant", new Utilisateur());
+           model.addAttribute("courant", new Utilisateur());
         }
         LOGGER.fine("[OK] return 'inscription'");
         return "inscription";
