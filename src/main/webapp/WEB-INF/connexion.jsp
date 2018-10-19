@@ -31,7 +31,6 @@
         <br>
             <label> Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/>
-        <br>
             <form:errors path="login" cssStyle="color:red;" />
         <br>
         <br>
