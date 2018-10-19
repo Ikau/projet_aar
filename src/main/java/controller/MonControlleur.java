@@ -13,16 +13,14 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import services.FacadeCategorie;
-import services.FacadeInit;
-import services.FacadeProjet;
-import services.FacadeUtilisateur;
+import services.*;
 
 import javax.annotation.PostConstruct;
 import javax.naming.Binding;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
@@ -75,6 +73,7 @@ public class MonControlleur
      * ===============================================================
      */
 
+    // Niveau de log définie dans LoggerConfig
     static {
         LOGGER.setLevel(LoggerConfig.LEVEL);
     }
@@ -84,10 +83,6 @@ public class MonControlleur
     {
         this.facadeInit.initBdd();
     }
-    @ModelAttribute
-    public void addAttributes(Model model) {
-
-    }
 
     /* ===============================================================
      *                         GET_MAPPING
@@ -96,7 +91,6 @@ public class MonControlleur
 
     @RequestMapping(value="/")
     public String root(Model model) {
-        //List<Projet> p = facadeInit.test();
         model.addAttribute("projets", this.facadeProjet.getTroisDerniersProjets());
         model.addAttribute("categories", this.facadeCategorie.getCategories());
         return "accueil";
@@ -123,13 +117,28 @@ public class MonControlleur
         return "inscription";
     }
 
-    //TODO @GetMapping(value="/projets/{id}")
-    @RequestMapping(value="/pro")
-    public String pro(Model model) {
-        //TODO nommer la variable JSP
-        //List<Projet> projets = this.facadeProjet.getProjetsPage();
-        //model.addAttribute("VARIABLE_PROJETS", projets);
-        return "projet";
+    /**
+     * Affiche la page de détails du projet associé à l'ID de l'url.
+     *
+     * Renvoie sur la page d'accueil en cas d'erreur.
+     *
+     * @param projetId L'ID du projet que l'on souhaite afficher.
+     * @param model Le model de la session.
+     * @return La page du projet si l'ID est correct, la page d'accueil sinon.
+     */
+    @GetMapping(value="/projets/{projetId}")
+    public String projetId(@PathVariable int projetId, Model model) {
+        if(this.facadeProjet.estExistant(projetId))
+        {
+            //model.addAttribute("messagesRacines", this.facadeMessage.getMessagesDuProjet(projetId));
+            //model.addAttribute("palliers", this.facadePallier.getPalliersDeProjet(projetId));
+            model.addAttribute("projet", this.facadeProjet.getProjetById(projetId));
+            return "projet";
+        }
+        else
+        {
+            return "redirect:/";
+        }
     }
 
     @RequestMapping(value="/prof")
