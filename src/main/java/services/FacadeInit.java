@@ -1,9 +1,6 @@
 package services;
 
-import modele.Categorie;
-import modele.Pallier;
-import modele.Projet;
-import modele.Utilisateur;
+import modele.*;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -12,10 +9,8 @@ import javax.persistence.Query;
 import javax.persistence.Transient;
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class FacadeInit {
@@ -31,6 +26,7 @@ public class FacadeInit {
     private Set<Utilisateur> utilisateurs;
     private Set<Categorie> categories;
     private Set<Projet> projets;
+    private Set<Message> messages;
 
     /* ===========================================================
      *                         METHODES
@@ -84,11 +80,12 @@ public class FacadeInit {
         this.projets = new HashSet<>();
 
         // Projet 1
-        Projet p1 = new Projet("Sabre laser",
+        Projet p1 = new Projet(dt,
+                               "Sabre laser",
                                "Que la Force soit enfin avec nous.",
                                "Emparé de moi, la Flemme s'est.",
                                5000,
-                               new Timestamp(System.currentTimeMillis())
+                               new Timestamp(System.currentTimeMillis()+System.currentTimeMillis())
         );
         p1.getCategories().add(catSci);
         p1.getPalliers().add(new Pallier(p1, 0, "Initié Jedi", "Pallier 0 description"));
@@ -97,11 +94,12 @@ public class FacadeInit {
         p1.getPalliers().add(new Pallier(p1, 100, "Maître Jedi","Pallier 3 description"));
 
         // Projet 2
-        Projet p2 = new Projet("HAL 9000",
+        Projet p2 = new Projet(gl,
+                               "HAL 9000",
                                "Beep boop, boop beepp !",
                                "Création d'une IA éthique pour les voyages spatiaux !",
-                                10000,
-                                new Timestamp(System.currentTimeMillis())
+                               10000,
+                                new Timestamp(System.currentTimeMillis()+10000000)
         );
         p2.getCategories().add(catSci);
         p2.getCategories().add(catInf);
@@ -111,6 +109,31 @@ public class FacadeInit {
         p2.getPalliers().add(new Pallier(p2, 100, "GLaDOS","Pallier 3 description"));
 
         Collections.addAll(this.projets, p1, p2);
+
+
+        /* --------------------------------------------
+         *              MESSAGES TESTS
+         * --------------------------------------------
+         */
+        this.messages = new HashSet<>();
+
+        Message m1 = new Message(mm, p1, "C'est bient tout ça mais à quand mes hoverboard volants ?");
+        this.attendreMillis(100);
+
+        Message m2 = new Message(gv, p1, "J'ai jamais compris pourquoi ils ne désactivaient jamais leur sabre quand ils sont en mélée pendant 5 mins...");
+        this.attendreMillis(100);
+
+        Message m3 = new Message(m2, tr, p1, "T'en demandes pas un poil trop Garrus ? Ils ont mis 6 épisodes à mettre une garde sur leur petite arme !");
+        this.attendreMillis(100);
+
+        Message m4 = new Message(m2, gl, p1, "Les humains ne sont pas très futés en règle générale");
+        this.attendreMillis(100);
+
+        Message m5 = new Message(gl, p2, "Venez financer mon projet, j'ai des gâteaux pour vous ! :-)");
+        this.attendreMillis(100);
+
+        Collections.addAll(this.messages, m1, m2, m3, m4, m5);
+
     }
 
     @Transactional
@@ -130,6 +153,11 @@ public class FacadeInit {
         {
             this.em.persist(p);
         }
+
+        for(Message m : this.messages)
+        {
+            this.em.persist(m);
+        }
     }
 
     @Transactional
@@ -137,5 +165,14 @@ public class FacadeInit {
     {
         Query q = em.createQuery("select p from Projet p");
         return q.getResultList();
+    }
+
+    private void attendreMillis(int duree)
+    {
+        try {
+            TimeUnit.MILLISECONDS.sleep(duree);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
