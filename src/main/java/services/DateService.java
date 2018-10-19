@@ -8,12 +8,17 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * DateService est une classe auxiliaire qui se charge d'effectuer toutes opérations sur les dates.
+ *
+ * Elle permet notamment de traduire des timestamps (EPOCH long) en format humainement lisible.
+ */
 @Service
 public final class DateService {
 
     /**
-     *
-     * @return
+     * Renvoie le temps restant avant la fin de financement d'un projet dans un format humainement lisible.
+     * @return Le temps restant avant la fin de financement d'un projet dans un format humainement lisible.
      */
     public static String getTempsRestant(long millisRestantes)
     {
@@ -78,11 +83,11 @@ public final class DateService {
     }
 
     /**
-     * TODO doc
-     * @param timestamp
-     * @return
+     * Formate un timestamp sous forme de string au format 'jj-MM-aaaa à HH:mm'.
+     * @param timestamp Le timestamp à formatter.
+     * @return Le timestamp sous forme de stirng au format 'jj-MM-aaaa à HH:mm'.
      */
-    public static String getDateEuropeenne(long timestamp)
+    public static String getDateHumain(long timestamp)
     {
         LocalDateTime date = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(timestamp),

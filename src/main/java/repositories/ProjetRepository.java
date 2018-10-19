@@ -12,12 +12,10 @@ import java.util.List;
 @Repository
 public interface ProjetRepository extends CrudRepository<Projet, Integer>
 {
-
     /* ===========================================================
-     *                         GETTERS
+     *                         READ
      * ===========================================================
      */
-
 
     /* ---------------------------
      *            LIST
@@ -29,7 +27,7 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      */
     @EntityGraph(value="joinAll", type=EntityGraph.EntityGraphType.FETCH)
     @Query("select p from Projet p")
-    public List<Projet> getProjetsJoinAll();
+    public List<Projet> findProjetsJoinAll();
 
     /**
      * Renvoie une liste de tous les projets en joignant leurs palliers et leurs catégories.
@@ -37,26 +35,27 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      */
     @EntityGraph(value="joinPalliersCategories", type=EntityGraph.EntityGraphType.FETCH)
     @Query("select p from Projet p")
-    public List<Projet> getProjetsJoinPalliersCategories();
+    public List<Projet> findProjetsJoinPalliersCategories();
 
     /**
      * Renvoie les trois derniers projets deposes.
      * @return Les trois derniers projets deposes.
      */
     @EntityGraph(value="joinCategoriesDons", type=EntityGraph.EntityGraphType.FETCH)
-    public List<Projet> getFirst3ByOrderByDateDepot();
+    public List<Projet> findFirst3ByOrderByDateDepot();
 
 
     /* ---------------------------
      *            UNIQUE
      * ---------------------------
      */
+
     /**
      * Renvoie une liste de tous les projets avec tout sauf les financeurs.
      * @return une liste de tous les projets avec tout sauf les financeurs.
      */
     @EntityGraph(value="join-categories-dons-messages-palliers", type=EntityGraph.EntityGraphType.FETCH)
-    public Projet getProjetById(int id);
+    public Projet findProjetById(int id);
 
 
     /* ===========================================================
@@ -65,9 +64,9 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      */
 
     /**
-     * TODO doc
-     * @param id
-     * @return
+     * Indique si un projet associé à l'ID en argument existe.
+     * @param id L'ID à tester.
+     * @return true si un projet existe, false sinon.
      */
     public boolean existsById(int id);
 }

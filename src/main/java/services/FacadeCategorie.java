@@ -7,14 +7,31 @@ import repositories.CategorieRepository;
 
 import java.util.List;
 
+/**
+ *
+ */
 @Service
 public class FacadeCategorie {
 
     @Autowired
     CategorieRepository repository;
 
+
+    /* ===========================================================
+     *                            READ
+     * ===========================================================
+     */
+
+    /* ---------------------------
+     *            LIST
+     * ---------------------------
+     */
+    /**
+     * Renvoie une liste contenant toutes les categories.
+     * @return Une liste contenant toutes les categories.
+     */
     public List<Categorie> getCategories()
     {
-        return this.repository.getAll();
+        return this.repository.findAllBy();
     }
 }

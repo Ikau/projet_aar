@@ -3,6 +3,11 @@ package modele;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 
+/**
+ * Un don est un versement qu'a effectué un utilisateur pour financer un projet.
+ *
+ * Chaque utilisateur ne possède qu'un seul don par projet, qui est incrémenté au fur et à mesure des dons.
+ */
 @Entity
 public class Don {
     /* ===========================================================

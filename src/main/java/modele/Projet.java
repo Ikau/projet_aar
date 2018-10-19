@@ -9,7 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Projet est déposé par un utilisateur et représente un financement participatif limité dans le temps.
  *
+ * Un projet ne peut être déposé que par un seul utilisateur (appelé 'porteur').
+ * Le financement du projet peut dépasser son objectif de financement : la seule contrainte est le temps.
+ * Un projet possède plusieurs palliers de compensation qui sont automatiquement octroyés suivant la valeur des dons.
  */
 @Entity
 @NamedEntityGraphs({
@@ -252,8 +256,8 @@ public class Projet {
      */
 
     /**
-     * TODO
-     * @return
+     * Renvoie la somme totale qui est actuellement versée au projet.
+     * @return La somme totale qui est actuellement versée au projet.
      */
     public long getFinancement()
     {
@@ -269,7 +273,7 @@ public class Projet {
      * Retourne l'avancement du projet en pourcentages.
      *
      * Le pourcentage est au minimum 0 % mais n'a pas de limite supérieure.
-     * @return Le pourcentage en float.
+     * @return Le pourcentage en double.
      */
     public double getPourcentage()
     {
@@ -278,8 +282,10 @@ public class Projet {
     }
 
     /**
-     * TODO
-     * @return
+     * Renvoie le temps restant avant la fin du financement du projet.
+     *
+     * La date affichée s'adapte par rapport à la plus grande échelle de temps (année, mois, etc).
+     * @return Le temps restant avant la fin du financement du projet.
      */
     public String getTempsRestant()
     {
@@ -297,20 +303,20 @@ public class Projet {
     }
 
     /**
-     * Renvoie La date de dépot du projet sous forme d'un string.
-     * @return La date de dépot du projet sous forme d'un string.
+     * Renvoie La date de dépot du projet sous forme d'un string au format 'jj-MM-aaaa à HH:mm'.
+     * @return La date de dépot du projet sous forme d'un string au format 'jj-MM-aaaa à HH:mm'.
      */
     public String getStringDepot()
     {
-        return DateService.getDateEuropeenne(this.dateDepot.getTime());
+        return DateService.getDateHumain(this.dateDepot.getTime());
     }
 
     /**
-     * Renvoie la date de fin du projet sous forme d'un string.
-     * @return La date de fin du projet sous forme d'un string.
+     * Renvoie la date de fin du projet sous forme d'un string au format 'jj-MM-aaaa à HH:mm'.
+     * @return La date de fin du projet sous forme d'un string au format 'jj-MM-aaaa à HH:mm'.
      */
     public String getStringFin()
     {
-        return DateService.getDateEuropeenne(this.dateFin.getTime());
+        return DateService.getDateHumain(this.dateFin.getTime());
     }
 }

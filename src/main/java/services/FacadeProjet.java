@@ -58,7 +58,7 @@ public class FacadeProjet {
      */
     public List<Projet> getProjets()
     {
-        return this.repository.getProjetsJoinAll();
+        return this.repository.findProjetsJoinAll();
     }
 
     /**
@@ -67,7 +67,7 @@ public class FacadeProjet {
      */
     public List<Projet> getTroisDerniersProjets()
     {
-        return this.repository.getFirst3ByOrderByDateDepot();
+        return this.repository.findFirst3ByOrderByDateDepot();
     }
 
 
@@ -77,7 +77,7 @@ public class FacadeProjet {
      */
     public Projet getProjetById(int id)
     {
-        Projet p = this.repository.getProjetById(id);
+        Projet p = this.repository.findProjetById(id);
         return p;
     }
 

@@ -7,9 +7,21 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository de la classe Categorie.
+ */
 @Repository
-public interface CategorieRepository extends CrudRepository<Categorie, Integer> {
+public interface CategorieRepository extends CrudRepository<Categorie, Integer>
+{
 
-    @Query("select c from Categorie c")
-    public List<Categorie> getAll();
+    /* ===========================================================
+     *                         GETTERS
+     * ===========================================================
+     */
+
+    /* ---------------------------
+     *            LIST
+     * ---------------------------
+     */
+    public List<Categorie> findAllBy();
 }

@@ -13,6 +13,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
+/**
+ * Facade qui s'occupe d'initialiser les données de la base de données.
+ */
 public class FacadeInit {
 
     /* ===========================================================
@@ -23,6 +26,7 @@ public class FacadeInit {
     @PersistenceContext
     private EntityManager em;
 
+    // Les différents sets des entités que l'on va créer dans la base de données.
     private Set<Utilisateur> utilisateurs;
     private Set<Categorie> categories;
     private Set<Projet> projets;
@@ -38,9 +42,12 @@ public class FacadeInit {
     {
         this.creerEntities();
         this.insertBdd();
-        this.test();
+        //this.test();
     }
 
+    /**
+     * Créer les entités de la base de données.
+     */
     private void creerEntities()
     {
         /* --------------------------------------------
@@ -117,7 +124,7 @@ public class FacadeInit {
          */
         this.messages = new HashSet<>();
 
-        Message m1 = new Message(mm, p1, "C'est bient tout ça mais à quand mes hoverboard volants ?");
+        Message m1 = new Message(mm, p1, "C'est bien tout ça mais à quand mes hoverboards volants ?");
         this.attendreMillis(100);
 
         Message m2 = new Message(gv, p1, "J'ai jamais compris pourquoi ils ne désactivaient jamais leur sabre quand ils sont en mélée pendant 5 mins...");
@@ -136,6 +143,9 @@ public class FacadeInit {
 
     }
 
+    /**
+     * Insertion des entités dans la base de données.
+     */
     @Transactional
     protected void insertBdd()
     {
@@ -160,6 +170,10 @@ public class FacadeInit {
         }
     }
 
+    /**
+     * Fonction de test dummy.
+     * @return Test
+     */
     @Transactional
     public List<Projet> test()
     {
@@ -167,6 +181,13 @@ public class FacadeInit {
         return q.getResultList();
     }
 
+    /**
+     * Permet au programme d'attendre quelques millisecondes.
+     *
+     * Utile pour vérifier les requêtes OrberBy temps.
+     *
+     * @param duree Le nombre de millisecondes à attendre.
+     */
     private void attendreMillis(int duree)
     {
         try {

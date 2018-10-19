@@ -11,6 +11,7 @@ import java.util.Set;
 
 /**
  * Un message est l'objet qui est affiche dans la partie commentaire d'un projet.
+ *
  * Il est posté par les utilisateurs pour partager un message.
  * un message est aussi utilisé en réponse à un autre message.
  */
@@ -188,26 +189,26 @@ public class Message {
      */
 
     /**
-     * TODO
-     * @return
+     * Renvoie la date de création du message au format 'jj-MM-aaaa à HH:mm'
+     * @return La date de création du message au format 'jj-MM-aaaa à HH:mm'
      */
     public String getStringCreation()
     {
-        return DateService.getDateEuropeenne(this.dateCreation.getTime());
+        return DateService.getDateHumain(this.dateCreation.getTime());
     }
 
     /**
-     * TODO
-     * @return
+     * Renvoie la date de dernière modification du message au format 'jj-MM-aaaa à HH:mm'
+     * @return La date de dernière modification du message au format 'jj-MM-aaaa à HH:mm'
      */
     public String getStringModification()
     {
-        return DateService.getDateEuropeenne(this.dateModification.getTime());
+        return DateService.getDateHumain(this.dateModification.getTime());
     }
 
     /**
-     * TODO
-     * @param nouveauContenu
+     * Édite le contenu du message et le remplace par un nouveau contenu.
+     * @param nouveauContenu Le nouveau contenu du message.
      */
     public void editer(String nouveauContenu)
     {

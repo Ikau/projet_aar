@@ -7,14 +7,7 @@ import org.springframework.stereotype.Service;
 import repositories.UtilisateurRepository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.rmi.CORBA.Util;
-import javax.transaction.Transactional;
-import java.util.Base64;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
@@ -26,9 +19,6 @@ public class FacadeUtilisateur  {
      */
     @PersistenceContext
     private EntityManager em;
-
-    @Autowired
-    private CryptoService cryptoService;
 
     @Autowired
     public UtilisateurRepository repository;
@@ -96,7 +86,7 @@ public class FacadeUtilisateur  {
         }
 
         LOGGER.fine("Calcul hache {" + login + "}");
-        String mdpTest = this.cryptoService.hacheMdp(mdpClair, u.getSel());
+        String mdpTest = CryptoService.hacheMdp(mdpClair, u.getSel());
 
         if(mdpTest.equals(u.getMotdepasse()))
         {
@@ -106,17 +96,6 @@ public class FacadeUtilisateur  {
         LOGGER.info("[ERR] Mot de passe incorrecte {"+login+"} ");
         return null;
     }
-
-    /* ---------------------------
-     *           UPDATE
-     * ---------------------------
-     */
-
-
-    /* ---------------------------
-     *           DELETE
-     * ---------------------------
-     */
 
     /* ===========================================================
      *                          METHODES

@@ -9,6 +9,12 @@ import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Une catégorie est un mot-clé qui permet de décrire un projet selon un thème.
+ *
+ * Seul les utilisateurs admin peuvent ajouter de nouvelles catégories.
+ * Les utilisateurs normaux ne peuvent que choisir parmi celles déjà existantes.
+ */
 @Entity
 public class Categorie {
     /* ===========================================================

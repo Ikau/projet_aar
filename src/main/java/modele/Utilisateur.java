@@ -39,7 +39,7 @@ public class Utilisateur {
     private String login;
 
     /**
-     * Le sel utilise pour le mot de passe.
+     * Le sel aléatoire utilisé pour hacher le mot de passe.
      */
     private byte[] sel;
 

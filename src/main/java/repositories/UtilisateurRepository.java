@@ -8,6 +8,10 @@ import org.springframework.stereotype.Repository;
 public interface UtilisateurRepository extends CrudRepository<Utilisateur, Integer>
 {
 
+    /* ===========================================================
+     *                         READ
+     * ===========================================================
+     */
     /* ---------------------------
      *            READ
      * ---------------------------
