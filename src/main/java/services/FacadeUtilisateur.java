@@ -63,11 +63,14 @@ public class FacadeUtilisateur  {
      * Creer un nouvel utilisateur vierge dans la base de donnees muni d'un login et d'un mot de passe.
      * @param login Le login du nouvel utilisateur.
      * @param motdepasse Le mot de passe du nouvel utilisateur.
+     * @return L'utilisateur nouvellement créé.
      */
-    public void creer(String login, String motdepasse)
+    public Utilisateur creer(String login, String motdepasse)
     {
-        this.repository.save(new Utilisateur(login, motdepasse));
+        Utilisateur nouveau = new Utilisateur(login, motdepasse);
+        this.repository.save(nouveau);
         LOGGER.fine("(String, String)");
+        return nouveau;
     }
 
 
@@ -75,7 +78,7 @@ public class FacadeUtilisateur  {
      *            READ
      * ---------------------------
      */
-    public Utilisateur getUtilisateur(String login, String mdpClair)
+    public Utilisateur getUtilisateurAuth(String login, String mdpClair)
     {
         LOGGER.fine("Recuperation utilisateur {" + login + "}");
         Utilisateur u = this.repository.findUtilisateurByLogin(login);

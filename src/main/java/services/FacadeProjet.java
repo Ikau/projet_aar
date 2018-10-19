@@ -50,7 +50,6 @@ public class FacadeProjet {
      *            READ
      * ---------------------------
      */
-    //TODO Créer les différents getters avec les attributs dans les cas nécessaires
 
     /**
      * Renvoie tous les projets avec toutes leurs listes.
