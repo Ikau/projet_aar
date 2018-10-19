@@ -31,7 +31,7 @@
     </p></div>
 
     <div class="w3-col" style="width:60%"><p>
-        <!-- Recherche par catégorie -->
+        <%-- Recherche par catégorie --%>
         <select class="w3-select w3-border w3-text-theme" name="option">
             <option value="" disabled selected>Rechercher par catégorie</option>
             <c:forEach items="${categories}" var="c">
@@ -40,7 +40,7 @@
 
         </select>
 
-        <!-- Les 3 derniers projets -->
+        <%-- Les 3 derniers projets --%>
         <c:forEach items="${projets}" var="p">
             <div class="w3-card-4">
                 <header class="w3-container w3-theme-d3 ">
@@ -53,7 +53,7 @@
                     <div class="w3-row">
                         <div class="w3-col s9 w3-center">
                             <p><div class="w3-theme-l4">
-                                    <div class="w3-theme w3-center w3-padding" style="width:75%">Avancement du financement</div>
+                                    <div class="w3-theme w3-center w3-padding" style="width:${p.getPourcentage()}%">${p.getPourcentage()} %</div>
                             </div></p>
                         </div>
                         <div class="w3-col s3 w3-center"><p>

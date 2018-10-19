@@ -49,83 +49,75 @@
     </p></div>
 
     <div class="w3-col" style="width:60%"><p>
-        <h1> Titre Projet </h1>
-        <h4> <i class="fa fa-user-circle"></i> Porteur du projet </h4>
-        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-start"></i> date de lancement </div>
-        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-half"></i> temps restant </div>
-        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-3"></i> date de fin </div>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi faucibus massa quis dui vulputate euismod. Proin sit amet orci viverra, finibus leo ac, sagittis enim. In congue dui mauris, eget rhoncus turpis lacinia quis. Sed tincidunt tincidunt purus, eu facilisis tortor sollicitudin eget. Aenean aliquam mauris est, vel venenatis mauris porttitor quis. In euismod ligula eget scelerisque suscipit. Vestibulum hendrerit tristique leo, et pretium nisi ultrices sed. Aenean ac posuere justo. Morbi mattis justo eu maximus commodo. Donec quam sapien, eleifend quis felis a, consequat molestie orci. Integer eros erat, blandit in nibh sed, convallis faucibus sem. Fusce id porttitor sapien. Vivamus iaculis urna vel ex varius, et sodales orci rutrum. Cras sit amet porttitor lacus.
-        </p>
+        <h1>${projet.getIntitule()}</h1>
+        <p>${projet.getResume()}</p>
+        <h4> <i class="fa fa-user-circle"></i> ${projet.getPorteur().getLogin()}</h4>
+        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-start"></i> ${projet.getStringDepot()}</div>
+        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-half"></i> ${projet.getTempsRestant()}</div>
+        <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-3"></i> ${projet.getStringFin()}</div>
+
+        <p>${projet.getDescription()}</p>
 
         <p>
             <h1> Commentaires </h1>
-        <!-- -------------------UN COMMENTAIRE--------------------------------------- -->
+
+
+            <%-- ----------------------------  COMMENTAIRE  ---------------------- --%>
+            <c:forEach items="${projet.getMessagesRacines()}" var="message">
             <div class="w3-panel w3-leftbar w3-border-theme">
                 <div class="w3-text-gray">
-                    date du commentaire
+                    Envoyé le ${message.getStringCreation()}. Dernière modification le ${message.getStringModification()}
                 </div>
-                <p>Donec semper maximus quam, ultrices placerat sapien aliquet in. Aliquam in vestibulum quam, eget ultricies nulla. Sed auctor est ipsum, posuere facilisis mauris ultricies feugiat. Nulla vulputate ac mi quis varius.</p>
+                <p>
+                        ${message.getContenu()}
+                </p>
                 <!-- Bas du commentaire -->
                 <div class="w3-container w3-cell w3-text-theme">
-                   auteur
+                    ${message.getAuteur().getLogin()}
                 </div>
-                <!-- Partie réponse -->
+                <!-- Partie réponse TODO modifier dynamiquement le bouton repondre -->
                 <div class="w3-container w3-cell w3-text-theme">
-                    <a href="#" onclick="afficher('r1')">Répondre</a>
-                    <div class="reponse" id="r1" >
+                    <a href="#" onclick="afficher('r2')">Répondre</a>
+                    <div class="reponse" id="r2" >
                         <input class="w3-input" type="text"> <br>
                         <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
                         </p>
                     </div>
                 </div>
-            </div>
-        <!-- -------------------------------------------------------------------- -->
 
-
-        <div class="w3-panel w3-leftbar w3-border-theme">
-            <div class="w3-text-gray">
-                date du commentaire
-            </div>
-            <p>Donec semper maximus quam, ultrices placerat sapien aliquet in. Aliquam in vestibulum quam, eget ultricies nulla. Sed auctor est ipsum, posuere facilisis mauris ultricies feugiat. Nulla vulputate ac mi quis varius.</p>
-            <!-- Bas du commentaire -->
-            <div class="w3-container w3-cell w3-text-theme">
-                auteur
-            </div>
-            <!-- Partie réponse -->
-            <div class="w3-container w3-cell w3-text-theme">
-                <a href="#" onclick="afficher('r2')">Répondre</a>
-                <div class="reponse" id="r2" >
-                    <input class="w3-input" type="text"> <br>
-                    <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
+                <%-- ------------ REPONSES ------------ --%>
+                <c:forEach items="${message.getReponduPar()}" var="reponse">
+                <div class="w3-panel w3-leftbar w3-border-theme">
+                    <div class="w3-text-gray">
+                        Envoyé le ${reponse.getStringCreation()}. Dernière modification le ${reponse.getStringModification()}
+                    </div>
+                    <p>
+                        ${reponse.getContenu()}
                     </p>
-                </div>
-            </div>
-            <div class="w3-panel w3-leftbar w3-border-theme">
-                <div class="w3-text-gray">
-                    date du commentaire
-                </div>
-                <p>Donec semper maximus quam, ultrices placerat sapien aliquet in. Aliquam in vestibulum quam, eget ultricies nulla. Sed auctor est ipsum, posuere facilisis mauris ultricies feugiat. Nulla vulputate ac mi quis varius.</p>
-                <!-- Bas du commentaire -->
-                <div class="w3-container w3-cell w3-text-theme">
-                    auteur
-                </div>
-                <!-- Partie réponse -->
-                <div class="w3-container w3-cell w3-text-theme">
-                    <a href="#" onclick="afficher('r3')">Répondre</a>
-                    <div class="reponse" id="r3" >
-                        <input class="w3-input" type="text"> <br>
-                        <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
-                        </p>
+                    <!-- Bas du commentaire -->
+                    <div class="w3-container w3-cell w3-text-theme">
+                        ${reponse.getAuteur().getLogin()}
+                    </div>
+                    <!-- Partie réponse -->
+                    <div class="w3-container w3-cell w3-text-theme">
+                        <a href="#" onclick="afficher('r3')">Répondre</a>
+                        <div class="reponse" id="r3" >
+                            <input class="w3-input" type="text"> <br>
+                            <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
+                            </p>
+                        </div>
                     </div>
                 </div>
+                </c:forEach>
+                <%-- ---------------------------------- --%>
             </div>
-        </div>
+            </c:forEach>
+            <%-- ------------------------------------------------------------------ --%>
 
-        <br>
-        <h2>Ajouter un commentaire</h2>
-        <input class="w3-input" type="text"> <br>
-        <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
+            <br>
+            <h2>Ajouter un commentaire</h2>
+            <input class="w3-input" type="text"> <br>
+            <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
         </p>
 
 
@@ -138,22 +130,23 @@
     </p></div>
 
     <div class="w3-col" style="width:30%"><p>
-        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:75%">Avancement du financement</div></div>
+        <div>Somme récoltée : ${projet.getFinancement()} €</div>
+        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:${projet.getPourcentage()}%">${projet.getPourcentage()} %</div></div>
 
         <div class="w3-display-container" style="height:40px;">
             <div class="w3-padding w3-display-topleft">0€</div>
-            <div class="w3-padding w3-display-topright">MAX €</div>
+            <div class="w3-padding w3-display-topright">${projet.getObjectif()} €</div>
         </div>
         <h2>Saisir un Montant :</h2>
         <input class="w3-input" type="text">
         <br>
         <button class="w3-button w3-block w3-theme" type="submit" > Financer </button>
 
-        <h2>De 0€ à 10€</h2>
-        <p>Donec semper maximus quam, ultrices placerat sapien aliquet in. Aliquam in vestibulum quam, eget ultricies nulla. Sed auctor est ipsum, posuere facilisis mauris ultricies feugiat. Nulla vulputate ac mi quis varius.</p>
-
-        <h2>De 10€ à 20€</h2>
-        <p>Donec semper maximus quam, ultrices placerat sapien aliquet in. Aliquam in vestibulum quam, eget ultricies nulla. Sed auctor est ipsum, posuere facilisis mauris ultricies feugiat. Nulla vulputate ac mi quis varius.</p>
+        <c:forEach items="${projet.getPalliers()}" var="pallier">
+        <h2>${pallier.getIntitule()}</h2>
+        <div class="w3-text-gray">À partir de ${pallier.getSeuil()} €</div>
+        <p>${pallier.getDescription()}</p>
+        </c:forEach>
 
 
         </p></div>
