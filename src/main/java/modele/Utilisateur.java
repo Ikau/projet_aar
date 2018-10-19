@@ -1,13 +1,10 @@
 package modele;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import services.CryptoService;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,6 +30,8 @@ public class Utilisateur {
 
     /**
      * Le login de l'utilisateur.
+     *
+     * Le login ne peut être qu'alphanumérique et seul - et _ sont acceptés en caractères spéciaux.
      */
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$",
@@ -46,6 +45,9 @@ public class Utilisateur {
 
     /**
      * Le mot de passe hache de l'utilisateur.
+     *
+     * Le pattern RegEx s'applique au moment de la création de l'utilisateur.
+     * Le mot de passe n'est alors pas encore haché.
      */
     @NotBlank
     // 8 caracteres, 1 minuscule, 1 majuscule et 1 chiffre
@@ -55,6 +57,9 @@ public class Utilisateur {
 
     /**
      * Le niveau de privilege de l'utilisateur.
+     *
+     * On a décidé de faire prendre un bête attribut int au lieu d'utiliser la table ROLE de Spring Security.
+     * On ne voulait juste pas perdre trop de temps dessus parce que le site n'est pas supposée aller en production.
      */
     private int privilege;
 
@@ -101,10 +106,9 @@ public class Utilisateur {
     public Utilisateur(String login, String motdepasse)
     {
         // Init primaire
-        CryptoService cryptoService = new CryptoService();
         this.login      = login;
-        this.sel        = cryptoService.genereSel();
-        this.motdepasse = cryptoService.hacheMdp(motdepasse, this.sel);
+        this.sel        = CryptoService.genereSel();
+        this.motdepasse = CryptoService.hacheMdp(motdepasse, this.sel);
         this.privilege  = 0;
 
         // Init des sets
@@ -123,10 +127,9 @@ public class Utilisateur {
     public Utilisateur(String login, String motdepasse, int privilege)
     {
         // Init primaire
-        CryptoService cryptoService = new CryptoService();
         this.login      = login;
-        this.sel        = cryptoService.genereSel();
-        this.motdepasse = cryptoService.hacheMdp(motdepasse, this.sel);
+        this.sel        = CryptoService.genereSel();
+        this.motdepasse = CryptoService.hacheMdp(motdepasse, this.sel);
         this.privilege  = privilege;
 
         // Init des sets

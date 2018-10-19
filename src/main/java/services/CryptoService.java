@@ -17,23 +17,23 @@ import java.util.Base64;
  * Actuellement, il permet de generer un sel aleatoire et de hacher les mots de passe via PBKDF2-HMAC-SHA1
  */
 @Service
-public class CryptoService {
+public final class CryptoService {
 
 
     /* ===========================================================
      *                        PROPRIETES
      * ===========================================================
      */
-    private int ITERATIONS = 100; // En temps normal il en faudrait un plus grand
-    private int TAILLE_CLE = 128; // En temps normal il en faudrait un plus grand
-    private int TAILLE_SEL = 64; // En temps normal il en faudrait un plus grand
+    private static int ITERATIONS = 100; // En temps normal il en faudrait un plus grand
+    private static int TAILLE_CLE = 128; // En temps normal il en faudrait un plus grand
+    private static int TAILLE_SEL = 64; // En temps normal il en faudrait un plus grand
 
 
     /* ===========================================================
      *                         GETTERS
      * ===========================================================
      */
-    public int getTAILLE_SEL() {
+    public static int getTAILLE_SEL() {
         return TAILLE_SEL;
     }
 
@@ -44,11 +44,12 @@ public class CryptoService {
 
     /**
      * Hache le mot de passe selon un algorithme de chiffrement hache : PBKDF2-HMAC-SHA1.
+     *
      * @param mdpClair Le mot de passe en clair a hacher.
      * @param selBytes La sequence de bytes representant un sel aleatoire.
      * @return Le mot de passe hache avec le sel et une cle aleatoire.
      */
-    public String hacheMdp(String mdpClair, byte[] selBytes)
+    public static String hacheMdp(String mdpClair, byte[] selBytes)
     {
         // On va travailler sur chaque caractere
         char[] caracteres = mdpClair.toCharArray();
@@ -81,10 +82,16 @@ public class CryptoService {
         return Base64.getEncoder().encodeToString(mdpHache);
     }
 
-    public byte[] genereSel()
+    /**
+     * Génère un sel aleatoire de taille TAILLE_SEL.
+     * @return Le sel aleatoire de taille TAILLE_SEL.
+     */
+    public static byte[] genereSel()
     {
         SecureRandom random = new SecureRandom();
         byte[] sel = new byte[TAILLE_SEL];
+
+        // Met aleatoirement chaue byte à 0 ou 1
         random.nextBytes(sel);
 
         return sel;
