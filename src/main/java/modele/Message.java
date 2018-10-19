@@ -1,9 +1,12 @@
 package modele;
 
+import services.DateService;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -55,6 +58,7 @@ public class Message {
      * Ensemble des messages qui repondent au message actuel.
      */
     @OneToMany
+    @OrderBy("dateCreation")
     private Set<Message> reponduPar;
 
     /**
@@ -87,10 +91,12 @@ public class Message {
     {
         // Init primaire
         this.auteur     = auteur;
+        auteur.getMessages().add(this);
         this.projet     = projet;
+        projet.getMessagesRacines().add(this);
         this.contenu    = contenu;
         this.repondA    = null;
-        this.reponduPar = null;
+        this.reponduPar = new HashSet<>();
 
         // Modification du temps
         Timestamp maintenant  = new Timestamp(System.currentTimeMillis());
@@ -109,9 +115,11 @@ public class Message {
     {
         // Init primaire
         this.auteur     = auteur;
+        auteur.getMessages().add(this);
         this.projet     = projet;
         this.contenu    = contenu;
         this.repondA    = messageParent;
+        messageParent.getReponduPar().add(this);
         this.reponduPar = null;
 
         // Modification du temps
@@ -179,6 +187,28 @@ public class Message {
      * ===========================================================
      */
 
+    /**
+     * TODO
+     * @return
+     */
+    public String getStringCreation()
+    {
+        return DateService.getDateEuropeenne(this.dateCreation.getTime());
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public String getStringModification()
+    {
+        return DateService.getDateEuropeenne(this.dateModification.getTime());
+    }
+
+    /**
+     * TODO
+     * @param nouveauContenu
+     */
     public void editer(String nouveauContenu)
     {
         this.contenu = nouveauContenu;
