@@ -75,19 +75,26 @@ public class FacadeProjet {
      * Renvoie une liste de tous les projets avec tout sauf les financeurs.
      * @return une liste de tous les projets avec tout sauf les financeurs.
      */
-    public List<Projet> getProjetsPage()
+    public Projet getProjetById(int id)
     {
-        return this.repository.getProjetsPage();
+        Projet p = this.repository.getProjetById(id);
+        return p;
     }
-
-
-
-
 
 
     /* ===========================================================
      *                         METHODES
      * ===========================================================
      */
+
+    /**
+     * Indique si l'id correspond à un projet existant.
+     * @param id L'id à tester.
+     * @return true si le projet existe, false sinon.
+     */
+    public boolean estExistant(int id)
+    {
+        return this.repository.existsById(id);
+    }
 
 }

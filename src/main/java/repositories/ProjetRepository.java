@@ -10,8 +10,19 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
-public interface ProjetRepository extends CrudRepository<Projet, Integer> {
+public interface ProjetRepository extends CrudRepository<Projet, Integer>
+{
 
+    /* ===========================================================
+     *                         GETTERS
+     * ===========================================================
+     */
+
+
+    /* ---------------------------
+     *            LIST
+     * ---------------------------
+     */
     /**
      * Renvoie une liste de tous les projets avec toutes leurs collections.
      * @return Une liste de tous les projets avec toutes leurs collections.
@@ -29,17 +40,34 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer> {
     public List<Projet> getProjetsJoinPalliersCategories();
 
     /**
-     * Renvoie une liste de tous les projets avec tout sauf les financeurs.
-     * @return une liste de tous les projets avec tout sauf les financeurs.
-     */
-    @EntityGraph(value="join-categories-dons-messages-palliers", type=EntityGraph.EntityGraphType.FETCH)
-    @Query("select p from Projet p")
-    public List<Projet> getProjetsPage();
-
-    /**
      * Renvoie les trois derniers projets deposes.
      * @return Les trois derniers projets deposes.
      */
     @EntityGraph(value="joinCategoriesDons", type=EntityGraph.EntityGraphType.FETCH)
     public List<Projet> getFirst3ByOrderByDateDepot();
+
+
+    /* ---------------------------
+     *            UNIQUE
+     * ---------------------------
+     */
+    /**
+     * Renvoie une liste de tous les projets avec tout sauf les financeurs.
+     * @return une liste de tous les projets avec tout sauf les financeurs.
+     */
+    @EntityGraph(value="join-categories-dons-messages-palliers", type=EntityGraph.EntityGraphType.FETCH)
+    public Projet getProjetById(int id);
+
+
+    /* ===========================================================
+     *                         EXISTS
+     * ===========================================================
+     */
+
+    /**
+     * TODO doc
+     * @param id
+     * @return
+     */
+    public boolean existsById(int id);
 }
