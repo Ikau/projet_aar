@@ -3,7 +3,6 @@ package controller;
 
 import config.LoggerConfig;
 import modele.Utilisateur;
-import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,20 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import services.*;
 
 import javax.annotation.PostConstruct;
-import javax.naming.Binding;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 @Controller
-@SessionAttributes(value = "courant", types = {Utilisateur.class})
+@SessionAttributes(value = {"courant"}, types = {Utilisateur.class})
 @RequestMapping("/")
 public class MonControlleur
 {
@@ -78,35 +69,84 @@ public class MonControlleur
         LOGGER.setLevel(LoggerConfig.LEVEL);
     }
 
+    /**
+     * Enclenche le processus d'initialisation de la base de données.
+     *
+     * C'est moche mais comme on ne possède qu'un seul controlleur,
+     * c'est la façon la plus optimale d'initialiser la base de données.
+     */
     @PostConstruct
     private void init()
     {
         this.facadeInit.initBdd();
     }
 
+
     /* ===============================================================
      *                         GET_MAPPING
      * ===============================================================
      */
 
+    /**
+     * Affiche la page d'accueil où figurent les trois derniers projets déposés.
+     *
+     * @param model Le model de la session.
+     * @return La page d'accueil où figurent les trois derniers projets déposés.
+     */
     @RequestMapping(value="/")
     public String root(Model model) {
         model.addAttribute("projets", this.facadeProjet.getTroisDerniersProjets());
         model.addAttribute("categories", this.facadeCategorie.getCategories());
+        LOGGER.fine("[OK] return 'accueil'");
         return "accueil";
     }
 
-    @RequestMapping(value="/connexion")
-    public String co(Model model) {
-        model.addAttribute("courant", new Utilisateur());
+    /**
+     * Affiche la page de connexion.
+     *
+     * @param model Le model de la session.
+     * @return La page de connexion.
+     */
+    @GetMapping(value="/connexion")
+    public String co(Model model)
+    {
+        if(!model.containsAttribute("courant"))
+        {
+            model.addAttribute("courant", new Utilisateur());
+        }
+        LOGGER.fine("[OK] return 'connexion'");
         return "connexion";
     }
+
+    /**
+     * Déconnecte l'utilisateur et purge la session puis redirige vers la page d'accueil.
+     *
+     * S'il ny a pas d'utilisateur courant, redirige immédiatement vers la page d'accueil.
+     *
+     * @param status L'interface permettant de gérer le statut de la session.
+     * @param model Le model de la session.
+     * @return La page d'accueil.
+     */
     @RequestMapping(value="/deconnexion")
     public String deco(SessionStatus status, Model model) {
+        Utilisateur u = (Utilisateur) model.asMap().get("courant");
+        if(u==null)
+        {
+            LOGGER.fine("[ERR] Pas d'utilisateur courant -> 'accueil'");
+            return "redirect:/";
+        }
+
+        LOGGER.info("[OK] Deconnexion de l'utilisateur {"+u.getLogin()+"}");
         status.setComplete();
         return "redirect:/";
     }
 
+    /**
+     * Affiche le formulaire d'inscription d'un nouvel utilisateur.
+     *
+     * @param model Le model de la session.
+     * @return Le formulaire d'inscription d'un nouvel utilisateur.
+     */
     @RequestMapping(value="/inscription")
     public String insc(Model model) {
         if(!model.containsAttribute("courant"))
@@ -122,23 +162,20 @@ public class MonControlleur
      *
      * Renvoie sur la page d'accueil en cas d'erreur.
      *
-     * @param projetId L'ID du projet que l'on souhaite afficher.
+     * @param id L'ID du projet que l'on souhaite afficher.
      * @param model Le model de la session.
      * @return La page du projet si l'ID est correct, la page d'accueil sinon.
      */
-    @GetMapping(value="/projets/{projetId}")
-    public String projetId(@PathVariable int projetId, Model model) {
-        if(this.facadeProjet.estExistant(projetId))
+    @GetMapping(value="/projets/{id}")
+    public String projetId(@PathVariable int id, Model model) {
+        if(this.facadeProjet.estExistant(id))
         {
-            //model.addAttribute("messagesRacines", this.facadeMessage.getMessagesDuProjet(projetId));
-            //model.addAttribute("palliers", this.facadePallier.getPalliersDeProjet(projetId));
-            model.addAttribute("projet", this.facadeProjet.getProjetById(projetId));
+            model.addAttribute("projet", this.facadeProjet.getProjetById(id));
+            LOGGER.info("[OK] Affichage du projet {"+id+"}");
             return "projet";
         }
-        else
-        {
-            return "redirect:/";
-        }
+        LOGGER.fine("[ERR] ID de projet invalide -> 'accueil'");
+        return "redirect:/";
     }
 
     @RequestMapping(value="/prof")
@@ -160,7 +197,6 @@ public class MonControlleur
     @GetMapping(value="/test")
     public String test(Model model)
     {
-        model.addAttribute("projets", this.facadeProjet.getProjets());
         LOGGER.fine("[OK] return 'test'");
         return "test";
     }
@@ -215,28 +251,29 @@ public class MonControlleur
      * Si succès : renvoie à la page d'accueil de l'espace membre.
      * Sinon renvoie à la page de connexion avec l'erreur de connexion.
      *
-     * @param utilisateur Les données de l'utilisateur issu du formulaire de connexion.
+     * @param courant Les données de l'utilisateur issu du formulaire de connexion.
      * @param redicAttr Les attributs à rediriger avec la vue.
      * @param result La validation issue de la liaison avec les données du formulaire.
      * @param model Le model de la session.
      * @return Si succès espace membre, sinon page inscription
      */
     @PostMapping("/connexion")
-    public String connexion(Utilisateur utilisateur, RedirectAttributes redicAttr, BindingResult result, Model model)
+    public String connexion(@ModelAttribute("courant") Utilisateur courant,
+                            RedirectAttributes redicAttr, BindingResult result, Model model)
     {
-        if(this.facadeUtilisateur.estExistant(utilisateur.getLogin()))
+        if(this.facadeUtilisateur.estExistant(courant.getLogin()))
         {
-            Utilisateur uTemp = this.facadeUtilisateur.getUtilisateur(utilisateur.getLogin(), utilisateur.getMotdepasse());
-            if(uTemp != null)
+            Utilisateur uAuthentifie = this.facadeUtilisateur.getUtilisateur(courant.getLogin(), courant.getMotdepasse());
+            if(uAuthentifie != null)
             {
-                //TODO Ajout dans la session ?
-                //model.addAttribute("courant", uTemp);
-                LOGGER.info("[OK] Utilisateur ["+utilisateur.getLogin()+"] connecte");
+                model.addAttribute("courant", uAuthentifie);
+                LOGGER.info("[OK] Utilisateur ["+uAuthentifie.getLogin()+"] connecte");
                 return "redirect:/";
             }
         }
 
-        //TODO this.persistError(redicAttr, result, "NOMBINDING", utilisateur);
+        result.addError(new ObjectError("courant", "Les informations ne correspondent pas"));
+        this.persistError(redicAttr, result, "courant", courant);
         LOGGER.info("[ERR] Connexion echouee");
         return("redirect:/connexion");
     }

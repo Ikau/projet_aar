@@ -26,10 +26,12 @@
         <form:form class="w3-container" action="/connexion" method="post" modelAttribute="courant">
 
         <label> Login</label>
-            <form:input class="w3-input" type="text" path="login"/><form:errors path="login" cssStyle="color:red;"/>
+            <form:input class="w3-input" type="text" path="login"/>
         <br>
         <label> Mot de passe</label>
-            <form:input class="w3-input" type="password" path="motdepasse"/> <form:errors path="motdepasse" cssStyle="color:red;"/>
+            <form:input class="w3-input" type="password" path="motdepasse"/>
+        <br>
+        <form:errors cssStyle="color:red;" />
         <br>
         <br>
             <div class="w3-display-container">
