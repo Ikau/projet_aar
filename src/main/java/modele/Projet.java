@@ -1,14 +1,20 @@
 package modele;
 
+import services.DateService;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ */
 @Entity
 @NamedEntityGraphs({
         @NamedEntityGraph(name="joinAll", attributeNodes = {
+                @NamedAttributeNode("porteur"),
                 @NamedAttributeNode("palliers"),
                 @NamedAttributeNode("categories"),
                 @NamedAttributeNode("financeurs"),
@@ -19,29 +25,45 @@ import java.util.Set;
                 @NamedAttributeNode("categories"),
                 @NamedAttributeNode("dons")
         }),
-        @NamedEntityGraph(name="join-categories-dons-messages-palliers", attributeNodes = {
-                @NamedAttributeNode("categories"),
-                @NamedAttributeNode("dons"),
-                @NamedAttributeNode("messagesRacines"),
-                @NamedAttributeNode("palliers")
-        }),
+        @NamedEntityGraph(name="join-categories-dons-messages-palliers",
+                attributeNodes = {
+                    @NamedAttributeNode("porteur"),
+                    @NamedAttributeNode("categories"),
+                    @NamedAttributeNode("dons"),
+                    @NamedAttributeNode("palliers"),
+                    @NamedAttributeNode(value = "messagesRacines", subgraph = "messagesAvecReponses")
+                },
+                subgraphs = {
+                    @NamedSubgraph( name = "messagesAvecReponses", attributeNodes = {
+                            @NamedAttributeNode("reponduPar"),
+                            @NamedAttributeNode("auteur")
+                    })
+                }
+        ),
         @NamedEntityGraph(name="joinPalliersCategories", attributeNodes = {
                 @NamedAttributeNode("palliers"),
                 @NamedAttributeNode("categories")
         })
 })
 public class Projet {
+
     /* ===========================================================
      *                         PROPRIETES
      * ===========================================================
      */
 
     /**
-     * ID utilisé par Hibernate
+     * ID utilisé par Hibernate.
      */
     @Id
     @GeneratedValue
     private int id;
+
+    /**
+     * L'utilisateur qui a déposé le projet.
+     */
+    @ManyToOne
+    private Utilisateur porteur;
 
     /**
      * Intitule du projet.
@@ -86,6 +108,7 @@ public class Projet {
      * Ensemble des palliers du projet.
      */
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("seuil")
     private Set<Pallier> palliers;
 
     /**
@@ -105,6 +128,7 @@ public class Projet {
      * Les reponses de ces messages ne sont pas compris dans cet ensemble.
      */
     @OneToMany
+    @OrderBy("dateCreation")
     private Set<Message> messagesRacines;
 
     /* ===========================================================
@@ -124,9 +148,10 @@ public class Projet {
      * @param description Une description detaillee du projet.
      * @param dateFin La date limite du financement.
      */
-    public Projet(String intitule, String resume, String description, int objectif, Timestamp dateFin)
+    public Projet(Utilisateur porteur, String intitule, String resume, String description, int objectif, Timestamp dateFin)
     {
         // Init primaires
+        this.porteur     = porteur;
         this.intitule    = intitule;
         this.resume      = resume;
         this.description = description;
@@ -149,6 +174,10 @@ public class Projet {
 
     public int getId() {
         return id;
+    }
+
+    public Utilisateur getPorteur() {
+        return porteur;
     }
 
     public String getIntitule() {
@@ -195,6 +224,7 @@ public class Projet {
         return messagesRacines;
     }
 
+
     /* ===========================================================
      *                           SETTERS
      * ===========================================================
@@ -222,6 +252,20 @@ public class Projet {
      */
 
     /**
+     * TODO
+     * @return
+     */
+    public long getFinancement()
+    {
+        long somme = 0;
+        for(Don d : this.dons)
+        {
+            somme += d.getMontant();
+        }
+        return somme;
+    }
+
+    /**
      * Retourne l'avancement du projet en pourcentages.
      *
      * Le pourcentage est au minimum 0 % mais n'a pas de limite supérieure.
@@ -229,11 +273,44 @@ public class Projet {
      */
     public double getPourcentage()
     {
-        double somme = 0.0;
-        for(Don d : this.dons)
-        {
-            somme += d.getMontant();
-        }
-        return (100 * somme / this.objectif);
+        double somme = (double)this.getFinancement();
+        return (100.0 * somme / (double)this.objectif);
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public String getTempsRestant()
+    {
+        return DateService.getTempsRestant(this.getMillisecondesRestantes());
+    }
+
+
+    /**
+     * Renvoie le nombre de millisecondes restantes avant la fin du financement.
+     * @return Le nombre de millisecondes restantes avant la fin du financement.
+     */
+    public long getMillisecondesRestantes()
+    {
+        return (this.dateFin.getTime() - this.dateDepot.getTime());
+    }
+
+    /**
+     * Renvoie La date de dépot du projet sous forme d'un string.
+     * @return La date de dépot du projet sous forme d'un string.
+     */
+    public String getStringDepot()
+    {
+        return DateService.getDateEuropeenne(this.dateDepot.getTime());
+    }
+
+    /**
+     * Renvoie la date de fin du projet sous forme d'un string.
+     * @return La date de fin du projet sous forme d'un string.
+     */
+    public String getStringFin()
+    {
+        return DateService.getDateEuropeenne(this.dateFin.getTime());
     }
 }
