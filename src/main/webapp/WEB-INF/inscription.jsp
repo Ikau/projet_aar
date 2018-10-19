@@ -25,7 +25,8 @@
 
     <div class="w3-col" style="width:50%">
         <p>
-        <form:form class="w3-container" action="/inscription" method="post" modelAttribute="courant">
+        <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
+        <form:form class="w3-container" action="/inscription" method="post" modelAttribute="utilisateurTemp">
 
             <label> Login</label>
             <form:input class="w3-input" type="text" path="login"/><form:errors path="login" cssStyle="color:red;"/>

@@ -23,15 +23,16 @@
     </p></div>
 
     <div class="w3-col" style="width:50%"><p>
-        <form:form class="w3-container" action="/connexion" method="post" modelAttribute="courant">
+        <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
+        <form:form class="w3-container" action="/connexion" method="post" modelAttribute="utilisateurTemp">
 
-        <label> Login</label>
+            <label> Login</label>
             <form:input class="w3-input" type="text" path="login"/>
         <br>
-        <label> Mot de passe</label>
+            <label> Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/>
         <br>
-        <form:errors cssStyle="color:red;" />
+            <form:errors path="login" cssStyle="color:red;" />
         <br>
         <br>
             <div class="w3-display-container">

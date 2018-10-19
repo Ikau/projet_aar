@@ -20,7 +20,10 @@ import java.util.logging.Logger;
 
 
 @Controller
-@SessionAttributes(value = {"courant"}, types = {Utilisateur.class})
+@SessionAttributes(
+        names={"courant", "auth"},
+        types={Utilisateur.class, Boolean.class}
+)
 @RequestMapping("/")
 public class MonControlleur
 {
@@ -104,16 +107,21 @@ public class MonControlleur
     /**
      * Affiche la page de connexion.
      *
+     * La fonction redirige vers l'accueil si le membre est déjà authentifié.
+     *
      * @param model Le model de la session.
      * @return La page de connexion.
      */
     @GetMapping(value="/connexion")
     public String co(Model model)
     {
-        if(!model.containsAttribute("courant"))
+        if(model.containsAttribute("auth"))
         {
-            model.addAttribute("courant", new Utilisateur());
+            LOGGER.fine("[OK] Utilisateur déjà authentitifé -> 'accueil'");
+            return "redirect:/";
         }
+
+        model.addAttribute("utilisateurTemp", new Utilisateur());
         LOGGER.fine("[OK] return 'connexion'");
         return "connexion";
     }
@@ -129,14 +137,14 @@ public class MonControlleur
      */
     @RequestMapping(value="/deconnexion")
     public String deco(SessionStatus status, Model model) {
-        Utilisateur u = (Utilisateur) model.asMap().get("courant");
-        if(u==null)
+        if(!model.containsAttribute("auth"))
         {
             LOGGER.fine("[ERR] Pas d'utilisateur courant -> 'accueil'");
             return "redirect:/";
         }
 
-        LOGGER.info("[OK] Deconnexion de l'utilisateur {"+u.getLogin()+"}");
+        String uLogin = ((Utilisateur) model.asMap().get("courant")).getLogin();
+        LOGGER.info("[OK] Deconnexion de l'utilisateur {"+uLogin+"}");
         status.setComplete();
         return "redirect:/";
     }
@@ -148,11 +156,9 @@ public class MonControlleur
      * @return Le formulaire d'inscription d'un nouvel utilisateur.
      */
     @RequestMapping(value="/inscription")
-    public String insc(Model model) {
-        if(!model.containsAttribute("courant"))
-        {
-           model.addAttribute("courant", new Utilisateur());
-        }
+    public String insc(Model model)
+    {
+        model.addAttribute("utilisateurTemp", new Utilisateur());
         LOGGER.fine("[OK] return 'inscription'");
         return "inscription";
     }
@@ -178,8 +184,9 @@ public class MonControlleur
         return "redirect:/";
     }
 
-    @RequestMapping(value="/prof")
-    public String prof() {
+    @RequestMapping(value="/profils/{id}")
+    public String profileId(@PathVariable int id, Model model)
+    {
 
         return "profil";
     }
@@ -213,35 +220,35 @@ public class MonControlleur
      * Si l'utilisateur existe déjà alors il renvoie l'utilisateur sur la page d'inscription avec un message d'erreur.
      * Sinon, renvoie le membre dans la page membre.
      *
-     * @param courant Utilisation deduit du formulaire d'inscription.
+     * @param temp Utilisation deduit du formulaire d'inscription.
      * @param model Le model de la session.
      * @param result Valideur de l'objet obtenu en liaison.
      * @param redicAttr Les attributs à rediriger avec le retour de la fonction.
      * @return Page d'accueil si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/inscription")
-    public String inscription(@ModelAttribute("courant") @Valid Utilisateur courant,
+    public String inscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp,
                               BindingResult result, RedirectAttributes redicAttr, Model model)
     {
-        if(!this.facadeUtilisateur.estExistant(courant.getLogin()))
+        if(!this.facadeUtilisateur.estExistant(temp.getLogin()))
         {
             // On recupere toutes les erreurs d'un coup (user-experience)
-            if (result.hasErrors()) {
-                this.persistError(redicAttr, result, "courant", courant);
+            if (result.hasErrors())
+            {
                 LOGGER.info("[ERR] " + result.getFieldError().getDefaultMessage());
-                return "redirect:/inscription";
+                return "inscription";
             }
 
-            this.facadeUtilisateur.creer(courant.getLogin(), courant.getMotdepasse());
-            LOGGER.info("[OK] Nouvel utilisateur {"+courant.getLogin()+"}");
+            Utilisateur nouveau = this.facadeUtilisateur.creer(temp.getLogin(), temp.getMotdepasse());
+            model.addAttribute("courant", nouveau);
+            model.addAttribute("auth", true);
+            LOGGER.info("[OK] Nouvel utilisateur {"+nouveau.getLogin()+"}");
             return "redirect:/";
         }
         else
         {
-            result.addError(new FieldError("courant", "login", "L'identifiant est déjà utilisé."));
-            this.persistError(redicAttr, result, "courant", courant);
-            LOGGER.info("[ERR] Utilisateur deja existant");
-            return "redirect:/inscription";
+            result.addError(new FieldError("utilisateurTemp", "login", "L'identifiant est déjà utilisé."));
+            return "inscription";
         }
     }
 
@@ -251,31 +258,31 @@ public class MonControlleur
      * Si succès : renvoie à la page d'accueil de l'espace membre.
      * Sinon renvoie à la page de connexion avec l'erreur de connexion.
      *
-     * @param courant Les données de l'utilisateur issu du formulaire de connexion.
+     * @param temp Les données de l'utilisateur issu du formulaire de connexion.
      * @param redicAttr Les attributs à rediriger avec la vue.
      * @param result La validation issue de la liaison avec les données du formulaire.
      * @param model Le model de la session.
      * @return Si succès espace membre, sinon page inscription
      */
     @PostMapping("/connexion")
-    public String connexion(@ModelAttribute("courant") Utilisateur courant,
+    public String connexion(@ModelAttribute("utilisateurTemp") Utilisateur temp,
                             RedirectAttributes redicAttr, BindingResult result, Model model)
     {
-        if(this.facadeUtilisateur.estExistant(courant.getLogin()))
+        if(this.facadeUtilisateur.estExistant(temp.getLogin()))
         {
-            Utilisateur uAuthentifie = this.facadeUtilisateur.getUtilisateur(courant.getLogin(), courant.getMotdepasse());
+            Utilisateur uAuthentifie = this.facadeUtilisateur.getUtilisateurAuth(temp.getLogin(), temp.getMotdepasse());
             if(uAuthentifie != null)
             {
                 model.addAttribute("courant", uAuthentifie);
-                LOGGER.info("[OK] Utilisateur ["+uAuthentifie.getLogin()+"] connecte");
+                model.addAttribute("auth", true);
+                LOGGER.info("[OK] Utilisateur {"+uAuthentifie.getLogin()+"} connecte");
                 return "redirect:/";
             }
         }
 
-        result.addError(new ObjectError("courant", "Les informations ne correspondent pas"));
-        this.persistError(redicAttr, result, "courant", courant);
+        result.addError(new FieldError("utilisateurTemp", "login", "Les informations ne correspondent pas"));
         LOGGER.info("[ERR] Connexion echouee");
-        return("redirect:/connexion");
+        return("connexion");
     }
 
     //TODO finir la réponse de message
@@ -303,6 +310,18 @@ public class MonControlleur
     {
         redicAttr.addFlashAttribute("org.springframework.validation.BindingResult."+nomVar, result);
         redicAttr.addFlashAttribute(nomVar, var);
+    }
+
+    /**
+     * Indique si la session est authentifiée ou non.
+     * @param model Le model de la session.
+     * @return true si la session est authentifiee, false sinon.
+     */
+    private boolean estConnecte(Model model)
+    {
+        if(model.containsAttribute("auth")) return true;
+        LOGGER.info("[ERR] Session non authentifiee");
+        return false;
     }
 
 }
