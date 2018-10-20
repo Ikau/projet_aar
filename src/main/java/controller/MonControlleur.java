@@ -292,6 +292,32 @@ public class MonControlleur
         return "redirect:/projets/"+projetId;
     }
 
+    @GetMapping("/changermdp")
+    public String changerMdp()
+    {
+        return "changermdp";
+    }
+
+    @GetMapping("/changerlogin")
+    public String changerLogin()
+    {
+        return "changerlogin";
+    }
+
+    @PostMapping("/changermdp")
+    public String changerMdpPost()
+    {
+        return "changermdp";
+    }
+
+    @PostMapping("/changerlogin")
+    public String changerLoginPost()
+    {
+        return "changerlogin";
+    }
+
+
+
 
     /* ===============================================================
      *                           METHODS

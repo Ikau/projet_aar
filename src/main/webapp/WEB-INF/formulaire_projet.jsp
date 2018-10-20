@@ -9,14 +9,23 @@
 
 <SCRIPT LANGUAGE="JavaScript">
 
+    var com = 1;
+
     function ajouter() {
+
 // pour ajouter une compensation
+        var bigDiv = document.createElement('div');
+        bigDiv.className = "w3-container";
+        com = com +1;
+        bigDiv.id = com;
+
         var boutton = document.getElementById('addC');
         var newdiv = document.createElement('div');
         newdiv.className = "w3-container w3-cell";
         var text = document.createTextNode('De');
         newdiv.appendChild(text);
-        document.getElementById('form1').insertBefore(newdiv,boutton);
+        bigDiv.appendChild(newdiv)
+        //document.getElementById('form1').insertBefore(newdiv,boutton);
 
         var newdiv2 = document.createElement('div');
         newdiv2.className = "w3-container w3-cell";
@@ -24,13 +33,15 @@
         inp.type='number';
         inp.className = "w3-input";
         newdiv2.appendChild(inp);
-        document.getElementById('form1').insertBefore(newdiv2,boutton);
+        bigDiv.appendChild(newdiv2)
+        //document.getElementById('form1').insertBefore(newdiv2,boutton);
 
         var newdiv3 = document.createElement('div');
         newdiv3.className = "w3-container w3-cell";
         var text2 = document.createTextNode('à');
         newdiv3.appendChild(text2);
-        document.getElementById('form1').insertBefore(newdiv3,boutton);
+        bigDiv.appendChild(newdiv3)
+        //document.getElementById('form1').insertBefore(newdiv3,boutton);
 
         var newdiv4 = document.createElement('div');
         var inp3 = document.createElement('input');
@@ -38,13 +49,15 @@
         inp3.className = "w3-input";
         newdiv4.className = "w3-container w3-cell";
         newdiv4.appendChild(inp3);
-        document.getElementById('form1').insertBefore(newdiv4,boutton);
+        bigDiv.appendChild(newdiv4)
+        //document.getElementById('form1').insertBefore(newdiv4,boutton);
 
         var newdiv5 = document.createElement('div');
         newdiv5.className = "w3-container w3-cell";
         var text3 = document.createTextNode('Description de la compensation :');
         newdiv5.appendChild(text3);
-        document.getElementById('form1').insertBefore(newdiv5,boutton);
+        bigDiv.appendChild(newdiv5)
+        //document.getElementById('form1').insertBefore(newdiv5,boutton);
 
         var newdiv6 = document.createElement('div');
         newdiv6.className = "w3-container w3-cell";
@@ -52,11 +65,17 @@
         inp2.type='text';
         inp2.className = "w3-input";
         newdiv6.appendChild(inp2);
-        document.getElementById('form1').insertBefore(newdiv6,boutton);
+        bigDiv.appendChild(newdiv6);
+        bigDiv.appendChild(document.createElement('br'));
+        bigDiv.appendChild(document.createElement('br'));
+        document.getElementById('compensation').insertBefore(bigDiv,boutton);
 
+    }
 
-        document.getElementById('form1').insertBefore(document.createElement('br'),boutton);
-        document.getElementById('form1').insertBefore(document.createElement('br'),boutton);
+    function enlever(){
+        var div = document.getElementById(com);
+        document.getElementById('compensation').removeChild(div);
+        com =com-1;
 
     }
 
@@ -116,18 +135,30 @@
             <input class="w3-input w3-animate-input" type="number">
             <br>
             <br>
-        <label>Compensations (en €)</label>
-        <br>
-            <div class="w3-container w3-cell">De </div>
-            <div class="w3-container w3-cell"><input class="w3-input" type="number"></div>
-            <div class="w3-container w3-cell"> à </div>
-            <div class="w3-container w3-cell"><input class="w3-input" type="number" ></div>
-            <div class="w3-container w3-cell"> Description de la compensation : </div>
-            <div class="w3-container w3-cell"><input class="w3-input" type="text"></div>
-            <br>
-            <br>
+            <div id="compensation">
+                <label>Compensations (en €)</label>
+                <br>
+                <div class="w3-container" id="1">
+                    <div class="w3-container w3-cell">De </div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="number"></div>
+                    <div class="w3-container w3-cell"> à </div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="number" ></div>
+                    <div class="w3-container w3-cell"> Description de la compensation : </div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="text"></div>
+                    <br>
+                    <br>
+                </div>
+
+
             <div id="addC" class="w3-display-container">
                 <div class="w3-display-middle"><input  type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Rajouter une compensation" onclick="ajouter()"/></div>
+            </div>
+            <br>
+            <br>
+            <div class="w3-display-container">
+                <div class="w3-display-middle"><input  type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Enlever une compensation" onclick="enlever()"/></div>
+            </div>
+
             </div>
 
             <br>

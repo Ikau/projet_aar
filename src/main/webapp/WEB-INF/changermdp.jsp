@@ -10,12 +10,20 @@
 <body>
 
 <!--- Barre de navigation -->
-
+<% if (session.getAttribute("auth") != null) { %>
+<div class="w3-bar w3-theme-dark">
+    <a href="/" class="w3-bar-item w3-button">Home</a>
+    <a href="/profils/${courant.getId()}" class="w3-bar-item w3-button">Mon profil</a>
+    <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
+    <a href="/deconnexion" class="w3-bar-item w3-button">Se déconnecter</a>
+</div>
+<% } else { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
     <a href="/connexion" class="w3-bar-item w3-button">Se connecter</a>
     <a href="/inscription" class="w3-bar-item w3-button">S'inscrire</a>
 </div>
+<% } %>
 
 
 <div class="w3-row">
@@ -24,23 +32,20 @@
 
     <div class="w3-col" style="width:50%"><p>
         <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
-        <form:form class="w3-container" action="/connexion" method="post" modelAttribute="utilisateurTemp">
+        <form:form class="w3-container" action="/changermdp" method="post" modelAttribute="utilisateurTemp">
 
-            <label> Login</label>
-            <form:input class="w3-input" type="text" path="login"/>
-        <br>
-            <label> Mot de passe</label>
+        <label> Nouveau Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/>
-            <form:errors path="motdepasse" cssStyle="color:red;" />
+            <form:errors path="login" cssStyle="color:red;" />
         <br>
         <br>
-            <div class="w3-display-container">
-                <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Connexion"/></div>
-            </div>
+        <div class="w3-display-container">
+            <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Envoyer"/></div>
+        </div>
         </form:form>
 
 
-    </p></div>
+        </p></div>
 
 
     <div class="w3-col" style="width:25%"><p>
