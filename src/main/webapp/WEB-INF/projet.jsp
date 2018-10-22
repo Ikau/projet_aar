@@ -76,10 +76,10 @@
                     ${message.getAuteur().getLogin()}
                 </div>
                 <!-- Partie réponse TODO modifier dynamiquement le bouton repondre -->
-                <div class="w3-container w3-cell w3-text-theme">
+                <div class="w3-container w3-cell w3-text-theme" style="width: 100%">
                     <a href="#" onclick="afficher('r2')">Répondre</a>
                     <div class="reponse" id="r2" >
-                        <input class="w3-input" type="text"> <br>
+                        <textarea class="w3-input" type="text" style="resize:none"></textarea> <br>
                         <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
                         </p>
                     </div>
@@ -99,10 +99,10 @@
                         ${reponse.getAuteur().getLogin()}
                     </div>
                     <!-- Partie réponse -->
-                    <div class="w3-container w3-cell w3-text-theme">
+                    <div class="w3-container w3-cell w3-text-theme"style="width: 100%">
                         <a href="#" onclick="afficher('r3')">Répondre</a>
                         <div class="reponse" id="r3" >
-                            <input class="w3-input" type="text"> <br>
+                            <textarea class="w3-input" type="text" style="resize:none"></textarea>  <br>
                             <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
                             </p>
                         </div>
@@ -116,7 +116,7 @@
 
             <br>
             <h2>Ajouter un commentaire</h2>
-            <input class="w3-input" type="text"> <br>
+            <textarea class="w3-input" type="text" style="resize:none"></textarea>  <br>
             <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
         </p>
 

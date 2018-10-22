@@ -61,9 +61,10 @@
 
         var newdiv6 = document.createElement('div');
         newdiv6.className = "w3-container w3-cell";
-        var inp2 = document.createElement('input');
+        var inp2 = document.createElement('textarea');
         inp2.type='text';
         inp2.className = "w3-input";
+        newdiv6.style="width: 50%";
         newdiv6.appendChild(inp2);
         bigDiv.appendChild(newdiv6);
         bigDiv.appendChild(document.createElement('br'));
@@ -115,10 +116,10 @@
             <input class="w3-input w3-animate-input" type="text">
             <br>
             <label>Résumé</label>
-            <input class="w3-input w3-animate-input" type="text">
+            <textarea class="w3-input w3-animate-input" type="text"> </textarea>
             <br>
             <label>Description</label>
-            <input class="w3-input w3-animate-input" type="text">
+            <textarea class="w3-input w3-animate-input" type="text"> </textarea>
             <br>
             <label>Date de fin</label>
             <input class="w3-input w3-animate-input" type="date">
@@ -144,7 +145,7 @@
                     <div class="w3-container w3-cell"> à </div>
                     <div class="w3-container w3-cell"><input class="w3-input" type="number" ></div>
                     <div class="w3-container w3-cell"> Description de la compensation : </div>
-                    <div class="w3-container w3-cell"><input class="w3-input" type="text"></div>
+                    <div class="w3-container w3-cell" style="width: 50%"><textarea class="w3-input w3-animate-input" type="text"> </textarea></div>
                     <br>
                     <br>
                 </div>
