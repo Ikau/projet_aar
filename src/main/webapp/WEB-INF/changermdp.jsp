@@ -32,11 +32,11 @@
 
     <div class="w3-col" style="width:50%"><p>
         <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
-        <form:form class="w3-container" action="/changermdp" method="post" modelAttribute="utilisateurTemp">
+        <form:form class="w3-container" action="/profils/${courant.getId()}/motdepasse" method="post" modelAttribute="utilisateurTemp">
 
         <label> Nouveau Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/>
-            <form:errors path="login" cssStyle="color:red;" />
+            <form:errors path="motdepasse" cssStyle="color:red;" />
         <br>
         <br>
         <div class="w3-display-container">

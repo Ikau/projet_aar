@@ -34,9 +34,9 @@
     <div class="w3-col" style="width:60%"><p>
          <h1> <i class="fa fa-user-circle"></i> ${courant.getLogin()}</h1>
         <br>
-        <h3><i class="fa fa-pencil"></i> <a href="/changerlogin">Changer mon Login</a></h3>
+        <h3><i class="fa fa-pencil"></i> <a href="/profils/${courant.getId()}/login">Changer mon Login</a></h3>
         <br>
-        <h3><i class="fa fa-lock"></i> <a href="/changermdp">Changer mon mot de passe</a></h3>
+        <h3><i class="fa fa-lock"></i> <a href="/profils/${courant.getId()}/motdepasse">Changer mon mot de passe</a></h3>
         <br>
         <br>
         <br>

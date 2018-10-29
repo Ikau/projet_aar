@@ -32,7 +32,7 @@
 
     <div class="w3-col" style="width:50%"><p>
         <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
-        <form:form class="w3-container" action="/changerlogin" method="post" modelAttribute="utilisateurTemp">
+        <form:form class="w3-container" action="/profils/${courant.getId()}/login" method="post" modelAttribute="utilisateurTemp">
 
         <label> Changer de Login</label>
             <form:input class="w3-input" type="text" path="login"/>
