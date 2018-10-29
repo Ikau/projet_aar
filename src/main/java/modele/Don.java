@@ -2,6 +2,7 @@ package modele;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.sql.Timestamp;
 
 /**
  * Un don est un versement qu'a effectué un utilisateur pour financer un projet.
@@ -9,6 +10,9 @@ import javax.validation.constraints.Min;
  * Chaque utilisateur ne possède qu'un seul don par projet, qui est incrémenté au fur et à mesure des dons.
  */
 @Entity
+@NamedEntityGraphs({
+        @NamedEntityGraph(name="fetch-palliers-projet")
+})
 public class Don {
     /* ===========================================================
      *                         PROPRIETES
@@ -29,16 +33,26 @@ public class Don {
     private int montant;
 
     /**
-     * Le pallier que ce don permet d'obtenir.
+     * Le projet que ce don soutient.
      */
     @ManyToOne
-    private Pallier pallierAssocie;
+    private Projet projetSoutenu;
 
     /**
      * L'utilisateur qui a verse le don.
      */
     @ManyToOne
     private Utilisateur financeur;
+
+    /**
+     * Date du premier version.
+     */
+    private Timestamp dateCreation;
+
+    /**
+     * Date de dernière modification du don.
+     */
+    private Timestamp dateModification;
 
 
     /* ===========================================================
@@ -53,26 +67,21 @@ public class Don {
     /**
      * Creer un nouveau don sans pallier en lui associant financeur et un montant.
      * @param financeur L'utilisateur qui a verse le don.
+     * @param projet Le projet soutenu par le don.
      * @param montant Le montant du don.
      */
-    public Don(Utilisateur financeur, int montant)
+    public Don(Utilisateur financeur, Projet projet, int montant)
     {
-        this.montant        = montant;
-        this.pallierAssocie = null;
-        this.financeur      = financeur;
-    }
+        this.montant          = montant;
+        this.financeur        = financeur;
+        this.financeur.getDons().add(this);
+        this.projetSoutenu    = projet;
+        projet.getDons().add(this);
 
-    /**
-     * Creer un nouveau don en lui associant un financeur, un pallier et un montant.
-     * @param financeur L'utilisateur qui a verse le don.
-     * @param pallier Le pallier d'un projet que ce don permet d'obtenir.
-     * @param montant Le montant du don.
-     */
-    public Don(Utilisateur financeur, Pallier pallier, int montant)
-    {
-        this.montant        = montant;
-        this.pallierAssocie = pallier;
-        this.financeur      = financeur;
+        // Sauvegarde de la date
+        Timestamp maintenant  = new Timestamp(System.currentTimeMillis());
+        this.dateModification = maintenant;
+        this.dateCreation     = maintenant;
     }
 
     /* ===========================================================
@@ -88,12 +97,20 @@ public class Don {
         return montant;
     }
 
-    public Pallier getPallierAssocie() {
-        return pallierAssocie;
+    public Projet getProjetSoutenu() {
+        return projetSoutenu;
     }
 
     public Utilisateur getFinanceur() {
         return financeur;
+    }
+
+    public Timestamp getDateCreation() {
+        return dateCreation;
+    }
+
+    public Timestamp getDateModification() {
+        return dateModification;
     }
 
     /* ===========================================================
@@ -105,12 +122,13 @@ public class Don {
         this.montant = montant;
     }
 
-    public void setPallierAssocie(Pallier pallierAssocie) {
-        this.pallierAssocie = pallierAssocie;
-    }
 
     public void setFinanceur(Utilisateur financeur) {
         this.financeur = financeur;
+    }
+
+    public void setDateModification(Timestamp dateModification) {
+        this.dateModification = dateModification;
     }
 
     /* ===========================================================
