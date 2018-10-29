@@ -32,7 +32,7 @@
     </p></div>
 
     <div class="w3-col" style="width:60%"><p>
-         <h1> <i class="fa fa-user-circle"></i> LOGIN </h1>
+         <h1> <i class="fa fa-user-circle"></i> ${courant.getLogin()}</h1>
         <br>
         <h3><i class="fa fa-lock"></i> <a href="/changerlogin">Changer mon mot de passe</a></h3>
         <br>
@@ -43,9 +43,9 @@
         <div class="w3-container w3-cell">
         <ul class="w3-ul w3-border" >
             <li><h2>Mes projets</h2></li>
-            <li class="w3-hover-theme">Titre p1</li>
-            <li class="w3-hover-theme">Titre p2 </li>
-            <li class="w3-hover-theme">Titre p3 </li>
+            <c:forEach items="${derniersProjetsDeposes}" var="projet">
+            <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
+            </c:forEach>
         </ul>
         </div>
             <div class="w3-container w3-cell">
