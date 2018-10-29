@@ -96,8 +96,8 @@ public class MonControlleur
      * @param model Le model de la session.
      * @return La page d'accueil où figurent les trois derniers projets déposés.
      */
-    @RequestMapping(value="/")
-    public String root(Model model) {
+    @GetMapping(value="/")
+    public String getRoot(Model model) {
         model.addAttribute("projets", this.facadeProjet.getTroisDerniersProjets());
         model.addAttribute("categories", this.facadeCategorie.getCategories());
         LOGGER.fine("[OK] return 'accueil'");
@@ -113,7 +113,7 @@ public class MonControlleur
      * @return La page de connexion.
      */
     @GetMapping(value="/connexion")
-    public String co(Model model)
+    public String getConnexion(Model model)
     {
         if(model.containsAttribute("auth"))
         {
@@ -135,8 +135,8 @@ public class MonControlleur
      * @param model Le model de la session.
      * @return La page d'accueil.
      */
-    @RequestMapping(value="/deconnexion")
-    public String deco(SessionStatus status, Model model) {
+    @GetMapping(value="/deconnexion")
+    public String getDeconnexion(SessionStatus status, Model model) {
         if(!model.containsAttribute("auth"))
         {
             LOGGER.fine("[ERR] Pas d'utilisateur courant -> 'accueil'");
@@ -155,8 +155,8 @@ public class MonControlleur
      * @param model Le model de la session.
      * @return Le formulaire d'inscription d'un nouvel utilisateur.
      */
-    @RequestMapping(value="/inscription")
-    public String insc(Model model)
+    @GetMapping(value="/inscription")
+    public String getInscription(Model model)
     {
         model.addAttribute("utilisateurTemp", new Utilisateur());
         LOGGER.fine("[OK] return 'inscription'");
@@ -173,7 +173,7 @@ public class MonControlleur
      * @return La page du projet si l'ID est correct, la page d'accueil sinon.
      */
     @GetMapping(value="/projets/{id}")
-    public String projetId(@PathVariable int id, Model model) {
+    public String getProjetId(@PathVariable int id, Model model) {
         if(this.facadeProjet.estExistant(id))
         {
             model.addAttribute("projet", this.facadeProjet.getProjetById(id));
@@ -184,15 +184,17 @@ public class MonControlleur
         return "redirect:/";
     }
 
-    @RequestMapping(value="/profils/{id}")
-    public String profileId(@PathVariable int id, Model model)
+    //TODO Faire une page publique/interne ?
+    @GetMapping(value="/profils/{id}")
+    public String getProfilId(@PathVariable int id, Model model)
     {
-
+        model.addAttribute("derniersProjetsDeposes", this.facadeProjet.getTroisDerniersDeposesDePorteurId(id));
+        //model.addAttribute("derniersProjetsFinances", this.facadeProjet.)
         return "profil";
     }
 
-    @RequestMapping(value="/form")
-    public String form() {
+    @GetMapping(value="/form")
+    public String getForm() {
 
         return "formulaire_projet";
     }
@@ -202,7 +204,7 @@ public class MonControlleur
      * @return La page de test
      */
     @GetMapping(value="/test")
-    public String test(Model model)
+    public String getTest(Model model)
     {
         LOGGER.fine("[OK] return 'test'");
         return "test";
@@ -227,8 +229,8 @@ public class MonControlleur
      * @return Page d'accueil si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/inscription")
-    public String inscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp,
-                              BindingResult result, RedirectAttributes redicAttr, Model model)
+    public String postInscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp,
+                                  BindingResult result, RedirectAttributes redicAttr, Model model)
     {
         if(!this.facadeUtilisateur.estExistant(temp.getLogin()))
         {
@@ -259,14 +261,12 @@ public class MonControlleur
      * Sinon renvoie à la page de connexion avec l'erreur de connexion.
      *
      * @param temp Les données de l'utilisateur issu du formulaire de connexion.
-     * @param redicAttr Les attributs à rediriger avec la vue.
      * @param result La validation issue de la liaison avec les données du formulaire.
      * @param model Le model de la session.
      * @return Si succès espace membre, sinon page inscription
      */
     @PostMapping("/connexion")
-    public String connexion(@ModelAttribute("utilisateurTemp") Utilisateur temp,
-                            RedirectAttributes redicAttr, BindingResult result, Model model)
+    public String postConnexion(@ModelAttribute("utilisateurTemp") Utilisateur temp, BindingResult result, Model model)
     {
         if(this.facadeUtilisateur.estExistant(temp.getLogin()))
         {
@@ -287,31 +287,31 @@ public class MonControlleur
 
     //TODO finir la réponse de message
     @PostMapping("/projets/{projetId)/messages/{messageId}")
-    public String repondreMessage(@PathVariable String projetId, @PathVariable int messageId)
+    public String postRepondreMessage(@PathVariable String projetId, @PathVariable int messageId)
     {
         return "redirect:/projets/"+projetId;
     }
 
     @GetMapping("/changermdp")
-    public String changerMdp()
+    public String getChangerMdp()
     {
         return "changermdp";
     }
 
     @GetMapping("/changerlogin")
-    public String changerLogin()
+    public String getChangerLogin()
     {
         return "changerlogin";
     }
 
     @PostMapping("/changermdp")
-    public String changerMdpPost()
+    public String postChangerMdp()
     {
         return "changermdp";
     }
 
     @PostMapping("/changerlogin")
-    public String changerLoginPost()
+    public String postChangerLogin()
     {
         return "changerlogin";
     }
