@@ -34,7 +34,7 @@ public class Utilisateur {
      * Le login ne peut être qu'alphanumérique et seul - et _ sont acceptés en caractères spéciaux.
      */
     @Pattern(regexp = "^[a-zA-Z0-9_-]+$",
-             message = "L'identifiant doit être alphanumérique")
+             message = "Identifiant doit être alphanumérique.")
     private String login;
 
     /**
@@ -50,7 +50,7 @@ public class Utilisateur {
      */
     // 8 caracteres, 1 minuscule, 1 majuscule et 1 chiffre
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
-             message = "Le mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre")
+             message = "Mot de passe doit posséder au moins 8 caractères, une majuscule, une minuscule et un chiffre.")
     private String motdepasse;
 
     /**
