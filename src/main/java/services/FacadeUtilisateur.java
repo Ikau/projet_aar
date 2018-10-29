@@ -8,6 +8,7 @@ import repositories.UtilisateurRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.logging.Logger;
 
 @Service
@@ -21,7 +22,7 @@ public class FacadeUtilisateur  {
     private EntityManager em;
 
     @Autowired
-    public UtilisateurRepository repository;
+    private UtilisateurRepository repository;
 
     /**
      * Logger pour la classe actuelle.
@@ -78,6 +79,11 @@ public class FacadeUtilisateur  {
      *            READ
      * ---------------------------
      */
+    public Utilisateur getUtilisateurById(int id)
+    {
+        return this.repository.findUtilisateurById(id);
+    }
+
     public Utilisateur getUtilisateurAuth(String login, String mdpClair)
     {
         LOGGER.fine("Recuperation utilisateur {" + login + "}");
@@ -98,6 +104,24 @@ public class FacadeUtilisateur  {
         }
         LOGGER.info("[ERR] Mot de passe incorrecte {"+login+"} ");
         return null;
+    }
+
+    /* ---------------------------
+     *           UPDATE
+     * ---------------------------
+     */
+
+    @Transactional
+    public void updateLogin(int id, String newLogin)
+    {
+        this.repository.updateUtilisateurbyIdLogin(id, newLogin);
+    }
+
+    @Transactional
+    public void updateMotdepasse(int id, String newMdpClair, byte[] sel)
+    {
+        String newMdpChiffre = CryptoService.hacheMdp(newMdpClair, sel);
+        this.repository.updateUtilisateurbyIdMotdepasse(id, newMdpChiffre);
     }
 
     /* ===========================================================

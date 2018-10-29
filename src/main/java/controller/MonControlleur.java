@@ -188,6 +188,8 @@ public class MonControlleur
     @GetMapping(value="/profils/{id}")
     public String getProfilId(@PathVariable int id, Model model)
     {
+        //TODO check id et courant
+
         model.addAttribute("derniersProjetsDeposes", this.facadeProjet.getTroisDerniersDeposesDePorteurId(id));
         //model.addAttribute("derniersProjetsFinances", this.facadeProjet.)
         return "profil";
@@ -198,6 +200,31 @@ public class MonControlleur
 
         return "formulaire_projet";
     }
+
+    /**
+     * Affiche la page de modification du mot de passe de l'utilisateur désigné par l'ID
+     * @param id L'ID de l'utilisateur.
+     * @return La page de modification du mot de passe d'un utilisateur.
+     */
+    @GetMapping(value="/profils/{id}/motdepasse")
+    public String getChangerMdp(@PathVariable int id)
+    {
+        //TODO check id et courant
+        return "changermdp";
+    }
+
+    /**
+     * Affichage la page de modification du login de l'utilisateur désigné par l'ID
+     * @param id L'ID de l'utilisateur.
+     * @return La page de modification du login.
+     */
+    @GetMapping(value="/profils/{id}/login")
+    public String getChangerLogin(@PathVariable int id)
+    {
+        //TODO check id et courant
+        return "changerlogin";
+    }
+
 
     /**
      * TEMPORAIRE : page de test pour les differentes facades.
@@ -292,31 +319,63 @@ public class MonControlleur
         return "redirect:/projets/"+projetId;
     }
 
-    @GetMapping("/changermdp")
-    public String getChangerMdp()
+    /**
+     * Callback de changement de mot de passe d'un utilisateur connecté.
+     * @param temp L'objet reçu depuis la JSP.
+     * @param result Résultat du binding entre données reçues et modèle.
+     * @param id L'id de la page de profil courante.
+     * @param model Le model de la session.
+     * @return Redirection page de profil si réussite; page courante avec erreur sinon.
+     */
+    @PostMapping("/profils/{id}/motdepasse")
+    public String postChangerMdp(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
+                                 @PathVariable int id, Model model)
     {
-        return "changermdp";
+        if(result.hasFieldErrors("motdepasse"))
+        {
+            LOGGER.info("[ERR] Mot de passe non valide {"+id+"} : {"+temp.getMotdepasse()+"}");
+            return "changermdp";
+        }
+
+        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
+        this.facadeUtilisateur.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
+        model.addAttribute("courant", this.facadeUtilisateur.getUtilisateurById(id));
+
+        LOGGER.info("[OK] Mot de passe modifié {"+id+"}");
+        return "redirect:/profils/"+id;
     }
 
-    @GetMapping("/changerlogin")
-    public String getChangerLogin()
+    /**
+     * Callback de changement du login d'un utilisateur connecté.
+     * @param temp L'objet reçu depuis la JSP.
+     * @param result Résultat du binding entre données reçues et modèle.
+     * @param id L'id de la page de profil courante.
+     * @param model Le model de la session.
+     * @return Redirection page de profil si réussite; page courante avec erreur sinon.
+     */
+    @PostMapping("/profils/{id}/login")
+    public String postChangerLogin(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
+                                   @PathVariable int id, Model model)
     {
-        return "changerlogin";
+        if(result.hasFieldErrors("login"))
+        {
+            LOGGER.info("[ERR] Login non valide {"+id+"} : {"+temp.getLogin()+"}");
+            return "changerlogin";
+        }
+
+        if(this.facadeUtilisateur.estExistant(temp.getLogin()))
+        {
+            result.addError(new FieldError("utilisateurTemp", "login", "Ce login est déjà existant"));
+            LOGGER.info("[ERR] Login déjà existant {"+id+"} : {"+temp.getLogin()+"}");
+            return "changerLogin";
+        }
+
+        this.facadeUtilisateur.updateLogin(id, temp.getLogin());
+        model.addAttribute("courant", this.facadeUtilisateur.getUtilisateurById(id));
+
+        LOGGER.info("[OK] Login modifié {"+id+"}");
+        return "redirect:/profils/"+id;
     }
-
-    @PostMapping("/changermdp")
-    public String postChangerMdp()
-    {
-        return "changermdp";
-    }
-
-    @PostMapping("/changerlogin")
-    public String postChangerLogin()
-    {
-        return "changerlogin";
-    }
-
-
 
 
     /* ===============================================================
