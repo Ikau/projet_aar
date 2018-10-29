@@ -1,6 +1,7 @@
 package repositories;
 
 import modele.Projet;
+import modele.Utilisateur;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -44,6 +45,12 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
     @EntityGraph(value="joinCategoriesDons", type=EntityGraph.EntityGraphType.FETCH)
     public List<Projet> findFirst3ByOrderByDateDepot();
 
+    /**
+     * Renvoie les trois derniers projets déposés par le porteur associé à l'ID.
+     * @param porteurId L'id du porteur associé au projet.
+     * @return Les trois derniers projets déposés par le porteur associé à l'ID.
+     */
+    public List<Projet> findFirst3ByPorteur_IdOrderByDateDepot(int porteurId);
 
     /* ---------------------------
      *            UNIQUE

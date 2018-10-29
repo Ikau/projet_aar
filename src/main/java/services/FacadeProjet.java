@@ -71,6 +71,17 @@ public class FacadeProjet {
 
 
     /**
+     * Renvoie les trois derniers projets déposés par le porteur associé à l'ID.
+     * @param porteurId L'id du porteur associé au projet.
+     * @return Les trois derniers projets déposés par le porteur associé à l'ID.
+     */
+    public List<Projet> getTroisDerniersDeposesDePorteurId(int porteurId)
+    {
+        return this.repository.findFirst3ByPorteur_IdOrderByDateDepot(porteurId);
+    }
+
+
+    /**
      * Renvoie une liste de tous les projets avec tout sauf les financeurs.
      * @return une liste de tous les projets avec tout sauf les financeurs.
      */
