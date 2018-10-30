@@ -250,6 +250,22 @@ public class Projet {
         this.objectif = objectif;
     }
 
+    public void setPorteur(Utilisateur porteur) {
+        this.porteur = porteur;
+    }
+
+    public void setDateDepot(Timestamp dateDepot) {
+        this.dateDepot = dateDepot;
+    }
+
+    public void setCategories(Set<Categorie> categories) {
+        this.categories = categories;
+    }
+
+    public void setPalliers(Set<Pallier> palliers) {
+        this.palliers = palliers;
+    }
+
     /* ===========================================================
      *                           METHODES
      * ===========================================================

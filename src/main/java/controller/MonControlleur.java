@@ -2,6 +2,7 @@ package controller;
 
 
 import config.LoggerConfig;
+import modele.Projet;
 import modele.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -193,8 +194,9 @@ public class MonControlleur
     }
 
     @GetMapping(value="/form")
-    public String getForm() {
-
+    public String getForm(Model model) {
+        model.addAttribute("projetTemp",new Projet());
+        model.addAttribute("categories", this.categorieFacade.getCategories());
         return "formulaire_projet";
     }
 

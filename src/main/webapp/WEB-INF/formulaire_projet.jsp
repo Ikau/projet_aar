@@ -32,6 +32,7 @@
         var inp = document.createElement('input');
         inp.type='number';
         inp.className = "w3-input";
+        inp.name="compensationBas"+com;
         newdiv2.appendChild(inp);
         bigDiv.appendChild(newdiv2)
         //document.getElementById('form1').insertBefore(newdiv2,boutton);
@@ -47,6 +48,7 @@
         var inp3 = document.createElement('input');
         inp3.type='number';
         inp3.className = "w3-input";
+        inp3.name="compensationHaut"+com;
         newdiv4.className = "w3-container w3-cell";
         newdiv4.appendChild(inp3);
         bigDiv.appendChild(newdiv4)
@@ -64,6 +66,7 @@
         var inp2 = document.createElement('textarea');
         inp2.type='text';
         inp2.className = "w3-input";
+        inp2.name="compensationDesc"+com;
         newdiv6.style="width: 50%";
         newdiv6.appendChild(inp2);
         bigDiv.appendChild(newdiv6);
@@ -110,30 +113,35 @@
 
         <h1> Formulaire de Lancement de projet</h1>
 
-        <form id="form1" class="w3-container">
+        <form class="w3-container" action="/ajoutProject" method="post">
 
             <label>Intitulé</label>
-            <input class="w3-input w3-animate-input" type="text">
+            <input class="w3-input w3-animate-input" type="text" path="intitule"/>
             <br>
             <label>Résumé</label>
-            <textarea class="w3-input w3-animate-input" type="text"> </textarea>
+            <textarea class="w3-input w3-animate-input" type="text" path="resume"> </textarea>
+
             <br>
             <label>Description</label>
-            <textarea class="w3-input w3-animate-input" type="text"> </textarea>
+            <textarea class="w3-input w3-animate-input" type="text"path="description"> </textarea>
+
             <br>
             <label>Date de fin</label>
-            <input class="w3-input w3-animate-input" type="date">
+            <input class="w3-input w3-animate-input" type="date" path="dateFin">
             <br>
-            <select class="w3-select w3-border w3-text-theme" name="option">
-                <option value="" disabled selected>Choisir la catégorie</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
-            </select>
+
+
+            <label>Catégorie</label>
+            <br>
+            <c:forEach items="${categories}" var="c">
+                <input class="w3-check" type="checkbox" value="${c.getId()}">
+                <label>${c.getIntitule()}</label>
+            </c:forEach>
+
             <br>
             <br>
             <label>Objectif (en €)</label>
-            <input class="w3-input w3-animate-input" type="number">
+            <input class="w3-input w3-animate-input" type="number" path="objectif">
             <br>
             <br>
             <div id="compensation">
@@ -141,11 +149,11 @@
                 <br>
                 <div class="w3-container" id="1">
                     <div class="w3-container w3-cell">De </div>
-                    <div class="w3-container w3-cell"><input class="w3-input" type="number"></div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="number" name="compensationBas1"></div>
                     <div class="w3-container w3-cell"> à </div>
-                    <div class="w3-container w3-cell"><input class="w3-input" type="number" ></div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="number" name="compensationHaut1" ></div>
                     <div class="w3-container w3-cell"> Description de la compensation : </div>
-                    <div class="w3-container w3-cell" style="width: 50%"><textarea class="w3-input w3-animate-input" type="text"> </textarea></div>
+                    <div class="w3-container w3-cell" style="width: 50%"><textarea class="w3-input w3-animate-input" type="text" name="compensationDesc1"> </textarea></div>
                     <br>
                     <br>
                 </div>
@@ -166,7 +174,7 @@
             <br>
             <br>
             <div class="w3-display-container">
-                <div class="w3-display-middle"><input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Envoyer le Formulaire"/></div>
+                <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Envoyer le Formulaire"/></div>
             </div>
 
         </form>
