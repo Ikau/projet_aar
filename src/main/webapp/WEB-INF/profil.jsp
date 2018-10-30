@@ -13,7 +13,7 @@
 <% if (session.getAttribute("auth") != null) { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
-    <a href="/profils/${courant.getId()}" class="w3-bar-item w3-button">Mon profil</a>
+    <a href="/profil" class="w3-bar-item w3-button">Mon profil</a>
     <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
     <a href="/deconnexion" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
@@ -34,9 +34,9 @@
     <div class="w3-col" style="width:60%"><p>
          <h1> <i class="fa fa-user-circle"></i> ${courant.getLogin()}</h1>
         <br>
-        <h3><i class="fa fa-pencil"></i> <a href="/profils/${courant.getId()}/login">Changer mon Login</a></h3>
+        <h3><i class="fa fa-pencil"></i> <a href="/profil/login">Changer mon Login</a></h3>
         <br>
-        <h3><i class="fa fa-lock"></i> <a href="/profils/${courant.getId()}/motdepasse">Changer mon mot de passe</a></h3>
+        <h3><i class="fa fa-lock"></i> <a href="/profil/motdepasse">Changer mon mot de passe</a></h3>
         <br>
         <br>
         <br>
