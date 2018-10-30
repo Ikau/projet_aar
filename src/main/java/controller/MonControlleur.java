@@ -235,11 +235,22 @@ public class MonControlleur
         return "test";
     }
 
+    @RequestMapping(value="/{id}")
+    public String getRootCategorie(@PathVariable int id, Model model) {
+        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(1,10,id));
+        model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(id));
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+        LOGGER.fine("[OK] return 'accueil'");
+        return "accueil";
+    }
+
 
     /* ===============================================================
      *                         POST_MAPPING
      * ===============================================================
      */
+
+
 
     /**
      * Permet d'inscrire un nouvel utilisateur dans la base de données.

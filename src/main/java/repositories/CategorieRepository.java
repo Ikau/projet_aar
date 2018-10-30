@@ -24,4 +24,5 @@ public interface CategorieRepository extends CrudRepository<Categorie, Integer>
      * ---------------------------
      */
     public List<Categorie> findAllBy();
+    public Categorie findCategorieById(int id);
 }

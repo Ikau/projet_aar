@@ -33,9 +33,17 @@
     <div class="w3-col" style="width:60%"><p>
         <%-- Recherche par catégorie --%>
         <select class="w3-select w3-border w3-text-theme" name="option">
-            <option value="" disabled selected>Rechercher par catégorie</option>
+            <c:choose>
+                <c:when test="${empty categorieChoisie}">
+                    <option value="" disabled selected>Rechercher par catégorie</option>
+                </c:when>
+                <c:otherwise>
+                    <option value="" disabled selected>${categorieChoisie.getIntitule()}</option>
+                </c:otherwise>
+            </c:choose>
+
             <c:forEach items="${categories}" var="c">
-                <option value="${c.getId()}">${c.getIntitule()}</option>
+                <a href="/${c.getId()}"><option value="${c.getId()}">${c.getIntitule()}</option></a>
             </c:forEach>
 
         </select>

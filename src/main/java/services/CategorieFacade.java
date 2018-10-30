@@ -34,4 +34,5 @@ public class CategorieFacade {
     {
         return this.repository.findAllBy();
     }
+    public Categorie getCategorie(int id){return this.repository.findCategorieById(id);}
 }
