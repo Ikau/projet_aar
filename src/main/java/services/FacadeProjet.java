@@ -3,6 +3,8 @@ package services;
 import config.LoggerConfig;
 import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import repositories.ProjetRepository;
 
@@ -42,12 +44,12 @@ public class FacadeProjet {
 
 
     /* ===========================================================
-     *                            CRUD
+     *                            READ
      * ===========================================================
      */
 
     /* ---------------------------
-     *            READ
+     *            LIST
      * ---------------------------
      */
 
@@ -80,7 +82,19 @@ public class FacadeProjet {
         return this.repository.findFirst3ByPorteur_IdOrderByDateDepot(porteurId);
     }
 
+    public List<Projet> getProjetParCategorieEtPage(int page, int nbResultat, int idCategorie)
+    {
+        // Init de la portée de résultats voulue
+        Pageable pageable = new PageRequest(page, nbResultat);
 
+        return this.repository.findProjetsByCategoriesRange(idCategorie, pageable).getContent();
+    }
+
+
+    /* ---------------------------
+     *           UNIQUE
+     * ---------------------------
+     */
     /**
      * Renvoie une liste de tous les projets avec tout sauf les financeurs.
      * @return une liste de tous les projets avec tout sauf les financeurs.

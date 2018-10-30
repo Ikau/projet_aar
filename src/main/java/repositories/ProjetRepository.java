@@ -2,6 +2,8 @@ package repositories;
 
 import modele.Projet;
 import modele.Utilisateur;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -51,6 +53,10 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      * @return Les trois derniers projets déposés par le porteur associé à l'ID.
      */
     public List<Projet> findFirst3ByPorteur_IdOrderByDateDepot(int porteurId);
+
+    @EntityGraph(value="joinAll", type= EntityGraph.EntityGraphType.FETCH)
+    @Query("select p from Projet p join p.categories c where c.id = ?1 order by p.dateDepot")
+    public Page<Projet> findProjetsByCategoriesRange(int idCategorie, Pageable pageable);
 
     /* ---------------------------
      *            UNIQUE
