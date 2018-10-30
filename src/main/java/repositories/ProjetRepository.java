@@ -54,6 +54,13 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      */
     public List<Projet> findFirst3ByPorteur_IdOrderByDateDepot(int porteurId);
 
+
+    /**
+     * Renvoie les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
+     * @param idCategorie L'ID de la catégorie définissant la recherche.
+     * @param pageable L'intervallle des projets à recherches.
+     * @return Les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
+     */
     @EntityGraph(value="joinAll", type= EntityGraph.EntityGraphType.FETCH)
     @Query("select p from Projet p join p.categories c where c.id = ?1 order by p.dateDepot")
     public Page<Projet> findProjetsByCategoriesRange(int idCategorie, Pageable pageable);

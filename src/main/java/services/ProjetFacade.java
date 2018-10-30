@@ -82,9 +82,18 @@ public class ProjetFacade {
         return this.repository.findFirst3ByPorteur_IdOrderByDateDepot(porteurId);
     }
 
+
+    /**
+     * Renvoie les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.
+     * @param page Le numéro de la page correspondant à la limite inférieure de la plage souhaitée.
+     * @param nbResultat Le nombre de résultat à afficher par page.
+     * @param idCategorie L'ID de la catégorie définissant la recherche.
+     * @return Les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.
+     */
     public List<Projet> getProjetParCategorieEtPage(int page, int nbResultat, int idCategorie)
     {
         // Init de la portée de résultats voulue
+        // On souhaite rechercher la page n°page en sachant que chaque page affichera nbResultat max
         Pageable pageable = new PageRequest(page, nbResultat);
 
         return this.repository.findProjetsByCategoriesRange(idCategorie, pageable).getContent();
