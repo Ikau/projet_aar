@@ -13,7 +13,7 @@
 <% if (session.getAttribute("auth") != null) { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
-    <a href="/profils/${courant.getId()}" class="w3-bar-item w3-button">Mon profil</a>
+    <a href="/profil" class="w3-bar-item w3-button">Mon profil</a>
     <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
     <a href="/deconnexion" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
@@ -32,7 +32,7 @@
 
     <div class="w3-col" style="width:50%"><p>
         <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
-        <form:form class="w3-container" action="/profils/${courant.getId()}/login" method="post" modelAttribute="utilisateurTemp">
+        <form:form class="w3-container" action="/profil/login" method="post" modelAttribute="utilisateurTemp">
 
         <label> Changer de Login</label>
             <form:input class="w3-input" type="text" path="login"/>

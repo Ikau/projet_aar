@@ -184,13 +184,11 @@ public class MonControlleur
     }
 
 
-    @GetMapping(value="/profils/{id}")
-    public String getProfilId(@PathVariable int id, Model model)
+    @GetMapping(value="/profil")
+    public String getProfilId(Model model)
     {
-        //TODO check id et courant
-
+        int id = this.getIdCourant(model);
         model.addAttribute("derniersProjetsDeposes", this.projetFacade.getTroisDerniersDeposesDePorteurId(id));
-        //model.addAttribute("derniersProjetsFinances", this.facadeProjet.)
         return "profil";
     }
 
@@ -202,25 +200,21 @@ public class MonControlleur
 
     /**
      * Affiche la page de modification du mot de passe de l'utilisateur désigné par l'ID
-     * @param id L'ID de l'utilisateur.
      * @return La page de modification du mot de passe d'un utilisateur.
      */
-    @GetMapping(value="/profils/{id}/motdepasse")
-    public String getChangerMdp(@PathVariable int id)
+    @GetMapping(value="/profil/motdepasse")
+    public String getChangerMdp()
     {
-        //TODO check id et courant
         return "changermdp";
     }
 
     /**
      * Affichage la page de modification du login de l'utilisateur désigné par l'ID
-     * @param id L'ID de l'utilisateur.
      * @return La page de modification du login.
      */
-    @GetMapping(value="/profils/{id}/login")
-    public String getChangerLogin(@PathVariable int id)
+    @GetMapping(value="/profil/login")
+    public String getChangerLogin()
     {
-        //TODO check id et courant
         return "changerlogin";
     }
 
@@ -332,40 +326,42 @@ public class MonControlleur
      * Callback de changement de mot de passe d'un utilisateur connecté.
      * @param temp L'objet reçu depuis la JSP.
      * @param result Résultat du binding entre données reçues et modèle.
-     * @param id L'id de la page de profil courante.
      * @param model Le model de la session.
      * @return Redirection page de profil si réussite; page courante avec erreur sinon.
      */
-    @PostMapping("/profils/{id}/motdepasse")
+    @PostMapping("/profil/motdepasse")
     public String postChangerMdp(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
-                                 @PathVariable int id, Model model)
+                                 Model model)
     {
+        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
+        int id = courant.getId();
+
         if(result.hasFieldErrors("motdepasse"))
         {
             LOGGER.info("[ERR] Mot de passe non valide {"+id+"} : {"+temp.getMotdepasse()+"}");
             return "changermdp";
         }
 
-        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
         this.utilisateurFacade.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
         model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
 
         LOGGER.info("[OK] Mot de passe modifié {"+id+"}");
-        return "redirect:/profils/"+id;
+        return "redirect:/profil";
     }
 
     /**
      * Callback de changement du login d'un utilisateur connecté.
      * @param temp L'objet reçu depuis la JSP.
      * @param result Résultat du binding entre données reçues et modèle.
-     * @param id L'id de la page de profil courante.
      * @param model Le model de la session.
      * @return Redirection page de profil si réussite; page courante avec erreur sinon.
      */
-    @PostMapping("/profils/{id}/login")
+    @PostMapping("/profil/login")
     public String postChangerLogin(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
-                                   @PathVariable int id, Model model)
+                                   Model model)
     {
+        int id = this.getIdCourant(model);
+
         if(result.hasFieldErrors("login"))
         {
             LOGGER.info("[ERR] Login non valide {"+id+"} : {"+temp.getLogin()+"}");
@@ -383,7 +379,7 @@ public class MonControlleur
         model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
 
         LOGGER.info("[OK] Login modifié {"+id+"}");
-        return "redirect:/profils/"+id;
+        return "redirect:/profil";
     }
 
 
@@ -416,6 +412,17 @@ public class MonControlleur
         if(model.containsAttribute("auth")) return true;
         LOGGER.info("[ERR] Session non authentifiee");
         return false;
+    }
+
+    /**
+     * Renvoie l'id de l'utilisateur courant.
+     * @param model Le model se la session.
+     * @return L'id de l'utilisateur courant.
+     */
+    private int getIdCourant(Model model)
+    {
+        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
+        return courant.getId();
     }
 
 }
