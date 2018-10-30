@@ -239,6 +239,12 @@ public class MonControlleur
      * ===============================================================
      */
 
+    @PostMapping(value="/ajoutProjet")
+    public String postProjetForm(@ModelAttribute("projetTemp") @Valid Projet temp, BindingResult result, Model model) {
+
+        return "accueil";
+    }
+
     @PostMapping(value="/")
     public String postRoot(@RequestParam("option") int id, Model model) {
         model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(0,10,id));
