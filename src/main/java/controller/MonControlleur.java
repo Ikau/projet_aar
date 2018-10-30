@@ -184,7 +184,7 @@ public class MonControlleur
         return "redirect:/";
     }
 
-    //TODO Faire une page publique/interne ?
+
     @GetMapping(value="/profils/{id}")
     public String getProfilId(@PathVariable int id, Model model)
     {
@@ -224,7 +224,6 @@ public class MonControlleur
         //TODO check id et courant
         return "changerlogin";
     }
-
 
     /**
      * TEMPORAIRE : page de test pour les differentes facades.
@@ -307,7 +306,7 @@ public class MonControlleur
             }
         }
 
-        result.addError(new FieldError("utilisateurTemp", "login", "Les informations ne correspondent pas"));
+        result.addError(new FieldError("utilisateurTemp", "motdepasse", "Les informations ne correspondent pas"));
         LOGGER.info("[ERR] Connexion echouee");
         return("connexion");
     }
