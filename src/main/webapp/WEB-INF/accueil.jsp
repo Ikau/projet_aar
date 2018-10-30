@@ -32,7 +32,8 @@
 
     <div class="w3-col" style="width:60%"><p>
         <%-- Recherche par catégorie --%>
-        <select class="w3-select w3-border w3-text-theme" name="option">
+        <form name='cat' action="/" method="post">
+        <select class="w3-select w3-border w3-text-theme" name="option" onchange="this.form.submit();">
             <c:choose>
                 <c:when test="${empty categorieChoisie}">
                     <option value="" disabled selected>Rechercher par catégorie</option>
@@ -43,10 +44,11 @@
             </c:choose>
 
             <c:forEach items="${categories}" var="c">
-                <a href="/${c.getId()}"><option value="${c.getId()}">${c.getIntitule()}</option></a>
+                <option value="${c.getId()}">${c.getIntitule()}</option>
             </c:forEach>
 
         </select>
+        </form>
 
         <%-- Les 3 derniers projets --%>
         <c:forEach items="${projets}" var="p">

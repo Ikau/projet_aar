@@ -229,14 +229,7 @@ public class MonControlleur
         return "test";
     }
 
-    @RequestMapping(value="/{id}")
-    public String getRootCategorie(@PathVariable int id, Model model) {
-        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(1,10,id));
-        model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(id));
-        model.addAttribute("categories", this.categorieFacade.getCategories());
-        LOGGER.fine("[OK] return 'accueil'");
-        return "accueil";
-    }
+
 
 
     /* ===============================================================
@@ -244,7 +237,14 @@ public class MonControlleur
      * ===============================================================
      */
 
-
+    @PostMapping(value="/")
+    public String postRoot(@RequestParam("option") int id, Model model) {
+        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(0,10,id));
+        model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(id));
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+        LOGGER.fine("[OK] return 'accueil'");
+        return "accueil";
+    }
 
     /**
      * Permet d'inscrire un nouvel utilisateur dans la base de données.
