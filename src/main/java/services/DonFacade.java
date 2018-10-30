@@ -8,7 +8,7 @@ import repositories.DonRepository;
 import java.util.List;
 
 @Service
-public class FacadeDon {
+public class DonFacade {
 
     @Autowired
     private DonRepository repository;

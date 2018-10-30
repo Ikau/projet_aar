@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Service
-public class FacadeProjet {
+public class ProjetFacade {
 
 
     /* ===========================================================
@@ -30,7 +30,7 @@ public class FacadeProjet {
     /**
      * Logger pour la classe actuelle.
      */
-    private static final Logger LOGGER = Logger.getLogger(FacadeUtilisateur.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilisateurFacade.class.getName());
 
 
     /* ===============================================================

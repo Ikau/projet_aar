@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Facade qui s'occupe d'initialiser les données de la base de données.
  */
-public class FacadeInit {
+public class InitFacade {
 
     /* ===========================================================
      *                        PROPRIETES

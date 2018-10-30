@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,25 +35,25 @@ public class MonControlleur
      * Facade gerant les operations d'initialisation et de peuplement de la base.
      */
     @Autowired
-    private FacadeInit facadeInit;
+    private InitFacade initFacade;
 
     /**
      * Facade gerant les operations sur le modele Utilisateur.
      */
     @Autowired
-    private FacadeUtilisateur facadeUtilisateur;
+    private UtilisateurFacade utilisateurFacade;
 
     /**
      * Facade gerant les operations sur le modele Projet.
      */
     @Autowired
-    private FacadeProjet facadeProjet;
+    private ProjetFacade projetFacade;
 
     /**
      * Facade gerant les operations sur le modele Categorie.
      */
     @Autowired
-    private FacadeCategorie facadeCategorie;
+    private CategorieFacade categorieFacade;
 
     /**
      * Logger pour la classe actuelle.
@@ -81,7 +80,7 @@ public class MonControlleur
     @PostConstruct
     private void init()
     {
-        this.facadeInit.initBdd();
+        this.initFacade.initBdd();
     }
 
 
@@ -98,8 +97,8 @@ public class MonControlleur
      */
     @GetMapping(value="/")
     public String getRoot(Model model) {
-        model.addAttribute("projets", this.facadeProjet.getTroisDerniersProjets());
-        model.addAttribute("categories", this.facadeCategorie.getCategories());
+        model.addAttribute("projets", this.projetFacade.getTroisDerniersProjets());
+        model.addAttribute("categories", this.categorieFacade.getCategories());
         LOGGER.fine("[OK] return 'accueil'");
         return "accueil";
     }
@@ -174,9 +173,9 @@ public class MonControlleur
      */
     @GetMapping(value="/projets/{id}")
     public String getProjetId(@PathVariable int id, Model model) {
-        if(this.facadeProjet.estExistant(id))
+        if(this.projetFacade.estExistant(id))
         {
-            model.addAttribute("projet", this.facadeProjet.getProjetById(id));
+            model.addAttribute("projet", this.projetFacade.getProjetById(id));
             LOGGER.info("[OK] Affichage du projet {"+id+"}");
             return "projet";
         }
@@ -190,7 +189,7 @@ public class MonControlleur
     {
         //TODO check id et courant
 
-        model.addAttribute("derniersProjetsDeposes", this.facadeProjet.getTroisDerniersDeposesDePorteurId(id));
+        model.addAttribute("derniersProjetsDeposes", this.projetFacade.getTroisDerniersDeposesDePorteurId(id));
         //model.addAttribute("derniersProjetsFinances", this.facadeProjet.)
         return "profil";
     }
@@ -258,7 +257,7 @@ public class MonControlleur
     public String postInscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp,
                                   BindingResult result, RedirectAttributes redicAttr, Model model)
     {
-        if(!this.facadeUtilisateur.estExistant(temp.getLogin()))
+        if(!this.utilisateurFacade.estExistant(temp.getLogin()))
         {
             // On recupere toutes les erreurs d'un coup (user-experience)
             if (result.hasErrors())
@@ -267,7 +266,7 @@ public class MonControlleur
                 return "inscription";
             }
 
-            Utilisateur nouveau = this.facadeUtilisateur.creer(temp.getLogin(), temp.getMotdepasse());
+            Utilisateur nouveau = this.utilisateurFacade.creer(temp.getLogin(), temp.getMotdepasse());
             model.addAttribute("courant", nouveau);
             model.addAttribute("auth", true);
             LOGGER.info("[OK] Nouvel utilisateur {"+nouveau.getLogin()+"}");
@@ -294,9 +293,9 @@ public class MonControlleur
     @PostMapping("/connexion")
     public String postConnexion(@ModelAttribute("utilisateurTemp") Utilisateur temp, BindingResult result, Model model)
     {
-        if(this.facadeUtilisateur.estExistant(temp.getLogin()))
+        if(this.utilisateurFacade.estExistant(temp.getLogin()))
         {
-            Utilisateur uAuthentifie = this.facadeUtilisateur.getUtilisateurAuth(temp.getLogin(), temp.getMotdepasse());
+            Utilisateur uAuthentifie = this.utilisateurFacade.getUtilisateurAuth(temp.getLogin(), temp.getMotdepasse());
             if(uAuthentifie != null)
             {
                 model.addAttribute("courant", uAuthentifie);
@@ -337,8 +336,8 @@ public class MonControlleur
         }
 
         Utilisateur courant = (Utilisateur) model.asMap().get("courant");
-        this.facadeUtilisateur.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
-        model.addAttribute("courant", this.facadeUtilisateur.getUtilisateurById(id));
+        this.utilisateurFacade.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
+        model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
 
         LOGGER.info("[OK] Mot de passe modifié {"+id+"}");
         return "redirect:/profils/"+id;
@@ -362,15 +361,15 @@ public class MonControlleur
             return "changerlogin";
         }
 
-        if(this.facadeUtilisateur.estExistant(temp.getLogin()))
+        if(this.utilisateurFacade.estExistant(temp.getLogin()))
         {
             result.addError(new FieldError("utilisateurTemp", "login", "Ce login est déjà existant"));
             LOGGER.info("[ERR] Login déjà existant {"+id+"} : {"+temp.getLogin()+"}");
             return "changerLogin";
         }
 
-        this.facadeUtilisateur.updateLogin(id, temp.getLogin());
-        model.addAttribute("courant", this.facadeUtilisateur.getUtilisateurById(id));
+        this.utilisateurFacade.updateLogin(id, temp.getLogin());
+        model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
 
         LOGGER.info("[OK] Login modifié {"+id+"}");
         return "redirect:/profils/"+id;

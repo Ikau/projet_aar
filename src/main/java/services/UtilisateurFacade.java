@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.util.logging.Logger;
 
 @Service
-public class FacadeUtilisateur  {
+public class UtilisateurFacade {
 
     /* ===========================================================
      *                         PROPRIETES
@@ -27,7 +27,7 @@ public class FacadeUtilisateur  {
     /**
      * Logger pour la classe actuelle.
      */
-    private static final Logger LOGGER = Logger.getLogger(FacadeUtilisateur.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UtilisateurFacade.class.getName());
 
 
     /* ===============================================================
