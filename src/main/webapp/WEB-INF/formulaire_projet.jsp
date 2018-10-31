@@ -31,10 +31,10 @@
 
         var newdiv2 = document.createElement('div');
         newdiv2.className = "w3-container w3-cell";
-        var inp = document.createElement('form:input');
+        var inp = document.createElement('input');
         inp.type='number';
         inp.className = "w3-input";
-        inp.path="palliers["+id+"].seuil";
+        inp.name="pallierList["+id+"].seuil";
         newdiv2.appendChild(inp);
         bigDiv.appendChild(newdiv2)
         //document.getElementById('form1').insertBefore(newdiv2,boutton);
@@ -47,10 +47,10 @@
         //document.getElementById('form1').insertBefore(newdiv3,boutton);
 
         var newdiv4 = document.createElement('div');
-        var inp3 = document.createElement('form:input');
+        var inp3 = document.createElement('input');
         inp3.type='text';
         inp3.className = "w3-input";
-        inp3.path="palliers["+id+"].intitule";
+        inp3.name="pallierList["+id+"].intitule";
         newdiv4.className = "w3-container w3-cell";
         newdiv4.appendChild(inp3);
         bigDiv.appendChild(newdiv4)
@@ -65,10 +65,10 @@
 
         var newdiv6 = document.createElement('div');
         newdiv6.className = "w3-container w3-cell";
-        var inp2 = document.createElement('form:textarea');
+        var inp2 = document.createElement('textarea');
         inp2.type='text';
         inp2.className = "w3-input";
-        inp2.name="palliers["+id+"].description";
+        inp2.name="pallierList["+id+"].description";
         newdiv6.style="width: 50%";
         newdiv6.appendChild(inp2);
         bigDiv.appendChild(newdiv6);
@@ -114,8 +114,8 @@
     <div class="w3-col" style="width:80%"><p>
 
         <h1> Formulaire de Lancement de projet</h1>
-        <%--@elvariable id="projetTemp" type="modele.Projet"--%>
-        <form:form class="w3-container" action="/ajoutProjet" method="post" modelAttribute="projetTemp">
+        <%--@elvariable id="projetWrapper" type="wrappers.ProjetWrapper"--%>
+        <form:form class="w3-container" action="/projets/creer" method="post" modelAttribute="projetWrapper">
 
             <label>Intitulé</label>
             <form:input class="w3-input" type="text" path="intitule"/>
@@ -130,45 +130,47 @@
             <form:errors path="description" cssStyle="color:red;"/>
 
             <br>
-            <label>Date de fin</label>
-            <fmt:formatDate
+            <label>Date de fin (exclue)</label>
+            <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"/>
             <form:input class="w3-input " type="date" path="dateFin"/>
+            <form:errors path="dateFin" cssStyle="color:red;"/>
             <br>
 
 
             <label>Catégorie</label>
+            <form:errors path="categorieIdList" cssStyle="color:red;" />
             <br>
             <c:forEach items="${categories}" var="c">
-                <form:checkbox class="w3-check" value="${c.getId()}" path="categories"/>
+                <form:checkbox class="w3-check" value="${c.getId()}" path="categorieIdList"/>
                 <label>${c.getIntitule()}</label>
             </c:forEach>
-
-
 
             <br>
             <br>
             <label>Objectif (en €)</label>
             <form:input class="w3-input w3-animate-input" type="number" path="objectif"/>
+            <form:errors path="objectif" cssStyle="color:red;"/>
 
             <br>
             <br>
             <div id="compensation">
                 <label>Compensations (en €)</label>
+                <form:errors path="pallierList" cssStyle="color:red;" />
                 <br>
                 <div class="w3-container" id="1">
                     <div class="w3-container w3-cell">Seuil </div>
-                    <div class="w3-container w3-cell"><input class="w3-input" type="number" name="compensationBas1"/></div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="number" name="pallierList[0].seuil"/></div>
                     <div class="w3-container w3-cell">Intitulé </div>
-                    <div class="w3-container w3-cell"><input class="w3-input" type="text" name="compensationHaut1" /></div>
+                    <div class="w3-container w3-cell"><input class="w3-input" type="text" name="pallierList[0].intitule"/></div>
                     <div class="w3-container w3-cell"> Description de la compensation : </div>
-                    <div class="w3-container w3-cell" style="width: 50%"><textarea class="w3-input w3-animate-input" type="text" name="compensationDesc1"> </textarea></div>
+                    <div class="w3-container w3-cell" style="width: 50%"><textarea class="w3-input w3-animate-input" type="text" name="pallierList[0].description"> </textarea></div>
                     <br>
                     <br>
                 </div>
 
 
                 <div id="addC" class="w3-display-container">
-                    <div class="w3-display-middle"><input  type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Rajouter une compensation" onclick="ajouter()"/></div>
+                    <div class="w3-display-middle"><input  type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Ajouter une compensation" onclick="ajouter()"/></div>
                 </div>
                 <br>
                 <br>
