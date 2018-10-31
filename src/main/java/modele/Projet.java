@@ -152,7 +152,7 @@ public class Projet {
      * @param description Une description detaillee du projet.
      * @param dateFin La date limite du financement.
      */
-    public Projet(Utilisateur porteur, String intitule, String resume, String description, int objectif, Timestamp dateFin)
+    public Projet(Utilisateur porteur, String intitule, String resume, String description, long objectif, Timestamp dateFin)
     {
         // Init primaires
         this.porteur     = porteur;

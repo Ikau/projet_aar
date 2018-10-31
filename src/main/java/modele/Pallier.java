@@ -146,6 +146,10 @@ public class Pallier {
         this.seuil = seuil;
     }
 
+    public void setIntitule(String intitule) {
+        this.intitule = intitule;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
