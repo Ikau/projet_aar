@@ -34,5 +34,16 @@ public class CategorieFacade {
     {
         return this.repository.findAllBy();
     }
+
+    public List<Categorie> getCategoriesByIds(List<Integer> ids)
+    {
+        return this.repository.findCategoriesByIdIn(ids);
+    }
+
+
+    /* ---------------------------
+     *           UNIQUE
+     * ---------------------------
+     */
     public Categorie getCategorie(int id){return this.repository.findCategorieById(id);}
 }
