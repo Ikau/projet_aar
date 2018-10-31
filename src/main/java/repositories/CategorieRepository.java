@@ -24,5 +24,13 @@ public interface CategorieRepository extends CrudRepository<Categorie, Integer>
      * ---------------------------
      */
     public List<Categorie> findAllBy();
+
+    public List<Categorie> findCategoriesByIdIn(List<Integer> ids);
+
+
+    /* ---------------------------
+     *           UNIQUE
+     * ---------------------------
+     */
     public Categorie findCategorieById(int id);
 }

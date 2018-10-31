@@ -2,6 +2,7 @@ package controller;
 
 
 import config.LoggerConfig;
+import modele.Categorie;
 import modele.Projet;
 import modele.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import services.*;
+import wrappers.ProjetWrapper;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.logging.Logger;
 
 
@@ -193,9 +196,14 @@ public class MonControlleur
         return "profil";
     }
 
+    /**
+     * Affiche la page contenant le formulaire de création d'un nouveau projet.
+     * @param model Le model de la session.
+     * @return La page 'formulaire_projet'.
+     */
     @GetMapping(value="/form")
-    public String getForm(Model model) {
-        model.addAttribute("projetTemp",new Projet());
+    public String getProjetForm(Model model) {
+        model.addAttribute("projetWrapper",new ProjetWrapper());
         model.addAttribute("categories", this.categorieFacade.getCategories());
         return "formulaire_projet";
     }
@@ -239,10 +247,36 @@ public class MonControlleur
      * ===============================================================
      */
 
-    @PostMapping(value="/ajoutProjet")
-    public String postProjetForm(@ModelAttribute("projetTemp") @Valid Projet temp, BindingResult result, Model model) {
+    /**
+     * Callback du formulaire de création d'un projet.
+     * @param projetWrapper Le wrapper contenant les inputs utilisateurs.
+     * @param result Le résultat du binding avec les inputs utilisateurs.
+     * @param model Le model de la session.
+     * @return Redirige vers le profil en cas de succès; affiche les erreurs sinon.
+     */
+    @PostMapping(value="/projets/creer")
+    public String postProjetForm(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper, BindingResult result,
+                                 Model model)
+    {
+        // Vérification des erreurs sur les champs spéciaux non annotables par @Valid
+        projetWrapper.valideListsEtDate(result);
 
-        return "accueil";
+        if(result.hasErrors())
+        {
+            model.addAttribute("categories", this.categorieFacade.getCategories());
+            return "formulaire_projet";
+        }
+
+        // Récupération de l'utilisateur et des catégories sélectionnées
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        List<Categorie> categories = this.categorieFacade.getCategoriesByIds(projetWrapper.getIds());
+
+        // Création du projet et mise à jour de l'utilisateur (pour ajouter son projet)
+        this.projetFacade.creer(projetWrapper.getProjet(courant, categories));
+        this.majUtilisateurCourant(model);
+
+        LOGGER.fine("[OK] Projet créé : {"+projetWrapper.getIntitule()+"}");
+        return "redirect:/profil";
     }
 
     @PostMapping(value="/")
@@ -431,6 +465,25 @@ public class MonControlleur
     {
         Utilisateur courant = (Utilisateur) model.asMap().get("courant");
         return courant.getId();
+    }
+
+    /**
+     * Renvoie l'utilisateur courant.
+     * @param model Le model de la session.
+     * @return L'utilisateur courant.
+     */
+    private Utilisateur getUtilisateurCourant(Model model)
+    {
+        return (Utilisateur) model.asMap().get("courant");
+    }
+
+    /**
+     * Met à jour l'utilisateur courant avec celui dans la base de données.
+     * @param model Le model de la session.
+     */
+    private void majUtilisateurCourant(Model model)
+    {
+        model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(this.getIdCourant(model)));
     }
 
 }
