@@ -41,7 +41,7 @@ public class ClientWebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+        registry.addResourceHandler("/ressources/**").addResourceLocations("/ressources/");
     }
 
 
