@@ -36,12 +36,22 @@ public class Don {
      * Le projet que ce don soutient.
      */
     @ManyToOne
+    @JoinTable(
+            name="DON_PROJET",
+            joinColumns = {@JoinColumn(name="DON_ID")},
+            inverseJoinColumns = {@JoinColumn(name="PROJET_ID")}
+    )
     private Projet projetSoutenu;
 
     /**
      * L'utilisateur qui a verse le don.
      */
     @ManyToOne
+    @JoinTable(
+            name="DON_FINANCEUR",
+            joinColumns = {@JoinColumn(name="DON_ID")},
+            inverseJoinColumns = {@JoinColumn(name="FINANCEUR_ID")}
+    )
     private Utilisateur financeur;
 
     /**
@@ -74,9 +84,7 @@ public class Don {
     {
         this.montant          = montant;
         this.financeur        = financeur;
-        this.financeur.getDons().add(this);
         this.projetSoutenu    = projet;
-        projet.getDons().add(this);
 
         // Sauvegarde de la date
         Timestamp maintenant  = new Timestamp(System.currentTimeMillis());

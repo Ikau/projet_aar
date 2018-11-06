@@ -1,9 +1,6 @@
 package modele;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -53,6 +50,11 @@ public class Pallier {
      * Le projet auquel est associe ce pallier.
      */
     @ManyToOne
+    @JoinTable(
+            name="PALLIER_PROJET",
+            joinColumns = {@JoinColumn(name="PALLIER_ID")},
+            inverseJoinColumns = {@JoinColumn(name="PROJET_ID")}
+    )
     private Projet projetSoutenu;
 
     /* ===========================================================

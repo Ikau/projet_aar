@@ -45,7 +45,7 @@ public class Categorie {
     /**
      * Ensemble des projets associes à cette categorie.
      */
-    @ManyToMany
+    @ManyToMany(mappedBy = "categories")
     private Set<Projet> projetsAssocies;
 
     /* ===========================================================

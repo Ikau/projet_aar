@@ -15,6 +15,17 @@ import java.util.Set;
  * Le mot de passe de l'utilisateur est stocke sous forme de hache.
  */
 @Entity
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name="join-all",
+                attributeNodes = {
+                        @NamedAttributeNode("projetsDeposes"),
+                        @NamedAttributeNode("projetsFinances"),
+                        @NamedAttributeNode("dons"),
+                        @NamedAttributeNode("messages")
+                }
+        )
+})
 public class Utilisateur {
     /* ===========================================================
      *                         PROPRIETES
@@ -64,25 +75,25 @@ public class Utilisateur {
     /**
      * L'ensemble des projets que l'utilisateur a deposes.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "porteur")
     private Set<Projet> projetsDeposes;
 
     /**
      * L'ensemble des projets que l'utilisateur a finances.
      */
-    @ManyToMany
+    @ManyToMany(mappedBy = "financeurs")
     private Set<Projet> projetsFinances;
 
     /**
      * L'ensemble des dons que l'utilisateur a verses.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "financeur")
     private Set<Don> dons;
 
     /**
      * L'ensemble des messages que l'utilisateur a postes.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "auteur")
     private Set<Message> messages;
 
 

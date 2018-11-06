@@ -34,12 +34,28 @@ public class Message {
      * Le projet auquel repond ce mesasge.
      */
     @ManyToOne
+    @JoinTable(
+            name="MESSAGE_PROJET",
+            joinColumns = {@JoinColumn(name="MESSAGE_ID")},
+            inverseJoinColumns = {@JoinColumn(name="PROJET_ID")}
+    )
     private Projet projet;
+
+    /**
+     * Le projet auquel ce message est rattache.
+     */
+    @ManyToOne
+    private Projet projetAssocie;
 
     /**
      * L'utilisateur qui a poste le message.
      */
     @ManyToOne
+    @JoinTable(
+            name="MESSAGE_AUTEUR",
+            joinColumns = {@JoinColumn(name="MESSAGE_ID")},
+            inverseJoinColumns = {@JoinColumn(name="UTILISATEUR_ID")}
+    )
     private Utilisateur auteur;
 
     /**
@@ -53,12 +69,17 @@ public class Message {
      * Le message auquel le message actuel repond.
      */
     @ManyToOne
+    @JoinTable(
+            name="MESSAGE_REPONSE",
+            joinColumns = {@JoinColumn(name="MESSAGE_ID")},
+            inverseJoinColumns = {@JoinColumn(name="REPONSE_ID")}
+    )
     private Message repondA;
 
     /**
      * Ensemble des messages qui repondent au message actuel.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "repondA")
     @OrderBy("dateCreation")
     private Set<Message> reponduPar;
 
@@ -91,13 +112,12 @@ public class Message {
     public Message(Utilisateur auteur, Projet projet, String contenu)
     {
         // Init primaire
-        this.auteur     = auteur;
-        auteur.getMessages().add(this);
-        this.projet     = projet;
-        projet.getMessagesRacines().add(this);
-        this.contenu    = contenu;
-        this.repondA    = null;
-        this.reponduPar = new HashSet<>();
+        this.auteur        = auteur;
+        this.projet        = projet;
+        this.projetAssocie = projet;
+        this.contenu       = contenu;
+        this.repondA       = null;
+        this.reponduPar    = new HashSet<>();
 
         // Modification du temps
         Timestamp maintenant  = new Timestamp(System.currentTimeMillis());
@@ -115,13 +135,12 @@ public class Message {
     public Message(Message messageParent, Utilisateur auteur, Projet projet, String contenu)
     {
         // Init primaire
-        this.auteur     = auteur;
-        auteur.getMessages().add(this);
-        this.projet     = projet;
-        this.contenu    = contenu;
-        this.repondA    = messageParent;
-        messageParent.getReponduPar().add(this);
-        this.reponduPar = null;
+        this.auteur        = auteur;
+        this.projet        = null;
+        this.projetAssocie = projet;
+        this.contenu       = contenu;
+        this.repondA       = messageParent;
+        this.reponduPar    = new HashSet<>();
 
         // Modification du temps
         Timestamp maintenant  = new Timestamp(System.currentTimeMillis());

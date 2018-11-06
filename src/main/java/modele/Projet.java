@@ -67,6 +67,11 @@ public class Projet {
      * L'utilisateur qui a déposé le projet.
      */
     @ManyToOne
+    @JoinTable(
+            name="PROJET_PORTEUR",
+            joinColumns = {@JoinColumn(name="PROJET_ID")},
+            inverseJoinColumns = {@JoinColumn(name="PORTEUR_ID")}
+    )
     private Utilisateur porteur;
 
     /**
@@ -106,12 +111,17 @@ public class Projet {
      * Enemble des categories qui decrivent le projet.
      */
     @ManyToMany
+    @JoinTable(
+            name="PROJET_CATEGORIE",
+            joinColumns = {@JoinColumn(name="PROJET_ID")},
+            inverseJoinColumns = {@JoinColumn(name="CATEGORIE_ID")}
+    )
     private Set<Categorie> categories;
 
     /**
      * Ensemble des palliers du projet.
      */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "projetSoutenu",cascade = CascadeType.ALL)
     @OrderBy("seuil")
     private Set<Pallier> palliers;
 
@@ -119,19 +129,24 @@ public class Projet {
      * Ensemble des utilisateurs ayant finance le projet.
      */
     @ManyToMany
+    @JoinTable(
+            name="PROJET_FINANCEUR",
+            joinColumns = {@JoinColumn(name="PROJET_ID")},
+            inverseJoinColumns = {@JoinColumn(name="FINANCEUR_ID")}
+    )
     private Set<Utilisateur> financeurs;
 
     /**
      * Ensemble des dons que le projet a recueillir.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "projetSoutenu")
     private Set<Don> dons;
 
     /**
      * L'ensemble des messages 'racines' du projet.
      * Les reponses de ces messages ne sont pas compris dans cet ensemble.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "projet")
     @OrderBy("dateCreation")
     private Set<Message> messagesRacines;
 
