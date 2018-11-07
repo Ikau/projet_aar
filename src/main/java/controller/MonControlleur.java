@@ -3,6 +3,7 @@ package controller;
 
 import config.LoggerConfig;
 import modele.Categorie;
+import modele.Message;
 import modele.Projet;
 import modele.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,12 @@ public class MonControlleur
      */
     @Autowired
     private CategorieFacade categorieFacade;
+
+    /**
+     * Facade gerant les operations sur le modele Message.
+     */
+    @Autowired
+    private MessageFacade messageFacade;
 
     /**
      * Logger pour la classe actuelle.
@@ -179,6 +186,7 @@ public class MonControlleur
     public String getProjetId(@PathVariable int id, Model model) {
         if(this.projetFacade.estExistant(id))
         {
+            model.addAttribute("messageTemp", new Message());
             model.addAttribute("projet", this.projetFacade.getProjetById(id));
             LOGGER.info("[OK] Affichage du projet {"+id+"}");
             return "projet";
@@ -357,10 +365,40 @@ public class MonControlleur
         return("connexion");
     }
 
-    //TODO finir la réponse de message
-    @PostMapping("/projets/{projetId)/messages/{messageId}")
-    public String postRepondreMessage(@PathVariable String projetId, @PathVariable int messageId)
+    @PostMapping("/projets/{projetId}/messages")
+    public String postMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
+                              @PathVariable int projetId, Model model)
     {
+        if(result.hasErrors()) return "redirect:/projets/"+projetId;
+
+        // Création du message
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        Projet      projet  = this.projetFacade.getProjetById(projetId);
+        Message     message = new Message(courant, projet, messageTemp.getContenu());
+
+        //Sauvegarde message et maj de la variable
+        this.messageFacade.save(message);
+        this.majUtilisateurCourant(model);
+        model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
+
+        return "redirect:/projets/"+projetId;
+    }
+
+    @PostMapping("/projets/{projetId}/messages/{messageId}")
+    public String postRepondreMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
+                                      @PathVariable int projetId, @PathVariable int messageId, Model model)
+    {
+        if(result.hasErrors()) return "redirect:/projets/"+projetId;
+
+        // Création du message
+        Utilisateur courant       = this.getUtilisateurCourant(model);
+        Projet      projet        = (Projet) model.asMap().get("projet");
+        Message     messageParent = this.messageFacade.getMessage(messageId);
+        Message     message       = new Message(messageParent, courant, projet, messageTemp.getContenu());
+
+        //Sauvegarde message et maj de la variable
+        this.messageFacade.save(message);
+        model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
         return "redirect:/projets/"+projetId;
     }
 

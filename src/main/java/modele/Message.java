@@ -79,7 +79,7 @@ public class Message {
     /**
      * Ensemble des messages qui repondent au message actuel.
      */
-    @OneToMany(mappedBy = "repondA")
+    @OneToMany(mappedBy = "repondA", fetch = FetchType.EAGER)
     @OrderBy("dateCreation")
     private Set<Message> reponduPar;
 

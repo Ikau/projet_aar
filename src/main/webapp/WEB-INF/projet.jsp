@@ -1,32 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <title>Test</title>
+    <title>${projet.getIntitule()}</title>
     <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/w3css/4/w3.css"/>">
     <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/lib/w3-theme-indigo.css"/>">
     <link rel="stylesheet" href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>">
-    <style type="text/css">
-
-        .reponse { display:none; }
-
-    </style>
+    <link rel="stylesheet" href="/ressources/css/projet.css">
+    <script language="JavaScript" src="/ressources/js/projet.js"></script>
 </head>
-
-<SCRIPT LANGUAGE="JavaScript">
-
-    function afficher(id) {
-
-        document.getElementById(id).style.display = "block";
-    }
-    function cacher(id) {
-        document.getElementById(id).style.display = "none";
-    }
-
-</SCRIPT>
 <body>
 
-<!--- Barre de navigation -->
+<%--- Barre de navigation --%>
 <% if (session.getAttribute("auth") != null) { %>
 <div class="w3-bar w3-theme-dark">
     <a href="/" class="w3-bar-item w3-button">Home</a>
@@ -57,77 +43,36 @@
         <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-3"></i> ${projet.getStringFin()}</div>
 
         <p>${projet.getDescription()}</p>
-
         <p>
             <h1> Commentaires </h1>
-
-
-            <%-- ----------------------------  COMMENTAIRE  ---------------------- --%>
+            <%-- --------------------------  COMMENTAIRE  ------------------------- --%>
             <c:forEach items="${projet.getMessagesRacines()}" var="message">
-            <div class="w3-panel w3-leftbar w3-border-theme">
-                <div class="w3-text-gray">
-                    Envoyé le ${message.getStringCreation()}. Dernière modification le ${message.getStringModification()}
-                </div>
-                <p>
-                        ${message.getContenu()}
-                </p>
-                <!-- Bas du commentaire -->
-                <div class="w3-container w3-cell w3-text-theme">
-                    ${message.getAuteur().getLogin()}
-                </div>
-                <!-- Partie réponse TODO modifier dynamiquement le bouton repondre -->
-                <div class="w3-container w3-cell w3-text-theme" style="width: 100%">
-                    <a href="#" onclick="afficher('r2')">Répondre</a>
-                    <div class="reponse" id="r2" >
-                        <textarea class="w3-input" type="text" style="resize:none"></textarea> <br>
-                        <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
-                        </p>
-                    </div>
-                </div>
-
-                <%-- ------------ REPONSES ------------ --%>
-                <c:forEach items="${message.getReponduPar()}" var="reponse">
-                <div class="w3-panel w3-leftbar w3-border-theme">
-                    <div class="w3-text-gray">
-                        Envoyé le ${reponse.getStringCreation()}. Dernière modification le ${reponse.getStringModification()}
-                    </div>
-                    <p>
-                        ${reponse.getContenu()}
-                    </p>
-                    <!-- Bas du commentaire -->
-                    <div class="w3-container w3-cell w3-text-theme">
-                        ${reponse.getAuteur().getLogin()}
-                    </div>
-                    <!-- Partie réponse -->
-                    <div class="w3-container w3-cell w3-text-theme"style="width: 100%">
-                        <a href="#" onclick="afficher('r3')">Répondre</a>
-                        <div class="reponse" id="r3" >
-                            <textarea class="w3-input" type="text" style="resize:none"></textarea>  <br>
-                            <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                </c:forEach>
-                <%-- ---------------------------------- --%>
-            </div>
+                <c:set var="message" scope="request" value="${message}"/>
+                <jsp:include page="message.jsp"/>
             </c:forEach>
             <%-- ------------------------------------------------------------------ --%>
 
             <br>
             <h2>Ajouter un commentaire</h2>
-            <textarea class="w3-input" type="text" style="resize:none"></textarea>  <br>
-            <input type="button" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="poster"/>
+            <c:choose>
+                <c:when test="${auth != null}">
+                    <%--@elvariable id="messageTemp" type="modele.Message"--%>
+                    <form:form action="/projets/${projet.getId()}/messages" method="post" modelAttribute="messageTemp">
+                        <form:textarea path="contenu" class="w3-input" type="text"/> <br>
+                        <form:errors path="contenu" cssStyle="color:red;"/>
+                        <input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Envoyer"/>
+                    </form:form>
+                </c:when>
+                <c:otherwise>
+                    <div>
+                        <a href="/connexion">Se connecter</a> ou <a href="/inscription">s'inscrire</a> pour commenter le projet.
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </p>
-
-
-
-
     </p></div>
 
-    <div class="w3-col" style="width:2%"><p>
-
-    </p></div>
+    <div class="w3-col" style="width:2%"><p></p></div>
 
     <div class="w3-col" style="width:30%"><p>
         <div>Somme récoltée : ${projet.getFinancement()} €</div>
@@ -147,15 +92,9 @@
         <div class="w3-text-gray">À partir de ${pallier.getSeuil()} €</div>
         <p>${pallier.getDescription()}</p>
         </c:forEach>
-
-
-        </p></div>
-
-    <div class="w3-col" style="width:4%"><p>
-
     </p></div>
+
+    <div class="w3-col" style="width:4%"><p></p></div>
 </div>
-
-
 </body>
 </html>
