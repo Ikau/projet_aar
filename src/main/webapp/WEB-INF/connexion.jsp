@@ -9,14 +9,7 @@
 </head>
 <body>
 
-<!--- Barre de navigation -->
-
-<div class="w3-bar w3-theme-dark">
-    <a href="/" class="w3-bar-item w3-button">Home</a>
-    <a href="/connexion" class="w3-bar-item w3-button">Se connecter</a>
-    <a href="/inscription" class="w3-bar-item w3-button">S'inscrire</a>
-</div>
-
+<jsp:include page="navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:25%"><p>
