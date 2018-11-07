@@ -11,7 +11,12 @@ import java.sql.Timestamp;
  */
 @Entity
 @NamedEntityGraphs({
-        @NamedEntityGraph(name="fetch-palliers-projet")
+        @NamedEntityGraph(
+                name="fetch-projet",
+                attributeNodes = {
+                        @NamedAttributeNode("projetSoutenu")
+                }
+        )
 })
 public class Don {
     /* ===========================================================

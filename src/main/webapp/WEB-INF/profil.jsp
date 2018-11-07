@@ -31,6 +31,7 @@
                 <c:forEach items="${derniersProjetsDeposes}" var="projet">
                 <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
                 </c:forEach>
+                <%-- TODO faire la page 'tous les projets' --%>
                 <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
             </ul>
         </div>
@@ -40,15 +41,17 @@
                 <c:forEach items="${derniersProjetsDeposes}" var="projet">
                     <li class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></li>
                 </c:forEach>
-                <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
             </ul>
         </div>
         <div class="w3-container w3-cell">
             <ul class="w3-ul w3-border" >
                 <li><h2>Mes derniers financements</h2></li>
-                <li class="w3-hover-theme">Titre p1</li>
-                <li class="w3-hover-theme">Titre p2</li>
-                <li class="w3-hover-theme">Titre p3</li>
+                <c:forEach items="${derniersFinancements}" var="don">
+                    <li class="w3-hover-theme">
+                        ${don.getMontant()} € (<a href="/projets/${don.getProjetSoutenu().getId()}">${don.getProjetSoutenu().getIntitule()}</a>)
+                    </li>
+                </c:forEach>
+                <%-- TODO faire la page 'tous les financements' --%>
                 <li class="w3-hover-theme"><a href="/profil/financements">Voir tous mes financements</a></li>
             </ul>
         </div>

@@ -33,6 +33,12 @@ public class DonFacade {
      *            LIST
      * ---------------------------
      */
+
+    /**
+     * Renvoie les trois derniers dons d'un utilisateur.
+     * @param financeurId L'ID de l'utilisateur-financeur.
+     * @return Les trois derneirs dons d'un utilisateur.
+     */
     public List<Don> getTroisDerniersDonsDeFinanceur(int financeurId)
     {
         return this.repository.findFirst3ByFinanceur_IdOrderByDateCreation(financeurId);
@@ -42,6 +48,13 @@ public class DonFacade {
     /* ===========================================================
      *                         METHODES
      * ===========================================================
+     */
+
+    /**
+     * Renvoie la somme totale versée par un utilisateur dans un projet.
+     * @param financeurId L'ID du financeur.
+     * @param projetId L'ID du projet.
+     * @return La somme totale versée par un utilisateur dans un projet.
      */
     public long getFinancementTotal(int financeurId, int projetId)
     {

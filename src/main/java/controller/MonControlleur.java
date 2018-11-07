@@ -218,6 +218,7 @@ public class MonControlleur
     {
         int id = this.getIdCourant(model);
         model.addAttribute("derniersProjetsDeposes", this.projetFacade.getTroisDerniersDeposesDePorteurId(id));
+        model.addAttribute("derniersFinancements", this.donFacade.getTroisDerniersDonsDeFinanceur(id));
         return "profil";
     }
 

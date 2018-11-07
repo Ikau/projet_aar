@@ -1,6 +1,7 @@
 package repositories;
 
 import modele.Don;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,7 @@ public interface DonRepository extends CrudRepository<Don, Integer> {
      * @param financeurId L'ID du financeur.
      * @return Les trois derniers dons de l'utilisateur.
      */
+    @EntityGraph(value="fetch-projet", type = EntityGraph.EntityGraphType.FETCH)
     List<Don> findFirst3ByFinanceur_IdOrderByDateCreation(int financeurId);
 
     /**
