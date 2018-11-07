@@ -195,7 +195,11 @@ public class MonControlleur
         return "redirect:/";
     }
 
-
+    /**
+     * Affichage de la page de profil d'un membre connecté.
+     * @param model Le model se la session.
+     * @return La page 'profil'.
+     */
     @GetMapping(value="/profil")
     public String getProfilId(Model model)
     {
@@ -365,6 +369,14 @@ public class MonControlleur
         return("connexion");
     }
 
+    /**
+     * Gestion de l'envoi de l'envoi d'un nouveau commentaire à un projet.
+     * @param messageTemp Le message temporaire issu des entrées utilisateur.
+     * @param result Résultat du binding de validation du modèle.
+     * @param projetId L'ID du projet que ce message concerne.
+     * @param model Le model de la session.
+     * @return La page 'projet' en cas d'échec ou de succès.
+     */
     @PostMapping("/projets/{projetId}/messages")
     public String postMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
                               @PathVariable int projetId, Model model)
@@ -384,6 +396,15 @@ public class MonControlleur
         return "redirect:/projets/"+projetId;
     }
 
+    /**
+     * Gestion de l'envoi d'un nouveau message répondant à un message existant.
+     * @param messageTemp Le message temporaire issu des entrées utilisateur.
+     * @param result Résultat du binding de validation du modèle.
+     * @param projetId L'ID du projet que ce message concerne.
+     * @param messageId L'ID du message qui est répondu.
+     * @param model Le model de la session.
+     * @return La page 'projet' en cas d'échec ou de succès.
+     */
     @PostMapping("/projets/{projetId}/messages/{messageId}")
     public String postRepondreMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
                                       @PathVariable int projetId, @PathVariable int messageId, Model model)
