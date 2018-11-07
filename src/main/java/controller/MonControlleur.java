@@ -2,10 +2,7 @@ package controller;
 
 
 import config.LoggerConfig;
-import modele.Categorie;
-import modele.Message;
-import modele.Projet;
-import modele.Utilisateur;
+import modele.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,6 +62,12 @@ public class MonControlleur
      */
     @Autowired
     private MessageFacade messageFacade;
+
+    /**
+     * Facade gerant les operations sur le modele Don.
+     */
+    @Autowired
+    private DonFacade donFacade;
 
     /**
      * Logger pour la classe actuelle.
@@ -186,7 +189,17 @@ public class MonControlleur
     public String getProjetId(@PathVariable int id, Model model) {
         if(this.projetFacade.estExistant(id))
         {
-            model.addAttribute("messageTemp", new Message());
+            if(this.estConnecte(model))
+            {
+                // Redirection d'erreur
+                if(!model.containsAttribute("donTemp"))
+                {
+                    model.addAttribute("donTemp", new Don());
+                }
+
+                model.addAttribute("participation", this.donFacade.getFinancementTotal(this.getIdCourant(model), id));
+                model.addAttribute("messageTemp", new Message());
+            }
             model.addAttribute("projet", this.projetFacade.getProjetById(id));
             LOGGER.info("[OK] Affichage du projet {"+id+"}");
             return "projet";
@@ -481,6 +494,47 @@ public class MonControlleur
 
         LOGGER.info("[OK] Login modifié {"+id+"}");
         return "redirect:/profil";
+    }
+
+    /**
+     * Prend en charge le financement d'un projet par un utilisateur connecté.
+     * @param donTemp Le don issu des entrées utilisateur.
+     * @param result La validation des données utilisateur.
+     * @param projetId L'ID du projet à financer.
+     * @param redirectAttributes Objet de redirection des attributs du model.
+     * @param model Le model de la session.
+     * @return La page 'projet' courante en cas de succès ou d'échec.
+     */
+    @PostMapping("/projets/{projetId}/financer")
+    public String postFinancerProjet(@ModelAttribute("donTemp") @Valid Don donTemp, BindingResult result,
+                                     @PathVariable int projetId, RedirectAttributes redirectAttributes, Model model)
+    {
+        if(donTemp.getMontant() == 0)
+        {
+            result.addError(new FieldError("donTemp", "montant",
+                                           "Entrer un montant supérieur à 0."));
+        }
+        if(result.hasErrors())
+        {
+            // On utilise une redirection : il faut redireiger tous les attributs avec
+            this.persistError(redirectAttributes, result, "donTemp", donTemp);
+
+            LOGGER.fine("[ERR] Erreur montant -> 'projet'");
+            return "redirect:/projets/"+projetId;
+        }
+
+        // Création du don
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        Projet      projet  = this.projetFacade.getProjetById(projetId);
+        Don don = new Don(courant, projet,donTemp.getMontant());
+
+        // Sauvegarde
+        this.donFacade.save(don);
+        this.majUtilisateurCourant(model);
+        model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
+
+        LOGGER.info("[OK] Financement {"+courant.getId()+"} : {"+don.getMontant()+"}€ -> {"+projetId+"}");
+        return "redirect:/projets/"+projetId;
     }
 
 
