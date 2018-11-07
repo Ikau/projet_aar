@@ -48,7 +48,7 @@
                     <div class="w3-row">
                         <div class="w3-col s9 w3-center">
                             <p><div class="w3-theme-l4">
-                                    <div class="w3-theme w3-center w3-padding" style="width:${p.getPourcentage()}%">${p.getPourcentage()} %</div>
+                                    <div class="w3-theme w3-center w3-padding" style="max-width:100%;width:${p.getPourcentage()}%">${p.getPourcentage()} %</div>
                             </div></p>
                         </div>
                         <div class="w3-col s3 w3-center"><p>

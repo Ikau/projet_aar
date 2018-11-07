@@ -61,16 +61,33 @@
 
     <div class="w3-col" style="width:30%"><p>
         <div>Somme récoltée : ${projet.getFinancement()} €</div>
-        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="width:${projet.getPourcentage()}%">${projet.getPourcentage()} %</div></div>
+        <div class="w3-theme-l4"><div class="w3-theme w3-center w3-padding" style="max-width:100%;width:${projet.getPourcentage()}%">${projet.getPourcentage()} %</div></div>
 
         <div class="w3-display-container" style="height:40px;">
             <div class="w3-padding w3-display-topleft">0€</div>
             <div class="w3-padding w3-display-topright">${projet.getObjectif()} €</div>
         </div>
-        <h2>Saisir un Montant :</h2>
-        <input class="w3-input" type="text">
-        <br>
-        <button class="w3-button w3-block w3-theme" type="submit" > Financer </button>
+
+        <c:choose>
+        <c:when test="${auth != null}">
+            <div>
+                <div>Votre participation : ${participation} €</div>
+                <div>Votre pallier : ${projet.getPallierFinancement(participation)}</div>
+            </div>
+
+            <h2>Saisir un Montant :</h2>
+            <%--@elvariable id="donTemp" type="modele.Don"--%>
+            <form:form method="post" action="/projets/${projet.getId()}/financer" modelAttribute="donTemp">
+                <form:input class="w3-input" type="number" path="montant"/>
+                <form:errors cssStyle="color:red;" path="montant"/>
+                <br>
+                <input class="w3-button w3-block w3-theme" type="submit" value="Financer"/>
+            </form:form>
+        </c:when>
+        <c:otherwise>
+            <a href="/connexion">Se connecter</a> ou <a href="/inscription">s'inscrire</a> pour financer le projet.
+        </c:otherwise>
+        </c:choose>
 
         <c:forEach items="${projet.getPalliers()}" var="pallier">
         <h2>${pallier.getIntitule()}</h2>
