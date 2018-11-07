@@ -26,28 +26,31 @@
         <br>
         <br>
         <div class="w3-container w3-cell">
-        <ul class="w3-ul w3-border" >
-            <li><h2>Mes projets</h2></li>
-            <c:forEach items="${derniersProjetsDeposes}" var="projet">
-            <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
-            </c:forEach>
-        </ul>
-        </div>
-            <div class="w3-container w3-cell">
-            <ul class="w3-ul" >
-                <li><h2>Modifier mes projets</h2></li>
-                <li><a href="#" > Modifier p1</a></li>
-                <li><a href="#" > Modifier p2</a></li>
-                <li><a href="#" > Modifier p3</a></li>
+            <ul class="w3-ul w3-border" >
+                <li><h2>Mes derniers projets</h2></li>
+                <c:forEach items="${derniersProjetsDeposes}" var="projet">
+                <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
+                </c:forEach>
+                <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
             </ul>
         </div>
-            <div class="w3-container w3-cell">
-        <ul class="w3-ul w3-border" >
-            <li><h2>Mes financements</h2></li>
-            <li class="w3-hover-theme">Titre p1</li>
-            <li class="w3-hover-theme">Titre p2</li>
-            <li class="w3-hover-theme">Titre p3</li>
-        </ul>
+        <div class="w3-container w3-cell">
+            <ul class="w3-ul" >
+                <li><h2>Modifier mes projets</h2></li>
+                <c:forEach items="${derniersProjetsDeposes}" var="projet">
+                    <li class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></li>
+                </c:forEach>
+                <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
+            </ul>
+        </div>
+        <div class="w3-container w3-cell">
+            <ul class="w3-ul w3-border" >
+                <li><h2>Mes derniers financements</h2></li>
+                <li class="w3-hover-theme">Titre p1</li>
+                <li class="w3-hover-theme">Titre p2</li>
+                <li class="w3-hover-theme">Titre p3</li>
+                <li class="w3-hover-theme"><a href="/profil/financements">Voir tous mes financements</a></li>
+            </ul>
         </div>
     </p></div>
 
