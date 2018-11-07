@@ -313,6 +313,30 @@ public class Projet {
     }
 
     /**
+     * Renvoie le pallier que le financement permet d'obtenir.
+     * @param montant Montant total financé dans le projet.
+     * @return Un message indiquant le pallier obtenu.
+     */
+    public String getPallierFinancement(long montant)
+    {
+        String pallier = "[x] Pas de financement";
+        int    niveau  = 0;
+        for(Pallier p : this.palliers)
+        {
+            if(montant > p.getSeuil())
+            {
+                pallier = "["+niveau+"] "+p.getIntitule();
+                niveau++;
+            }
+            else
+            {
+                return pallier;
+            }
+        }
+        return pallier;
+    }
+
+    /**
      * Renvoie le temps restant avant la fin du financement du projet.
      *
      * La date affichée s'adapte par rapport à la plus grande échelle de temps (année, mois, etc).
