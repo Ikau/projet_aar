@@ -41,7 +41,32 @@ public class DonFacade {
      */
     public List<Don> getTroisDerniersDonsDeFinanceur(int financeurId)
     {
-        return this.repository.findFirst3ByFinanceur_IdOrderByDateCreation(financeurId);
+        return this.repository.findFirst3ByFinanceur_IdOrderByDateCreationDesc(financeurId);
+    }
+
+    /**
+     * Renvoie la liste de tous les dons d'un utilisateur.
+     * @param financeurId L'ID de l'utilisateur.
+     * @return La liste de tous les dons d'un utilisateur.
+     */
+    public List<Don> getDons(int financeurId)
+    {
+        return this.repository.findByFinanceur_IdOrderByDateCreationDesc(financeurId);
+    }
+
+    /* ---------------------------
+     *           UNIQUE
+     * ---------------------------
+     */
+
+    /**
+     * Renvoie le don identifié par id.
+     * @param id L'ID du don.
+     * @return Le don identifié par id.
+     */
+    public Don getDon(int id)
+    {
+        return this.repository.findDonById(id);
     }
 
 
@@ -58,7 +83,7 @@ public class DonFacade {
      */
     public long getFinancementTotal(int financeurId, int projetId)
     {
-        List<Don> dons = this.repository.findDonByFinanceur_IdAndProjetSoutenu_Id(financeurId, projetId);
+        List<Don> dons = this.repository.findDonByFinanceur_IdAndProjetSoutenu_IdAndActifIsTrue(financeurId, projetId);
 
         long financement = 0;
         for(Don d : dons)

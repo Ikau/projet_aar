@@ -51,7 +51,6 @@
                         ${don.getMontant()} € (<a href="/projets/${don.getProjetSoutenu().getId()}">${don.getProjetSoutenu().getIntitule()}</a>)
                     </li>
                 </c:forEach>
-                <%-- TODO faire la page 'tous les financements' --%>
                 <li class="w3-hover-theme"><a href="/profil/financements">Voir tous mes financements</a></li>
             </ul>
         </div>

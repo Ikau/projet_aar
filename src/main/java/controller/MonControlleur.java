@@ -254,6 +254,23 @@ public class MonControlleur
         return "changerlogin";
     }
 
+
+    /**
+     * Affiche la page de gestion de tous les financements d'un utilisateur.
+     * @param model Le model de la session.
+     * @return La page de gestion de tous les financements d'un utilisateur.
+     */
+    @GetMapping("/profil/financements")
+    public String getProfilFinancements(Model model)
+    {
+        if(!this.estConnecte(model)) return "redirect:/";
+
+        model.addAttribute("financements", this.donFacade.getDons(this.getIdCourant(model)));
+        LOGGER.fine("[OK] affichage 'profil-financements'");
+        return "profil-financements";
+    }
+
+
     /**
      * TEMPORAIRE : page de test pour les differentes facades.
      * @return La page de test
@@ -584,6 +601,32 @@ public class MonControlleur
         }
 
         return "redirect:/projets/"+projetId;
+    }
+
+
+    /**
+     * Permet de désactiver un financement versé à un projet.
+     * @param donId L'ID du financement à désactiver.
+     * @param model Le model de la session.
+     * @return Redirige vers '/profil/financements'.
+     */
+    @PostMapping("/financements/{donId}")
+    public String postAnnulerFinancement(@PathVariable int donId, Model model)
+    {
+        // Init variables
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        Don         don     = this.donFacade.getDon(donId);
+
+        // Vérifications
+        if(don == null) return "redirect:/profil/financements";
+        if(courant.getId() != don.getFinanceur().getId()) return "redirect:/profil/financements";
+
+        // Process
+        don.desactiver();
+        this.donFacade.save(don);
+
+        LOGGER.info("Don {"+don.getId()+"} désactivé.");
+        return "redirect:/profil/financements";
     }
 
     /* ===============================================================

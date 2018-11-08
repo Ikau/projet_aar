@@ -295,7 +295,10 @@ public class Projet {
         long somme = 0;
         for(Don d : this.dons)
         {
-            somme += d.getMontant();
+            if(d.isActif())
+            {
+                somme += d.getMontant();
+            }
         }
         return somme;
     }
