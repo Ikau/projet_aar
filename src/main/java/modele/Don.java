@@ -1,5 +1,8 @@
 package modele;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import services.DateService;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.sql.Timestamp;
@@ -30,6 +33,11 @@ public class Don {
     @Id
     @GeneratedValue
     private int id;
+
+    /**
+     * Indique si le don est activé ou non.
+     */
+    private boolean actif;
 
     /**
      * Le montant du don verse au projet.
@@ -87,6 +95,7 @@ public class Don {
      */
     public Don(Utilisateur financeur, Projet projet, int montant)
     {
+        this.actif            = true;
         this.montant          = montant;
         this.financeur        = financeur;
         this.projetSoutenu    = projet;
@@ -104,6 +113,10 @@ public class Don {
 
     public int getId() {
         return id;
+    }
+
+    public boolean isActif() {
+        return actif;
     }
 
     public int getMontant() {
@@ -148,4 +161,22 @@ public class Don {
      *                           METHODES
      * ===========================================================
      */
+
+    /**
+     * Renvoie la date de dernière modification sous format humain.
+     * @return La date de dernière modification sous format humain.
+     */
+    public String getStringModification()
+    {
+        return DateService.getDateHumain(this.dateModification.getTime());
+    }
+
+    /**
+     * Permet de désactiver un don.
+     */
+    public void desactiver()
+    {
+        this.actif            = false;
+        this.dateModification = new Timestamp(System.currentTimeMillis());
+    }
 }
