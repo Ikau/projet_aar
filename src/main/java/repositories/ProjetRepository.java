@@ -45,14 +45,14 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      * @return Les trois derniers projets deposes.
      */
     @EntityGraph(value="joinCategoriesDons", type=EntityGraph.EntityGraphType.FETCH)
-    public List<Projet> findFirst3ByOrderByDateDepot();
+    public List<Projet> findFirst3ByOrderByDateDepotDesc();
 
     /**
      * Renvoie les trois derniers projets déposés par le porteur associé à l'ID.
      * @param porteurId L'id du porteur associé au projet.
      * @return Les trois derniers projets déposés par le porteur associé à l'ID.
      */
-    public List<Projet> findFirst3ByPorteur_IdOrderByDateDepot(int porteurId);
+    public List<Projet> findFirst3ByPorteur_IdOrderByDateDepotDesc(int porteurId);
 
 
     /**
@@ -62,7 +62,7 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      * @return Les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
      */
     @EntityGraph(value="joinAll", type= EntityGraph.EntityGraphType.FETCH)
-    @Query("select p from Projet p join p.categories c where c.id = ?1 order by p.dateDepot")
+    @Query("select p from Projet p join p.categories c where c.id = ?1 order by p.dateDepot desc")
     public Page<Projet> findProjetsByCategoriesRange(int idCategorie, Pageable pageable);
 
     /* ---------------------------

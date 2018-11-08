@@ -77,7 +77,7 @@ public class ProjetFacade {
      */
     public List<Projet> getTroisDerniersProjets()
     {
-        return this.repository.findFirst3ByOrderByDateDepot();
+        return this.repository.findFirst3ByOrderByDateDepotDesc();
     }
 
 
@@ -88,7 +88,7 @@ public class ProjetFacade {
      */
     public List<Projet> getTroisDerniersDeposesDePorteurId(int porteurId)
     {
-        return this.repository.findFirst3ByPorteur_IdOrderByDateDepot(porteurId);
+        return this.repository.findFirst3ByPorteur_IdOrderByDateDepotDesc(porteurId);
     }
 
 
