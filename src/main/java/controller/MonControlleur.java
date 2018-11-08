@@ -427,7 +427,7 @@ public class MonControlleur
 
         // Création du message
         Utilisateur courant       = this.getUtilisateurCourant(model);
-        Projet      projet        = (Projet) model.asMap().get("projet");
+        Projet      projet        = this.projetFacade.getProjetById(projetId);
         Message     messageParent = this.messageFacade.getMessage(messageId);
         Message     message       = new Message(messageParent, courant, projet, messageTemp.getContenu());
 
@@ -538,6 +538,53 @@ public class MonControlleur
         return "redirect:/projets/"+projetId;
     }
 
+    /**
+     * Controlleur gérant l'édition et la désactivation de message.
+     * Note : Un message est 'désactivé' et pas 'supprimé'.
+     *
+     * @param messageId L'ID du message.
+     * @param contenu (optionnel) Le nouveau contenu du message pour l'édition.
+     * @param action (optionnel) L'action à effectuer (DELETE, PATCH)
+     * @param model Le model de la session.
+     * @return La page du projet du message.
+     */
+    @PostMapping("/messages/{messageId}")
+    public String postGestionMessage(@PathVariable int messageId,
+                                     @RequestParam(value="contenu", required = false) String contenu,
+                                     @RequestParam(value="action", required = false) String action,
+                                     Model model)
+    {
+        // Vérification null
+        Message message = this.messageFacade.getMessage(messageId);
+        if(message == null) return "redirect:/";
+
+        // Vérification propriétaire
+        int projetId  = message.getProjetAssocie().getId();
+        int idCourant = this.getIdCourant(model);
+        if(message.getAuteur().getId() != idCourant)
+        {
+            LOGGER.info("[ERR] Courant {"+idCourant+"} n'est pas l'auteur de {"+messageId+"}");
+            return "redirect:/projets/"+projetId;
+        }
+
+        // Vérification de l'action
+        switch(action)
+        {
+            case "DELETE":
+                message.desactiver();
+                this.messageFacade.save(message);
+                LOGGER.info("Désactivation du message {"+messageId+"}");
+                break;
+
+            case "PATCH":
+                message.editer(contenu);
+                this.messageFacade.save(message);
+                LOGGER.info("Modification du message {"+messageId+"}");
+                break;
+        }
+
+        return "redirect:/projets/"+projetId;
+    }
 
     /* ===============================================================
      *                           METHODS

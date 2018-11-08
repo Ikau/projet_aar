@@ -1,1 +1,4 @@
-.reponse { display:none; }
+.action-message {
+    text-decoration: underline;
+    cursor: pointer;
+}
