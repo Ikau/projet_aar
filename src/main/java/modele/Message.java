@@ -1,5 +1,6 @@
 package modele;
 
+import org.springframework.util.StringUtils;
 import services.DateService;
 
 import javax.persistence.*;
@@ -29,6 +30,11 @@ public class Message {
     @Id
     @GeneratedValue
     private int id;
+
+    /**
+     * Indique si le message est considéré comme 'supprimé'
+     */
+    private boolean actif;
 
     /**
      * Le projet auquel repond ce mesasge.
@@ -112,6 +118,7 @@ public class Message {
     public Message(Utilisateur auteur, Projet projet, String contenu)
     {
         // Init primaire
+        this.actif         = true;
         this.auteur        = auteur;
         this.projet        = projet;
         this.projetAssocie = projet;
@@ -135,6 +142,7 @@ public class Message {
     public Message(Message messageParent, Utilisateur auteur, Projet projet, String contenu)
     {
         // Init primaire
+        this.actif         = true;
         this.auteur        = auteur;
         this.projet        = null;
         this.projetAssocie = projet;
@@ -157,8 +165,16 @@ public class Message {
         return id;
     }
 
+    public boolean isActif() {
+        return actif;
+    }
+
     public Projet getProjet() {
         return projet;
+    }
+
+    public Projet getProjetAssocie() {
+        return projetAssocie;
     }
 
     public Utilisateur getAuteur() {
@@ -231,8 +247,18 @@ public class Message {
      */
     public void editer(String nouveauContenu)
     {
+        if(!StringUtils.hasText(nouveauContenu)) return;
+
         this.contenu = nouveauContenu;
         this.dateModification = new Timestamp(System.currentTimeMillis());
     }
 
+    /**
+     * Supprime virtuellement le message en le désactivant.
+     */
+    public void desactiver()
+    {
+        this.actif            = false;
+        this.dateModification = new Timestamp(System.currentTimeMillis());
+    }
 }
