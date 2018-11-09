@@ -47,7 +47,12 @@ import java.util.Set;
         @NamedEntityGraph(name="joinPalliersCategories", attributeNodes = {
                 @NamedAttributeNode("palliers"),
                 @NamedAttributeNode("categories")
-        })
+        }),
+        @NamedEntityGraph(name="join-dons",
+            attributeNodes = {
+                @NamedAttributeNode("dons")
+            }
+        )
 })
 public class Projet {
 
@@ -357,7 +362,7 @@ public class Projet {
      */
     public long getMillisecondesRestantes()
     {
-        return (this.dateFin.getTime() - this.dateDepot.getTime());
+        return (this.dateFin.getTime() - System.currentTimeMillis());
     }
 
     /**
