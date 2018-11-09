@@ -270,6 +270,21 @@ public class MonControlleur
         return "profil-financements";
     }
 
+    @GetMapping("/profil/projets")
+    public String getProfilProjets(Model model)
+    {
+        if(!this.estConnecte(model)) return "redirect:/";
+
+        model.addAttribute("projets", this.projetFacade.getProjetsDePorteur(this.getIdCourant(model)));
+        return "profil-projets";
+    }
+
+    @GetMapping("/profil/projets/${projetId}")
+    public String getModifierProjet(@PathVariable int projetId, Model model)
+    {
+        return null;
+    }
+
 
     /**
      * TEMPORAIRE : page de test pour les differentes facades.

@@ -91,6 +91,15 @@ public class ProjetFacade {
         return this.repository.findFirst3ByPorteur_IdOrderByDateDepotDesc(porteurId);
     }
 
+    /**
+     * Renvoie tous les projets déposés par un utilisateur.
+     * @param porteurId L'ID de l'utilisateur concerné.
+     * @return Tous les projets déposés par un utilisateur.
+     */
+    public List<Projet> getProjetsDePorteur(int porteurId)
+    {
+        return this.repository.findProjetsByPorteur_IdOrderByDateDepotDesc(porteurId);
+    }
 
     /**
      * Renvoie les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.

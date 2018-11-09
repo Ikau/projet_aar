@@ -54,6 +54,14 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      */
     public List<Projet> findFirst3ByPorteur_IdOrderByDateDepotDesc(int porteurId);
 
+    /**
+     * Renvoie tous les projets déposés par un utilisateur.
+     * @param porteurId L'ID de l'utilisateur concerné.
+     * @return Tous les projets déposés par un utilisateur.
+     */
+    @EntityGraph(value="join-dons", type=EntityGraph.EntityGraphType.FETCH)
+    public List<Projet> findProjetsByPorteur_IdOrderByDateDepotDesc(int porteurId);
+
 
     /**
      * Renvoie les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
