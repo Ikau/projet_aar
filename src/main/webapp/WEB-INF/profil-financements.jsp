@@ -16,36 +16,46 @@
 </head>
 <body>
     <jsp:include page="navbar.jsp"/>
+    <div class="w3-col" style="width:20%"><p>
 
-    <%-- TODO Mettre en forme la page ? --%>
-    <h2>Tous mes financements</h2>
-    <table>
-        <tr>
-            <th>Intitule</th>
-            <th>Montant</th>
-            <th></th> <%-- vide car on va mettre les 'annuler' --%>
-        </tr>
-        <c:forEach items="${financements}" var="don">
-            <c:set value="${don.getProjetSoutenu()}" var="projet"/>
-            <tr>
-                <td><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></td>
+    </p></div>
 
-                <c:choose>
-                    <c:when test="${don.isActif()}">
-                        <td>${don.getMontant()}</td>
-                        <td>
-                            <form onsubmit="return confirmer();" method="post" action="/financements/${don.getId()}">
-                                <input type="submit" value="Annuler" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme"/>
-                            </form>
-                        </td>
-                    </c:when>
-                    <c:otherwise>
-                        <td>Annulé le ${don.getStringModification()} (${don.getMontant()} €).</td>
-                        <td></td> <%-- Vide car il n'y a rien à annuler --%>
-                    </c:otherwise>
-                </c:choose>
+    <div class="w3-col" style="width:80%"><p>
+        <div class="w3-container w3-responsive" >
+        <h2>Tous mes financements</h2>
+        <table class="w3-table-all" style="width:70%">
+            <tr class="w3-theme-d3">
+                <th>Intitule</th>
+                <th>Montant</th>
+                <th></th> <%-- vide car on va mettre les 'annuler' --%>
             </tr>
-        </c:forEach>
-    </table>
+            <c:forEach items="${financements}" var="don">
+                <c:set value="${don.getProjetSoutenu()}" var="projet"/>
+                <tr>
+                    <td><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></td>
+
+                    <c:choose>
+                        <c:when test="${don.isActif()}">
+                            <td>${don.getMontant()}</td>
+                            <td>
+                                <form onsubmit="return confirmer();" method="post" action="/financements/${don.getId()}">
+                                    <input type="submit" value="Annuler" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme"/>
+                                </form>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>Annulé le ${don.getStringModification()} (${don.getMontant()} €).</td>
+                            <td></td> <%-- Vide car il n'y a rien à annuler --%>
+                        </c:otherwise>
+                    </c:choose>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
+    </p></div>
+
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
 </body>
 </html>
