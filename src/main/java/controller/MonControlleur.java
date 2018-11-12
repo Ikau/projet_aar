@@ -547,6 +547,7 @@ public class MonControlleur
             result.addError(new FieldError("donTemp", "montant",
                                            "Entrer un montant supérieur à 0."));
         }
+
         if(result.hasErrors())
         {
             // On utilise une redirection : il faut redireiger tous les attributs avec
@@ -557,9 +558,11 @@ public class MonControlleur
         }
 
         // Création du don
-        Utilisateur courant = this.getUtilisateurCourant(model);
         Projet      projet  = this.projetFacade.getProjetById(projetId);
-        Don don = new Don(courant, projet,donTemp.getMontant());
+        if(projet.estTermine()) return "redirect:/";
+
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        Don don             = new Don(courant, projet,donTemp.getMontant());
 
         // Sauvegarde
         this.donFacade.save(don);

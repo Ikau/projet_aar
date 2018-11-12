@@ -76,13 +76,29 @@
             </div>
 
             <h2>Saisir un Montant :</h2>
-            <%--@elvariable id="donTemp" type="modele.Don"--%>
-            <form:form method="post" action="/projets/${projet.getId()}/financer" modelAttribute="donTemp">
-                <form:input class="w3-input" type="number" path="montant"/>
-                <form:errors cssStyle="color:red;" path="montant"/>
-                <br>
-                <input class="w3-button w3-block w3-theme" type="submit" value="Financer"/>
-            </form:form>
+            <c:choose>
+                <c:when test="${projet.getMillisecondesRestantes() > 0}">
+                    <%--@elvariable id="donTemp" type="modele.Don"--%>
+                    <form:form method="post" action="/projets/${projet.getId()}/financer" modelAttribute="donTemp">
+                        <form:input class="w3-input" type="number" path="montant"/>
+                        <form:errors cssStyle="color:red;" path="montant"/>
+                        <br>
+                        <input class="w3-button w3-block w3-theme" type="submit" value="Financer"/>
+                    </form:form>
+                </c:when>
+                <c:otherwise>
+                    <c:choose>
+                        <c:when test="${projet.estComplete()}">
+                            <%-- TODO Mettre en forme ? --%>
+                            <text>Succès du financement !</text>
+                        </c:when>
+                        <c:otherwise>
+                            <%-- TODO Mettre en forme ? --%>
+                            <text>Échec du financement.</text>
+                        </c:otherwise>
+                    </c:choose>
+                </c:otherwise>
+            </c:choose>
         </c:when>
         <c:otherwise>
             <a href="/connexion">Se connecter</a> ou <a href="/inscription">s'inscrire</a> pour financer le projet.
