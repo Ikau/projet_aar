@@ -16,6 +16,8 @@
 <body>
     <jsp:include page="navbar.jsp"/>
 
+
+    <%-- TODO Mettre en forme la page ? --%>
     <h2>Mes projets déposés</h2>
     <table>
         <tr>

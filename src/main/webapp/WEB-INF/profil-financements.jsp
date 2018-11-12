@@ -17,6 +17,7 @@
 <body>
     <jsp:include page="navbar.jsp"/>
 
+    <%-- TODO Mettre en forme la page ? --%>
     <h2>Tous mes financements</h2>
     <table>
         <tr>

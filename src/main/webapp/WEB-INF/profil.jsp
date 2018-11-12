@@ -31,7 +31,6 @@
                 <c:forEach items="${derniersProjetsDeposes}" var="projet">
                 <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
                 </c:forEach>
-                <%-- TODO faire la page 'tous les projets' --%>
                 <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
             </ul>
         </div>
