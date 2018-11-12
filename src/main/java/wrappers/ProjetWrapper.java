@@ -221,7 +221,7 @@ public class ProjetWrapper {
         if(!this.dateEstValide())
         {
             result.addError(new FieldError("projetWrapper", "dateFin",
-                    "La date limite est incorrecte ou déjà passée."));
+                    "La date limite est incorrecte : au maximum deux mois de financement."));
         }
     }
 
@@ -265,7 +265,10 @@ public class ProjetWrapper {
     private boolean dateEstValide()
     {
         if(this.dateFin == null) return false;
-        return this.dateFin.getTime() > System.currentTimeMillis();
+        if(this.dateFin.getTime() <= System.currentTimeMillis()) return false;
+
+        long deuxMois = 5356800000L;
+        return this.dateFin.getTime() <= (System.currentTimeMillis() + deuxMois);
     }
 
 }
