@@ -18,6 +18,20 @@ public class CategorieFacade {
 
 
     /* ===========================================================
+     *                           CREATE
+     * ===========================================================
+     */
+
+    /**
+     * Insère ou met à jour une catégorie dans la base de données.
+     * @param c La catégorie à insérer ou à mettre à jour.
+     */
+    public void save(Categorie c)
+    {
+        this.repository.save(c);
+    }
+
+    /* ===========================================================
      *                            READ
      * ===========================================================
      */
