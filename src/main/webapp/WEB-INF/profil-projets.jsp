@@ -15,26 +15,38 @@
 </head>
 <body>
     <jsp:include page="navbar.jsp"/>
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
+
+    <div class="w3-col" style="width:80%"><p>
+        <div class="w3-container w3-responsive" >
+        <h2>Mes projets déposés</h2>
+            <table class="w3-table-all" style="width:70%">
+                <tr class="w3-theme-d3">
+                    <th>Intitule</th>
+                    <th>Avancement du financement</th>
+                    <th>Temps restant</th>
+                    <th><%-- Vide car ça va être le bouton de modification. --%></th>
+                </tr>
+                <c:forEach items="${projets}" var="projet">
+                    <tr>
+                        <td>${projet.getIntitule()}</td>
+                        <td>${projet.getFinancement()} € / ${projet.getObjectif()} € (${projet.getPourcentage()} %)</td>
+                        <td>${projet.getTempsRestant()}</td>
+                        <td><a href="/profil/projets/${projet.getId()}" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme">Modifier</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
 
 
-    <%-- TODO Mettre en forme la page ? --%>
-    <h2>Mes projets déposés</h2>
-    <table>
-        <tr>
-            <th>Intitule</th>
-            <th>Avancement du financement</th>
-            <th>Temps restant</th>
-            <th><%-- Vide car ça va être le bouton de modification. --%></th>
-        </tr>
-        <c:forEach items="${projets}" var="projet">
-            <tr>
-                <td>${projet.getIntitule()}</td>
-                <td>${projet.getFinancement()} € / ${projet.getObjectif()} € (${projet.getPourcentage()} %)</td>
-                <td>${projet.getTempsRestant()}</td>
-                <td><a href="/profil/projets/${projet.getId()}" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme">Modifier</a></td>
-            </tr>
-        </c:forEach>
-    </table>
+        </div>
+        </p></div>
+
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
+
 
 </body>
 </html>
