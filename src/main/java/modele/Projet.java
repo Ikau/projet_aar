@@ -4,6 +4,8 @@ import services.DateService;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -292,6 +294,24 @@ public class Projet {
      */
 
     /**
+     * Indique si le temps limite est écoulé.
+     * @return Si le temps limite est écoulé.
+     */
+    public boolean estTermine()
+    {
+        return this.dateFin.getTime() < System.currentTimeMillis();
+    }
+
+    /**
+     * Indique si le projet a atteint son objectif.
+     * @return Si le projet a atteint son objectif.
+     */
+    public boolean estComplete()
+    {
+        return this.getFinancement() >= this.objectif;
+    }
+
+    /**
      * Renvoie la somme totale qui est actuellement versée au projet.
      * @return La somme totale qui est actuellement versée au projet.
      */
@@ -316,8 +336,12 @@ public class Projet {
      */
     public double getPourcentage()
     {
-        double somme = (double)this.getFinancement();
-        return (100.0 * somme / (double)this.objectif);
+        double somme    = (double)this.getFinancement();
+        double pourcentage = (100.0 * somme / (double)this.objectif);
+
+        BigDecimal bd = new BigDecimal(pourcentage);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     /**
