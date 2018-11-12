@@ -6,6 +6,7 @@ import modele.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class MonControlleur
      *                         PROPRIETES
      * ===============================================================
      */
+
+    /**
+     * Les enum sont overkill donc on utilise une variable privée.
+     */
+    private int ADMIN = 1;
 
     /**
      * Facade gerant les operations d'initialisation et de peuplement de la base.
@@ -279,10 +285,31 @@ public class MonControlleur
         return "profil-projets";
     }
 
+    // TODO Revoir comment modifier un projet
     @GetMapping("/profil/projets/${projetId}")
     public String getModifierProjet(@PathVariable int projetId, Model model)
     {
         return null;
+    }
+
+    /**
+     * gts
+     * @param model
+     * @return
+     */
+    @GetMapping("/admin")
+    public String getAdmin(Model model)
+    {
+        // Vérification privilège
+        if(!this.estAdmin(model)) return "redirect:/";
+
+        // Ajout des variables fixes
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+
+        // Ajout des variables temporaires
+        model.addAttribute("categorieTemp", new Categorie());
+
+        return "admin";
     }
 
 
@@ -647,6 +674,40 @@ public class MonControlleur
         return "redirect:/profil/financements";
     }
 
+    @PostMapping("/admin/categories")
+    public String postCreerCategorie(@ModelAttribute("categorieTemp") @Valid Categorie categorieTemp,
+                                     BindingResult result, Model model)
+    {
+        // Vérification
+        if(!this.estAdmin(model)) return "redirect:/";
+        if(result.hasErrors()) return "admin";
+
+        // Création
+        Categorie categorie = new Categorie(categorieTemp.getIntitule());
+        this.categorieFacade.save(categorie);
+
+        return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/categories/{categorieId}")
+    public String postModifierCategorie(@PathVariable int categorieId,
+                                        @RequestParam("intitule") String intitule,
+                                        Model model)
+    {
+        // Vérification
+        if(!this.estAdmin(model)) return "redirect:/";
+        if(!StringUtils.hasText(intitule)) return "redirect:/admin";
+
+        // Modification
+        Categorie categorie = this.categorieFacade.getCategorie(categorieId);
+        if(categorie == null) return "redirect:/";
+
+        categorie.setIntitule(intitule);
+        this.categorieFacade.save(categorie);
+
+        return "redirect:/admin";
+    }
+
     /* ===============================================================
      *                           METHODS
      * ===============================================================
@@ -676,6 +737,25 @@ public class MonControlleur
         if(model.containsAttribute("auth")) return true;
         LOGGER.info("[ERR] Session non authentifiee");
         return false;
+    }
+
+    /**
+     * Indique si l'utilisateur courant est un admin ou non.
+     * @param model Le model de la session.
+     * @return Si l'utilisateur courant est un admin ou non.
+     */
+    private boolean estAdmin(Model model)
+    {
+        if(!this.estConnecte(model)) return false;
+
+        Utilisateur utilisateur = this.utilisateurFacade.getUtilisateurById(this.getIdCourant(model));
+        if(utilisateur.getPrivilege() != this.ADMIN)
+        {
+            LOGGER.info("[ERR] Utilisateur {"+utilisateur.getId()+"} n'est pas admin.");
+            return false;
+        }
+
+        return true;
     }
 
     /**
