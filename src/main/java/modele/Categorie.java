@@ -36,13 +36,6 @@ public class Categorie {
     private String intitule;
 
     /**
-     * Description de la categorie.
-     */
-    @NotEmpty
-    @NotBlank
-    private String description;
-
-    /**
      * Ensemble des projets associes à cette categorie.
      */
     @ManyToMany(mappedBy = "categories")
@@ -62,10 +55,9 @@ public class Categorie {
      * Cree une nouvelle categorie sans projets associes.
      * @param intitule Le nom de la categorie.
      */
-    public Categorie(String intitule, String description)
+    public Categorie(String intitule)
     {
         this.intitule        = intitule;
-        this.description     = description;
         this.projetsAssocies = new HashSet<Projet>();
     }
 
@@ -86,10 +78,6 @@ public class Categorie {
         return intitule;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Set<Projet> getProjetsAssocies() {
         return projetsAssocies;
     }
@@ -101,10 +89,6 @@ public class Categorie {
 
     public void setIntitule(String intitule) {
         this.intitule = intitule;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setProjetsAssocies(Set<Projet> projetsAssocies) {

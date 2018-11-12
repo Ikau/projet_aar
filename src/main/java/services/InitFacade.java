@@ -32,6 +32,10 @@ public class InitFacade {
     private Set<Projet> projets;
     private Set<Message> messages;
 
+    // Privilèges utilisateurs
+    private int BASIQUE = 0;
+    private int ADMIN   = 1;
+
     /* ===========================================================
      *                         METHODES
      * ===========================================================
@@ -55,14 +59,15 @@ public class InitFacade {
          * --------------------------------------------
          */
         this.utilisateurs = new HashSet<>();
-        Utilisateur tt = new Utilisateur("toto", "Azerty01", 0);
-        Utilisateur dt = new Utilisateur("Tenth", "DoctorWho2005", 0);
-        Utilisateur mm = new Utilisateur("Marty", "BackToTheFuture123", 0);
-        Utilisateur gv = new Utilisateur("Garrus", "MassEffect123", 0);
-        Utilisateur tr = new Utilisateur("Tracer", "Overwatch2016", 0);
-        Utilisateur gl = new Utilisateur("GLaDOS", "Portal12", 0);
+        Utilisateur tt = new Utilisateur("toto", "Azerty01", BASIQUE);
+        Utilisateur dt = new Utilisateur("Tenth", "DoctorWho2005", BASIQUE);
+        Utilisateur mm = new Utilisateur("Marty", "BackToTheFuture123", BASIQUE);
+        Utilisateur gv = new Utilisateur("Garrus", "MassEffect123", BASIQUE);
+        Utilisateur tr = new Utilisateur("Tracer", "Overwatch2016", BASIQUE);
+        Utilisateur gl = new Utilisateur("GLaDOS", "Portal12", BASIQUE);
+        Utilisateur ad = new Utilisateur("admin", "Admin123", ADMIN);
 
-        Collections.addAll(this.utilisateurs, tt, dt, mm, gv, tr, gl);
+        Collections.addAll(this.utilisateurs, tt, dt, mm, gv, tr, gl, ad);
 
 
         /* --------------------------------------------
@@ -70,12 +75,12 @@ public class InitFacade {
          * --------------------------------------------
          */
         this.categories = new HashSet<>();
-        Categorie catSci = new Categorie("Sciences", "La science au service du bien commun");
-        Categorie catInf = new Categorie("Informatique", "Concerne le domaine informatique et numérique");
-        Categorie catArt = new Categorie("Art", "Tout ce qui touche à la créativité, l'imagination et l'expression de soi");
-        Categorie catMus = new Categorie("Musique", "Indépendant ou professionnel, il n'y a pas de limites au talent");
-        Categorie catLit = new Categorie("Littérature", "Partager votre passion de la lecture");
-        Categorie catAut = new Categorie("Autres", "Parce que j'ai pas eu la foi d'en mettre plus");
+        Categorie catSci = new Categorie("Sciences");
+        Categorie catInf = new Categorie("Informatique");
+        Categorie catArt = new Categorie("Art");
+        Categorie catMus = new Categorie("Musique");
+        Categorie catLit = new Categorie("Littérature");
+        Categorie catAut = new Categorie("Autres");
 
         Collections.addAll(this.categories, catSci, catInf, catArt, catMus, catLit, catAut);
 
