@@ -41,6 +41,5 @@
                 </tr>
             </c:forEach>
         </table>
-    <hr/>
 </body>
 </html>
