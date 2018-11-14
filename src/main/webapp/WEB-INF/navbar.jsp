@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: ikau
@@ -9,9 +10,12 @@
 <%-- Barre de navigation --%>
 <% if (session.getAttribute("auth") != null) { %>
 <div class="w3-bar w3-theme-dark">
-    <a href="/" class="w3-bar-item w3-button">Home</a>
+    <a href="/" class="w3-bar-item w3-button">Accueil</a>
     <a href="/profil" class="w3-bar-item w3-button">Mon profil</a>
     <a href="/form" class="w3-bar-item w3-button">Lancer un projet</a>
+    <c:if test="${courant.getPrivilege() == 1}">
+        <a href="/admin" class="w3-bar-item w3-button">Administration</a>
+    </c:if>
     <a href="/deconnexion" class="w3-bar-item w3-button">Se déconnecter</a>
 </div>
 <% } else { %>
