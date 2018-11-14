@@ -89,11 +89,9 @@
                 <c:otherwise>
                     <c:choose>
                         <c:when test="${projet.estComplete()}">
-                            <%-- TODO Mettre en forme ? --%>
                             <text>Succès du financement !</text>
                         </c:when>
                         <c:otherwise>
-                            <%-- TODO Mettre en forme ? --%>
                             <text>Échec du financement.</text>
                         </c:otherwise>
                     </c:choose>
