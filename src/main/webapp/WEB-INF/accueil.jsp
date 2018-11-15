@@ -3,8 +3,10 @@
 <html>
 <head>
     <title>Accueil</title>
-    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/w3css/4/w3.css"/>">
-    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/lib/w3-theme-indigo.css"/>">
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/w3css/4/w3.css"/>"/>
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/lib/w3-theme-indigo.css"/>"/>
+    <link rel="stylesheet" href="/ressources/css/accueil.css"/>
+    <script language="JavaScript" src="/ressources/js/accueil.js"></script>
 </head>
 <body>
 
@@ -17,7 +19,8 @@
 
     <div class="w3-col" style="width:60%"><p>
         <%-- Recherche par catégorie --%>
-        <form name='cat' action="/" method="post">
+        <form name='cat' action="/recherche" method="get">
+        <input hidden name="page" value="1"/>
         <select class="w3-select w3-border w3-text-theme" name="option" onchange="this.form.submit();">
             <c:choose>
                 <c:when test="${empty categorieChoisie}">
@@ -35,7 +38,40 @@
         </select>
         </form>
 
-        <%-- Les 3 derniers projets --%>
+        <%-- Pour naviguer entre les différentes pages --%>
+        <c:if test="${indexPage != null}">
+            <c:choose>
+                <c:when test="${indexPage == 0}">
+                    <a>
+                        <
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                        <
+                    </a>
+                </c:otherwise>
+            </c:choose>
+
+            Page <input id="inputPage1" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
+
+            <c:choose>
+                <c:when test="${estDernierePage}">
+                    <a>
+                        >
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                        >
+                    </a>
+                </c:otherwise>
+            </c:choose>
+            <br/>
+            <br/>
+        </c:if>
+
+        <%-- Les 3 derniers projets OU le résultat de la recherche --%>
         <c:forEach items="${projets}" var="p">
             <div class="w3-card-4">
                 <header class="w3-container w3-theme-d3 ">
@@ -59,6 +95,37 @@
             </div>
             <br>
         </c:forEach>
+
+        <%-- Pour naviguer entre les différentes pages --%>
+        <c:if test="${indexPage != null}">
+            <c:choose>
+                <c:when test="${indexPage == 0}">
+                    <a>
+                        <
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                        <
+                    </a>
+                </c:otherwise>
+            </c:choose>
+
+            Page <input id="inputPage2" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
+
+            <c:choose>
+                <c:when test="${estDernierePage}">
+                    <a>
+                        >
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                        >
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </c:if>
 
     </p></div>
     <div class="w3-col" style="width:20%"><p>
