@@ -39,37 +39,40 @@
         </form>
 
         <%-- Pour naviguer entre les différentes pages --%>
-        <c:if test="${indexPage != null}">
-            <c:choose>
-                <c:when test="${indexPage == 0}">
-                    <a>
-                        <
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                        <
-                    </a>
-                </c:otherwise>
-            </c:choose>
+        <%-- TODO Il faudrait mettre en forme la div de navigation --%>
+        <div>
+            <c:if test="${indexPage != null}">
+                <c:choose>
+                    <c:when test="${indexPage == 0}">
+                        <a>
+                            <
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                            <
+                        </a>
+                    </c:otherwise>
+                </c:choose>
 
-            Page <input id="inputPage1" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
+                Page <input id="inputPage1" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
 
-            <c:choose>
-                <c:when test="${estDernierePage}">
-                    <a>
-                        >
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                        >
-                    </a>
-                </c:otherwise>
-            </c:choose>
-            <br/>
-            <br/>
-        </c:if>
+                <c:choose>
+                    <c:when test="${estDernierePage}">
+                        <a>
+                            >
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                            >
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+                <br/>
+                <br/>
+            </c:if>
+        </div>
 
         <%-- Les 3 derniers projets OU le résultat de la recherche --%>
         <c:forEach items="${projets}" var="p">
@@ -97,40 +100,40 @@
         </c:forEach>
 
         <%-- Pour naviguer entre les différentes pages --%>
-        <c:if test="${indexPage != null}">
-            <c:choose>
-                <c:when test="${indexPage == 0}">
-                    <a>
-                        <
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                        <
-                    </a>
-                </c:otherwise>
-            </c:choose>
+        <%-- TODO Il faudrait mettre en forme la div de navigation --%>
+        <div>
+            <c:if test="${indexPage != null}">
+                <c:choose>
+                    <c:when test="${indexPage == 0}">
+                        <a>
+                            <
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                            <
+                        </a>
+                    </c:otherwise>
+                </c:choose>
 
-            Page <input id="inputPage2" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
+                Page <input id="inputPage2" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
 
-            <c:choose>
-                <c:when test="${estDernierePage}">
-                    <a>
-                        >
-                    </a>
-                </c:when>
-                <c:otherwise>
-                    <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                        >
-                    </a>
-                </c:otherwise>
-            </c:choose>
-        </c:if>
-
+                <c:choose>
+                    <c:when test="${estDernierePage}">
+                        <a>
+                            >
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                            >
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+            </c:if>
+        </div>
     </p></div>
-    <div class="w3-col" style="width:20%"><p>
-
-    </p></div>
+    <div class="w3-col" style="width:20%"><p></p></div>
 </div>
 
 
