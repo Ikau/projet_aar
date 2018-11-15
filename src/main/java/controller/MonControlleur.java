@@ -4,6 +4,8 @@ package controller;
 import config.LoggerConfig;
 import modele.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -37,9 +39,14 @@ public class MonControlleur
      */
 
     /**
-     * Les enum sont overkill donc on utilise une variable privée.
+     * Les enum sont overkill donc on utilise une variable privée finale.
      */
-    private int ADMIN = 1;
+    private static final int ADMIN = 1;
+
+    /**
+     * Encore une fois, les enums sont overkill donc on utilise une variable privée finale.
+     */
+    private static final String REDIRECT_404 = "redirect:/404notfound";
 
     /**
      * Facade gerant les operations d'initialisation et de peuplement de la base.
@@ -119,6 +126,7 @@ public class MonControlleur
      */
     @GetMapping(value="/")
     public String getRoot(Model model) {
+        model.addAttribute("indexPage", null);
         model.addAttribute("projets", this.projetFacade.getTroisDerniersProjets());
         model.addAttribute("categories", this.categorieFacade.getCategories());
         LOGGER.fine("[OK] return 'accueil'");
@@ -145,6 +153,36 @@ public class MonControlleur
         model.addAttribute("utilisateurTemp", new Utilisateur());
         LOGGER.fine("[OK] return 'connexion'");
         return "connexion";
+    }
+
+
+    @GetMapping(value="/recherche")
+    public String getRecherchePage(@RequestParam("page")   int page,
+                                   @RequestParam("option") int categorieId, Model model)
+    {
+        // A cause du user-x on va devoir décrémenter
+        page = page < 1 ? 1 : page - 1;
+
+        // Init de la portée de résultats voulue
+        // On veut rechercher la page n° numero en sachant que chaque page contient au max 10 résultats
+        // Attention : numero commence à partir de 0
+        Pageable pageable = new PageRequest(page, 10);
+
+        // On vérifie ici si la prochaine page contient des résultats.
+        List<Projet> prochainePage = this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable.next());
+
+        // On ajoute quelques attributs en plus pour l'affichage de la recherche
+        model.addAttribute("indexPage", page);
+        model.addAttribute("estDernierePage", prochainePage.size() == 0);
+        model.addAttribute("categorieActuelle", categorieId);
+
+        // Ajout des éléments essentiels à la page
+        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable));
+        model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(categorieId));
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+
+        LOGGER.fine("[OK] return 'accueil'");
+        return "accueil";
     }
 
     /**
@@ -278,20 +316,47 @@ public class MonControlleur
         return "profil-financements";
     }
 
+    /**
+     * Affiche la page listant tous les projets d'un utilisateur.
+     * @param model Le model de la session.
+     * @return La page 'profil-projets'.
+     */
     @GetMapping("/profil/projets")
     public String getProfilProjets(Model model)
     {
-        if(!this.estConnecte(model)) return "redirect:/";
+        if(!this.estConnecte(model)) return "redirect:/connexion";
 
         model.addAttribute("projets", this.projetFacade.getProjetsDePorteur(this.getIdCourant(model)));
         return "profil-projets";
     }
 
-    // TODO Revoir comment modifier un projet
-    @GetMapping("/profil/projets/${projetId}")
+    /**
+     * Affiche le formulaire de moficiation d'un projet d'un utilisateur.
+     * @param projetId L'ID du projet à modifier.
+     * @param model Le model de la session.
+     * @return La page 'formulaire_projet" avec les champs pré-rempli pour la modification.
+     */
+    @GetMapping("/profil/projets/{projetId}")
     public String getModifierProjet(@PathVariable int projetId, Model model)
     {
-        return null;
+        // Vérifications basiques
+        if(!this.estConnecte(model)) return REDIRECT_404;
+
+        int id = this.getIdCourant(model);
+        Projet projet = this.projetFacade.getProjetById(projetId);
+        if(id != projet.getPorteur().getId()) return REDIRECT_404;
+
+        // Création du wrapper
+        ProjetWrapper projetWrapper = new ProjetWrapper(projet);
+
+        // Affichage du form de modification
+        model.addAttribute("modifier", true);
+        model.addAttribute("projetWrapper", projetWrapper);
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+        model.addAttribute("dateFin", DateService.getDateHumain(projetWrapper.getDateFin().getTime()));
+
+        LOGGER.fine("[OK] affichage 'formulaire_projet' pour modification de {"+projet.getId()+"}");
+        return "formulaire_projet";
     }
 
     /**
@@ -359,20 +424,11 @@ public class MonControlleur
         List<Categorie> categories = this.categorieFacade.getCategoriesByIds(projetWrapper.getIds());
 
         // Création du projet et mise à jour de l'utilisateur (pour ajouter son projet)
-        this.projetFacade.creer(projetWrapper.getProjet(courant, categories));
+        this.projetFacade.save(projetWrapper.getProjet(courant, categories));
         this.majUtilisateurCourant(model);
 
         LOGGER.fine("[OK] Projet créé : {"+projetWrapper.getIntitule()+"}");
         return "redirect:/profil";
-    }
-
-    @PostMapping(value="/")
-    public String postRoot(@RequestParam("option") int id, Model model) {
-        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(0,10,id));
-        model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(id));
-        model.addAttribute("categories", this.categorieFacade.getCategories());
-        LOGGER.fine("[OK] return 'accueil'");
-        return "accueil";
     }
 
     /**
@@ -710,6 +766,23 @@ public class MonControlleur
         return "redirect:/admin";
     }
 
+    @PostMapping("/profil/projets/{projetId}")
+    public String postModifierProjet(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper,
+                                     BindingResult result, @PathVariable int projetId, Model model)
+    {
+        // Vérifiations basiques
+        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(!this.projetFacade.projetEstPortePar(projetId, this.getIdCourant(model))) return REDIRECT_404;
+
+        // Mise à jour du projet
+        Projet projet = this.projetFacade.getProjetById(projetId);
+        projet.MAJ(projetWrapper, this.categorieFacade.getCategoriesByIds(projetWrapper.getIds()));
+
+        this.projetFacade.save(projet);
+
+        return "redirect:/profil/projets";
+    }
+
     /* ===============================================================
      *                           METHODS
      * ===============================================================
@@ -751,7 +824,7 @@ public class MonControlleur
         if(!this.estConnecte(model)) return false;
 
         Utilisateur utilisateur = this.utilisateurFacade.getUtilisateurById(this.getIdCourant(model));
-        if(utilisateur.getPrivilege() != this.ADMIN)
+        if(utilisateur.getPrivilege() != ADMIN)
         {
             LOGGER.info("[ERR] Utilisateur {"+utilisateur.getId()+"} n'est pas admin.");
             return false;
@@ -821,6 +894,11 @@ public class MonControlleur
         return errorPage;
     }
 
+    /**
+     * Permet de récupérer le code d'erreur de la requête HTTP.
+     * @param httpRequest La requête HTTP redirigée vers la servlet.
+     * @return Le code d'erreur de la requête HTTP.
+     */
     private int getErrorCode(HttpServletRequest httpRequest) {
         return (Integer) httpRequest
                 .getAttribute("javax.servlet.error.status_code");
