@@ -24,7 +24,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
-
 @Controller
 @SessionAttributes(
         names={"courant", "auth"},
@@ -44,9 +43,25 @@ public class MonControlleur
     private static final int ADMIN = 1;
 
     /**
-     * Encore une fois, les enums sont overkill donc on utilise une variable privée finale.
+     * Permet de renvoyer vers une page 404 intentionnellement.
      */
     private static final String REDIRECT_404 = "redirect:/404notfound";
+
+    /**
+     * Permet de rediriger vers la page de connexion.
+     */
+    private static final String REDIRECT_CONNEXION = "redirect:/connexion";
+
+    /**
+     * Utilisation pour du debug.
+     */
+    private static final boolean DEBUG = false;
+
+
+    /* ===============================================================
+     *                         INJECTIONS
+     * ===============================================================
+     */
 
     /**
      * Facade gerant les operations d'initialisation et de peuplement de la base.
@@ -118,6 +133,11 @@ public class MonControlleur
      * ===============================================================
      */
 
+    /* ---------------------------
+     *            ROOT
+     * ---------------------------
+     */
+
     /**
      * Affiche la page d'accueil où figurent les trois derniers projets déposés.
      *
@@ -125,10 +145,14 @@ public class MonControlleur
      * @return La page d'accueil où figurent les trois derniers projets déposés.
      */
     @GetMapping(value="/")
-    public String getRoot(Model model) {
-        model.addAttribute("indexPage", null);
+    public String getRoot(Model model)
+    {
         model.addAttribute("projets", this.projetFacade.getTroisDerniersProjets());
         model.addAttribute("categories", this.categorieFacade.getCategories());
+
+        // Pour éviter un NullPointerException liée à la recherche
+        model.addAttribute("indexPage", null);
+
         LOGGER.fine("[OK] return 'accueil'");
         return "accueil";
     }
@@ -144,26 +168,34 @@ public class MonControlleur
     @GetMapping(value="/connexion")
     public String getConnexion(Model model)
     {
-        if(model.containsAttribute("auth"))
+        if(this.estConnecte(model))
         {
             LOGGER.fine("[OK] Utilisateur déjà authentitifé -> 'accueil'");
             return "redirect:/";
         }
 
+        // Pour le formulaire de connexion
         model.addAttribute("utilisateurTemp", new Utilisateur());
+
         LOGGER.fine("[OK] return 'connexion'");
         return "connexion";
     }
 
-
+    /**
+     * Affiche le résultat de la recherche par catégorie avec au max 10 résultats par pages.
+     * @param page Le numero de la page (commence à 1).
+     * @param categorieId L'ID de la catégorie de la recherche.
+     * @param model Le model de la session.
+     * @return La page 'accueil' avec le résultat de la recherche.
+     */
     @GetMapping(value="/recherche")
     public String getRecherchePage(@RequestParam("page")   int page,
                                    @RequestParam("option") int categorieId, Model model)
     {
-        // A cause du user-x on va devoir décrémenter
+        // Par principe de user-experience, on va devoir décrémenter
         page = page < 1 ? 1 : page - 1;
 
-        // Init de la portée de résultats voulue
+        // Init de la portée de résultats voulue.
         // On veut rechercher la page n° numero en sachant que chaque page contient au max 10 résultats
         // Attention : numero commence à partir de 0
         Pageable pageable = new PageRequest(page, 10);
@@ -181,7 +213,7 @@ public class MonControlleur
         model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(categorieId));
         model.addAttribute("categories", this.categorieFacade.getCategories());
 
-        LOGGER.fine("[OK] return 'accueil'");
+        LOGGER.fine("[OK] Affichage recherche 'accueil'");
         return "accueil";
     }
 
@@ -195,16 +227,21 @@ public class MonControlleur
      * @return La page d'accueil.
      */
     @GetMapping(value="/deconnexion")
-    public String getDeconnexion(SessionStatus status, Model model) {
-        if(!model.containsAttribute("auth"))
+    public String getDeconnexion(SessionStatus status, Model model)
+    {
+        if(!this.estConnecte(model))
         {
             LOGGER.fine("[ERR] Pas d'utilisateur courant -> 'accueil'");
             return "redirect:/";
         }
 
-        String uLogin = ((Utilisateur) model.asMap().get("courant")).getLogin();
-        LOGGER.info("[OK] Deconnexion de l'utilisateur {"+uLogin+"}");
+        // Purge de la session.
+        int idCourant = this.getIdCourant(model);
+        model.asMap().remove("courant");
+        model.asMap().remove("auth");
         status.setComplete();
+
+        LOGGER.info("[OK] Deconnexion de l'utilisateur {"+idCourant+"}");
         return "redirect:/";
     }
 
@@ -223,6 +260,29 @@ public class MonControlleur
     }
 
     /**
+     * Affiche la page contenant le formulaire de création d'un nouveau projet.
+     * @param model Le model de la session.
+     * @return La page 'formulaire_projet'.
+     */
+    @GetMapping(value="/form")
+    public String getProjetForm(Model model)
+    {
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
+
+        model.addAttribute("projetWrapper",new ProjetWrapper());
+        model.addAttribute("categories", this.categorieFacade.getCategories());
+
+        LOGGER.fine("[OK] Affichage du formulaire de creation de projet");
+        return "formulaire_projet";
+    }
+
+
+    /* ---------------------------
+     *           PROJETS
+     * ---------------------------
+     */
+
+    /**
      * Affiche la page de détails du projet associé à l'ID de l'url.
      *
      * Renvoie sur la page d'accueil en cas d'erreur.
@@ -232,12 +292,13 @@ public class MonControlleur
      * @return La page du projet si l'ID est correct, la page d'accueil sinon.
      */
     @GetMapping(value="/projets/{id}")
-    public String getProjetId(@PathVariable int id, Model model) {
+    public String getProjetId(@PathVariable int id, Model model)
+    {
         if(this.projetFacade.estExistant(id))
         {
             if(this.estConnecte(model))
             {
-                // Redirection d'erreur
+                // Redirection d'erreur depuis la page
                 if(!model.containsAttribute("donTemp"))
                 {
                     model.addAttribute("donTemp", new Don());
@@ -246,13 +307,21 @@ public class MonControlleur
                 model.addAttribute("participation", this.donFacade.getFinancementTotal(this.getIdCourant(model), id));
                 model.addAttribute("messageTemp", new Message());
             }
+
             model.addAttribute("projet", this.projetFacade.getProjetById(id));
-            LOGGER.info("[OK] Affichage du projet {"+id+"}");
+            LOGGER.fine("[OK] Affichage du projet {"+id+"}");
             return "projet";
         }
-        LOGGER.fine("[ERR] ID de projet invalide -> 'accueil'");
-        return "redirect:/";
+
+        LOGGER.info("[ERR] ID de projet invalide");
+        return REDIRECT_404;
     }
+
+
+    /* ---------------------------
+     *           PROFIL
+     * ---------------------------
+     */
 
     /**
      * Affichage de la page de profil d'un membre connecté.
@@ -262,41 +331,41 @@ public class MonControlleur
     @GetMapping(value="/profil")
     public String getProfilId(Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
+
         int id = this.getIdCourant(model);
         model.addAttribute("derniersProjetsDeposes", this.projetFacade.getTroisDerniersDeposesDePorteurId(id));
         model.addAttribute("derniersFinancements", this.donFacade.getTroisDerniersDonsDeFinanceur(id));
+
+        LOGGER.fine("[OK] Affichage profil de {"+id+"}");
         return "profil";
     }
 
     /**
-     * Affiche la page contenant le formulaire de création d'un nouveau projet.
-     * @param model Le model de la session.
-     * @return La page 'formulaire_projet'.
-     */
-    @GetMapping(value="/form")
-    public String getProjetForm(Model model) {
-        model.addAttribute("projetWrapper",new ProjetWrapper());
-        model.addAttribute("categories", this.categorieFacade.getCategories());
-        return "formulaire_projet";
-    }
-
-    /**
      * Affiche la page de modification du mot de passe de l'utilisateur désigné par l'ID
+     * @param model Le model se la session.
      * @return La page de modification du mot de passe d'un utilisateur.
      */
     @GetMapping(value="/profil/motdepasse")
-    public String getChangerMdp()
+    public String getChangerMdp(Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
+
+        LOGGER.fine("[OK] Affichage page de modification du mot de passe");
         return "changermdp";
     }
 
     /**
      * Affichage la page de modification du login de l'utilisateur désigné par l'ID
+     * @param model Le model de la session.
      * @return La page de modification du login.
      */
     @GetMapping(value="/profil/login")
-    public String getChangerLogin()
+    public String getChangerLogin(Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
+
+        LOGGER.fine("[OK] Affichage page de modification du login");
         return "changerlogin";
     }
 
@@ -309,7 +378,7 @@ public class MonControlleur
     @GetMapping("/profil/financements")
     public String getProfilFinancements(Model model)
     {
-        if(!this.estConnecte(model)) return "redirect:/";
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
         model.addAttribute("financements", this.donFacade.getDons(this.getIdCourant(model)));
         LOGGER.fine("[OK] affichage 'profil-financements'");
@@ -324,7 +393,7 @@ public class MonControlleur
     @GetMapping("/profil/projets")
     public String getProfilProjets(Model model)
     {
-        if(!this.estConnecte(model)) return "redirect:/connexion";
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
         model.addAttribute("projets", this.projetFacade.getProjetsDePorteur(this.getIdCourant(model)));
         return "profil-projets";
@@ -340,11 +409,14 @@ public class MonControlleur
     public String getModifierProjet(@PathVariable int projetId, Model model)
     {
         // Vérifications basiques
-        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
+        // On vérifie que l'utilisateur est propriétaire du projet à modifier.
         int id = this.getIdCourant(model);
         Projet projet = this.projetFacade.getProjetById(projetId);
-        if(id != projet.getPorteur().getId()) return REDIRECT_404;
+
+        if(projet == null) return "redirect:/profil/projets";
+        if(id != projet.getPorteur().getId()) return "redirect;/profil/projets";
 
         // Création du wrapper
         ProjetWrapper projetWrapper = new ProjetWrapper(projet);
@@ -359,16 +431,22 @@ public class MonControlleur
         return "formulaire_projet";
     }
 
+
+    /* ---------------------------
+     *           ADMIN
+     * ---------------------------
+     */
+
     /**
-     * gts
-     * @param model
-     * @return
+     * Affiche la page d'administration des admins.
+     * @param model Le model de la session.
+     * @return La page 'admin'.
      */
     @GetMapping("/admin")
     public String getAdmin(Model model)
     {
         // Vérification privilège
-        if(!this.estAdmin(model)) return "redirect:/";
+        if(!this.estAdmin(model)) return REDIRECT_404;
 
         // Ajout des variables fixes
         model.addAttribute("categories", this.categorieFacade.getCategories());
@@ -376,9 +454,15 @@ public class MonControlleur
         // Ajout des variables temporaires
         model.addAttribute("categorieTemp", new Categorie());
 
+        LOGGER.info("[OK] Page admin du compte {"+this.getIdCourant(model)+"}");
         return "admin";
     }
 
+
+    /* ---------------------------
+     *           TEST
+     * ---------------------------
+     */
 
     /**
      * TEMPORAIRE : page de test pour les differentes facades.
@@ -387,11 +471,14 @@ public class MonControlleur
     @GetMapping(value="/test")
     public String getTest(Model model)
     {
+        if(!DEBUG)
+        {
+            return REDIRECT_404;
+        }
+
         LOGGER.fine("[OK] return 'test'");
         return "test";
     }
-
-
 
 
     /* ===============================================================
@@ -399,37 +486,10 @@ public class MonControlleur
      * ===============================================================
      */
 
-    /**
-     * Callback du formulaire de création d'un projet.
-     * @param projetWrapper Le wrapper contenant les inputs utilisateurs.
-     * @param result Le résultat du binding avec les inputs utilisateurs.
-     * @param model Le model de la session.
-     * @return Redirige vers le profil en cas de succès; affiche les erreurs sinon.
+    /* ---------------------------
+     *           ROOT
+     * ---------------------------
      */
-    @PostMapping(value="/projets/creer")
-    public String postProjetForm(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper, BindingResult result,
-                                 Model model)
-    {
-        // Vérification des erreurs sur les champs spéciaux non annotables par @Valid
-        projetWrapper.valideListsEtDate(result);
-
-        if(result.hasErrors())
-        {
-            model.addAttribute("categories", this.categorieFacade.getCategories());
-            return "formulaire_projet";
-        }
-
-        // Récupération de l'utilisateur et des catégories sélectionnées
-        Utilisateur courant = this.getUtilisateurCourant(model);
-        List<Categorie> categories = this.categorieFacade.getCategoriesByIds(projetWrapper.getIds());
-
-        // Création du projet et mise à jour de l'utilisateur (pour ajouter son projet)
-        this.projetFacade.save(projetWrapper.getProjet(courant, categories));
-        this.majUtilisateurCourant(model);
-
-        LOGGER.fine("[OK] Projet créé : {"+projetWrapper.getIntitule()+"}");
-        return "redirect:/profil";
-    }
 
     /**
      * Permet d'inscrire un nouvel utilisateur dans la base de données.
@@ -440,31 +500,26 @@ public class MonControlleur
      * @param temp Utilisation deduit du formulaire d'inscription.
      * @param model Le model de la session.
      * @param result Valideur de l'objet obtenu en liaison.
-     * @param redicAttr Les attributs à rediriger avec le retour de la fonction.
      * @return Page d'accueil si succes, rafraichissement de la page sinon.
      */
     @PostMapping("/inscription")
-    public String postInscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp,
-                                  BindingResult result, RedirectAttributes redicAttr, Model model)
+    public String postInscription(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
+                                  Model model)
     {
+        if(this.estConnecte(model)) return "redirect:/";
+
         if(!this.utilisateurFacade.estExistant(temp.getLogin()))
         {
-            // On recupere toutes les erreurs d'un coup (user-experience)
-            if (result.hasErrors())
-            {
-                LOGGER.info("[ERR] " + result.getFieldError().getDefaultMessage());
-                return "inscription";
-            }
-
-            Utilisateur nouveau = this.utilisateurFacade.creer(temp.getLogin(), temp.getMotdepasse());
+            Utilisateur nouveau = this.utilisateurFacade.save(temp.getLogin(), temp.getMotdepasse());
             model.addAttribute("courant", nouveau);
             model.addAttribute("auth", true);
+
             LOGGER.info("[OK] Nouvel utilisateur {"+nouveau.getLogin()+"}");
             return "redirect:/";
         }
         else
         {
-            result.addError(new FieldError("utilisateurTemp", "login", "L'identifiant est déjà utilisé."));
+            result.addError(new FieldError("utilisateurTemp", "login", "L'identifiant est indisponible."));
             return "inscription";
         }
     }
@@ -483,6 +538,8 @@ public class MonControlleur
     @PostMapping("/connexion")
     public String postConnexion(@ModelAttribute("utilisateurTemp") Utilisateur temp, BindingResult result, Model model)
     {
+        if(this.estConnecte(model)) return "redirect:/";
+
         if(this.utilisateurFacade.estExistant(temp.getLogin()))
         {
             Utilisateur uAuthentifie = this.utilisateurFacade.getUtilisateurAuth(temp.getLogin(), temp.getMotdepasse());
@@ -496,8 +553,47 @@ public class MonControlleur
         }
 
         result.addError(new FieldError("utilisateurTemp", "motdepasse", "Les informations ne correspondent pas"));
-        LOGGER.info("[ERR] Connexion echouee");
+        LOGGER.fine("[ERR] Connexion echouee");
         return("connexion");
+    }
+
+    /* ---------------------------
+     *          PROJETS
+     * ---------------------------
+     */
+
+    /**
+     * Callback du formulaire de création d'un projet.
+     * @param projetWrapper Le wrapper contenant les inputs utilisateurs.
+     * @param result Le résultat du binding avec les inputs utilisateurs.
+     * @param model Le model de la session.
+     * @return Redirige vers le profil en cas de succès; affiche les erreurs sinon.
+     */
+    @PostMapping(value="/projets/creer")
+    public String postProjetForm(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper, BindingResult result,
+                                 Model model)
+    {
+        if(!this.estConnecte(model)) return REDIRECT_404;
+
+        // Vérification des erreurs sur les champs spéciaux non annotables par @Valid
+        projetWrapper.valideListsEtDate(result);
+
+        if(result.hasErrors())
+        {
+            model.addAttribute("categories", this.categorieFacade.getCategories());
+            return "formulaire_projet";
+        }
+
+        // Récupération de l'utilisateur et des catégories sélectionnées
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        List<Categorie> categories = this.categorieFacade.getCategoriesByIds(projetWrapper.getIds());
+
+        // Création du projet et mise à jour de l'utilisateur (pour ajouter son projet)
+        this.projetFacade.save(projetWrapper.getProjet(courant, categories));
+        this.majUtilisateurCourant(model);
+
+        LOGGER.info("[OK] Projet créé : {"+projetWrapper.getIntitule()+"}");
+        return "redirect:/profil";
     }
 
     /**
@@ -512,11 +608,14 @@ public class MonControlleur
     public String postMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
                               @PathVariable int projetId, Model model)
     {
-        if(result.hasErrors()) return "redirect:/projets/"+projetId;
+        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(result.hasErrors())       return "redirect:/projets/"+projetId;
 
         // Création du message
-        Utilisateur courant = this.getUtilisateurCourant(model);
         Projet      projet  = this.projetFacade.getProjetById(projetId);
+        if(projet == null) return REDIRECT_404;
+
+        Utilisateur courant = this.getUtilisateurCourant(model);
         Message     message = new Message(courant, projet, messageTemp.getContenu());
 
         //Sauvegarde message et maj de la variable
@@ -524,6 +623,7 @@ public class MonControlleur
         this.majUtilisateurCourant(model);
         model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
 
+        LOGGER.info("[OK] Nouveau message sur le projet {"+projetId+"}");
         return "redirect:/projets/"+projetId;
     }
 
@@ -540,46 +640,79 @@ public class MonControlleur
     public String postRepondreMessage(@ModelAttribute("messageTemp") @Valid Message messageTemp, BindingResult result,
                                       @PathVariable int projetId, @PathVariable int messageId, Model model)
     {
-        if(result.hasErrors()) return "redirect:/projets/"+projetId;
+        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(result.hasErrors())       return "redirect:/projets/"+projetId;
 
         // Création du message
-        Utilisateur courant       = this.getUtilisateurCourant(model);
         Projet      projet        = this.projetFacade.getProjetById(projetId);
+        if(projet == null) return REDIRECT_404;
+
         Message     messageParent = this.messageFacade.getMessage(messageId);
+        if(messageParent == null) return REDIRECT_404;
+
+        Utilisateur courant       = this.getUtilisateurCourant(model);
         Message     message       = new Message(messageParent, courant, projet, messageTemp.getContenu());
 
         //Sauvegarde message et maj de la variable
         this.messageFacade.save(message);
         model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
+
+        LOGGER.info("[OK] Message {"+messageId+"} repondu sur projet {"+projetId+"}");
         return "redirect:/projets/"+projetId;
     }
 
-    /**
-     * Callback de changement de mot de passe d'un utilisateur connecté.
-     * @param temp L'objet reçu depuis la JSP.
-     * @param result Résultat du binding entre données reçues et modèle.
-     * @param model Le model de la session.
-     * @return Redirection page de profil si réussite; page courante avec erreur sinon.
-     */
-    @PostMapping("/profil/motdepasse")
-    public String postChangerMdp(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
-                                 Model model)
-    {
-        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
-        int id = courant.getId();
 
-        if(result.hasFieldErrors("motdepasse"))
+    /**
+     * Prend en charge le financement d'un projet par un utilisateur connecté.
+     * @param donTemp Le don issu des entrées utilisateur.
+     * @param result La validation des données utilisateur.
+     * @param projetId L'ID du projet à financer.
+     * @param redirectAttributes Objet de redirection des attributs du model.
+     * @param model Le model de la session.
+     * @return La page 'projet' courante en cas de succès ou d'échec.
+     */
+    @PostMapping("/projets/{projetId}/financer")
+    public String postFinancerProjet(@ModelAttribute("donTemp") @Valid Don donTemp, BindingResult result,
+                                     @PathVariable int projetId, RedirectAttributes redirectAttributes, Model model)
+    {
+        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(donTemp.getMontant() == 0)
         {
-            LOGGER.info("[ERR] Mot de passe non valide {"+id+"} : {"+temp.getMotdepasse()+"}");
-            return "changermdp";
+            result.addError(new FieldError("donTemp", "montant",
+                    "Entrer un montant supérieur à 0."));
         }
 
-        this.utilisateurFacade.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
-        model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
+        if(result.hasErrors())
+        {
+            // On utilise une redirection : il faut redireiger tous les attributs avec
+            this.persistError(redirectAttributes, result, "donTemp", donTemp);
 
-        LOGGER.info("[OK] Mot de passe modifié {"+id+"}");
-        return "redirect:/profil";
+            LOGGER.fine("[ERR] Erreur montant -> 'projet'");
+            return "redirect:/projets/"+projetId;
+        }
+
+        // Création du don
+        Projet      projet  = this.projetFacade.getProjetById(projetId);
+        if(projet == null) return REDIRECT_404;
+        if(projet.estTermine()) return "redirect:/projets/projetId";
+
+        Utilisateur courant = this.getUtilisateurCourant(model);
+        Don don             = new Don(courant, projet,donTemp.getMontant());
+
+        // Sauvegarde
+        this.donFacade.save(don);
+        this.majUtilisateurCourant(model);
+        model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
+
+        LOGGER.info("[OK] Financement {"+courant.getId()+"} : {"+don.getMontant()+"}€ -> {"+projetId+"}");
+        return "redirect:/projets/"+projetId;
     }
+
+
+    /* ---------------------------
+     *           PROFIL
+     * ---------------------------
+     */
 
     /**
      * Callback de changement du login d'un utilisateur connecté.
@@ -592,6 +725,7 @@ public class MonControlleur
     public String postChangerLogin(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
                                    Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_404;
         int id = this.getIdCourant(model);
 
         if(result.hasFieldErrors("login"))
@@ -615,48 +749,66 @@ public class MonControlleur
     }
 
     /**
-     * Prend en charge le financement d'un projet par un utilisateur connecté.
-     * @param donTemp Le don issu des entrées utilisateur.
-     * @param result La validation des données utilisateur.
-     * @param projetId L'ID du projet à financer.
-     * @param redirectAttributes Objet de redirection des attributs du model.
+     * Callback de changement de mot de passe d'un utilisateur connecté.
+     * @param temp L'objet reçu depuis la JSP.
+     * @param result Résultat du binding entre données reçues et modèle.
      * @param model Le model de la session.
-     * @return La page 'projet' courante en cas de succès ou d'échec.
+     * @return Redirection page de profil si réussite; page courante avec erreur sinon.
      */
-    @PostMapping("/projets/{projetId}/financer")
-    public String postFinancerProjet(@ModelAttribute("donTemp") @Valid Don donTemp, BindingResult result,
-                                     @PathVariable int projetId, RedirectAttributes redirectAttributes, Model model)
+    @PostMapping("/profil/motdepasse")
+    public String postChangerMdp(@ModelAttribute("utilisateurTemp") @Valid Utilisateur temp, BindingResult result,
+                                 Model model)
     {
-        if(donTemp.getMontant() == 0)
+        if(!this.estConnecte(model)) return REDIRECT_404;
+
+        Utilisateur courant = (Utilisateur) model.asMap().get("courant");
+        int id = courant.getId();
+
+        if(result.hasFieldErrors("motdepasse"))
         {
-            result.addError(new FieldError("donTemp", "montant",
-                                           "Entrer un montant supérieur à 0."));
+            LOGGER.info("[ERR] Mot de passe non valide {"+id+"} : {"+temp.getMotdepasse()+"}");
+            return "changermdp";
         }
 
-        if(result.hasErrors())
-        {
-            // On utilise une redirection : il faut redireiger tous les attributs avec
-            this.persistError(redirectAttributes, result, "donTemp", donTemp);
+        this.utilisateurFacade.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
+        model.addAttribute("courant", this.utilisateurFacade.getUtilisateurById(id));
 
-            LOGGER.fine("[ERR] Erreur montant -> 'projet'");
-            return "redirect:/projets/"+projetId;
-        }
-
-        // Création du don
-        Projet      projet  = this.projetFacade.getProjetById(projetId);
-        if(projet.estTermine()) return "redirect:/";
-
-        Utilisateur courant = this.getUtilisateurCourant(model);
-        Don don             = new Don(courant, projet,donTemp.getMontant());
-
-        // Sauvegarde
-        this.donFacade.save(don);
-        this.majUtilisateurCourant(model);
-        model.addAttribute("projet", this.projetFacade.getProjetById(projetId));
-
-        LOGGER.info("[OK] Financement {"+courant.getId()+"} : {"+don.getMontant()+"}€ -> {"+projetId+"}");
-        return "redirect:/projets/"+projetId;
+        LOGGER.info("[OK] Mot de passe modifié {"+id+"}");
+        return "redirect:/profil";
     }
+
+    /**
+     * Callback de modification d'un projet d'un utilisateur.
+     * @param projetWrapper Le wrapper issu du formulaire de modification.
+     * @param result Le resultat de la vérification du binding.
+     * @param projetId L'ID du projet à omdifier.
+     * @param model Le model de la session.
+     * @return La page des projets de l'utilisateur.
+     */
+    @PostMapping("/profil/projets/{projetId}")
+    public String postModifierProjet(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper,
+                                     BindingResult result, @PathVariable int projetId, Model model)
+    {
+        // Vérifiations basiques
+        if(!this.estConnecte(model)) return REDIRECT_404;
+        if(!this.projetFacade.projetEstPortePar(projetId, this.getIdCourant(model))) return REDIRECT_404;
+
+        // Mise à jour du projet
+        Projet projet = this.projetFacade.getProjetById(projetId);
+        if(projet == null) return REDIRECT_404;
+
+        projet.MAJ(projetWrapper, this.categorieFacade.getCategoriesByIds(projetWrapper.getIds()));
+        this.projetFacade.save(projet);
+
+        LOGGER.info("[OK] Projet {"+projetId+"} modifié.");
+        return "redirect:/profil/projets";
+    }
+
+
+    /* ---------------------------
+     *          MESSAGES
+     * ---------------------------
+     */
 
     /**
      * Controlleur gérant l'édition et la désactivation de message.
@@ -674,9 +826,11 @@ public class MonControlleur
                                      @RequestParam(value="action", required = false) String action,
                                      Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_404;
+
         // Vérification null
         Message message = this.messageFacade.getMessage(messageId);
-        if(message == null) return "redirect:/";
+        if(message == null) return REDIRECT_404;
 
         // Vérification propriétaire
         int projetId  = message.getProjetAssocie().getId();
@@ -707,6 +861,11 @@ public class MonControlleur
     }
 
 
+    /* ---------------------------
+     *        FINANCEMENTS
+     * ---------------------------
+     */
+
     /**
      * Permet de désactiver un financement versé à un projet.
      * @param donId L'ID du financement à désactiver.
@@ -716,13 +875,15 @@ public class MonControlleur
     @PostMapping("/financements/{donId}")
     public String postAnnulerFinancement(@PathVariable int donId, Model model)
     {
+        if(!this.estConnecte(model)) return REDIRECT_404;
+
         // Init variables
         Utilisateur courant = this.getUtilisateurCourant(model);
         Don         don     = this.donFacade.getDon(donId);
 
         // Vérifications
-        if(don == null) return "redirect:/profil/financements";
-        if(courant.getId() != don.getFinanceur().getId()) return "redirect:/profil/financements";
+        if(don == null) return REDIRECT_404;
+        if(courant.getId() != don.getFinanceur().getId()) return REDIRECT_404;
 
         // Process
         don.desactiver();
@@ -732,28 +893,49 @@ public class MonControlleur
         return "redirect:/profil/financements";
     }
 
+
+    /* ---------------------------
+     *           ADMIN
+     * ---------------------------
+     */
+
+    /**
+     * Créer une nouvelle catégorie.
+     * @param categorieTemp Les informations issues de l'input de l'admin.
+     * @param result Le résultat de la vérificatino des bindings.
+     * @param model Le model de la session.
+     * @return La page 'admin'.
+     */
     @PostMapping("/admin/categories")
     public String postCreerCategorie(@ModelAttribute("categorieTemp") @Valid Categorie categorieTemp,
                                      BindingResult result, Model model)
     {
         // Vérification
-        if(!this.estAdmin(model)) return "redirect:/";
+        if(!this.estAdmin(model)) return REDIRECT_404;
         if(result.hasErrors()) return "admin";
 
         // Création
         Categorie categorie = new Categorie(categorieTemp.getIntitule());
         this.categorieFacade.save(categorie);
 
+        LOGGER.info("[OK] Nouvelle catégorie {"+categorieTemp.getIntitule()+"}");
         return "redirect:/admin";
     }
 
+    /**
+     * Modifie une catégorie déjà existante.
+     * @param categorieId L'ID de la catégorie à modifier.
+     * @param intitule L'intitulé de la nouvelle catégorie.
+     * @param model Le model de la session.
+     * @return La page 'admin'.
+     */
     @PostMapping("/admin/categories/{categorieId}")
     public String postModifierCategorie(@PathVariable int categorieId,
                                         @RequestParam("intitule") String intitule,
                                         Model model)
     {
         // Vérification
-        if(!this.estAdmin(model)) return "redirect:/";
+        if(!this.estAdmin(model)) return REDIRECT_404;
         if(!StringUtils.hasText(intitule)) return "redirect:/admin";
 
         // Modification
@@ -763,24 +945,8 @@ public class MonControlleur
         categorie.setIntitule(intitule);
         this.categorieFacade.save(categorie);
 
+        LOGGER.info("[OK] Categorie {"+categorieId+"} modifiée");
         return "redirect:/admin";
-    }
-
-    @PostMapping("/profil/projets/{projetId}")
-    public String postModifierProjet(@ModelAttribute("projetWrapper") @Valid ProjetWrapper projetWrapper,
-                                     BindingResult result, @PathVariable int projetId, Model model)
-    {
-        // Vérifiations basiques
-        if(!this.estConnecte(model)) return REDIRECT_404;
-        if(!this.projetFacade.projetEstPortePar(projetId, this.getIdCourant(model))) return REDIRECT_404;
-
-        // Mise à jour du projet
-        Projet projet = this.projetFacade.getProjetById(projetId);
-        projet.MAJ(projetWrapper, this.categorieFacade.getCategoriesByIds(projetWrapper.getIds()));
-
-        this.projetFacade.save(projet);
-
-        return "redirect:/profil/projets";
     }
 
     /* ===============================================================
