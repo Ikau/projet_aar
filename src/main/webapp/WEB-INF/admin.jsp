@@ -12,22 +12,35 @@
 <head>
     <title>Administration</title>
     <script language="JavaScript" src="/ressources/js/admin.js"></script>
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/w3css/4/w3.css"/>"/>
+    <link rel="stylesheet" href="<c:url value="https://www.w3schools.com/lib/w3-theme-indigo.css"/>"/>
 </head>
 <body>
 
     <jsp:include page="navbar.jsp"/>
 
-    <%-- TODO Mettre en page --%>
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
+
+    <div class="w3-col" style="width:60%"><p>
+
+
+
+
     <%-- ================= Catégorie ================= --%>
     <h2>Catégories</h2>
     <h3>Ajouter une catégorie</h3>
     <%--@elvariable id="categorieTemp" type="modele.Categorie"--%>
+        <label>Intitulé</label>
+
     <form:form method="post" modelAttribute="categorieTemp" action="/admin/categories">
-        Intitule <form:input type="text" path="intitule"/> <form:errors path="intitule" cssStyle="color:red;"/>
-        <input type="submit" value="Créer catégorie"/>
+        <form:input class="w3-input" type="text" path="intitule"/> <form:errors path="intitule" cssStyle="color:red;"/>
+        <br>
+        <input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Créer catégorie"/>
     </form:form>
     <h3>Liste des catégories</h3>
-        <table>
+        <table class="w3-table w3-bordered">
             <tr>
                 <th>Intitule</th>
                 <th></th> <%-- Action --%>
@@ -36,10 +49,14 @@
                 <tr id="tr-cat${categeorie.getId()}">
                     <td id="intitule-cat${categeorie.getId()}">${categeorie.getIntitule()}</td>
                     <td id="bouton-cat${categeorie.getId()}">
-                        <button onclick="afficherFormCategorie(${categeorie.getId()});">Modifier</button>
+                        <button class="w3-button  w3-hover-theme" onclick="afficherFormCategorie(${categeorie.getId()});">Modifier</button>
                     </td>
                 </tr>
             </c:forEach>
         </table>
+        </p></div>
+    <div class="w3-col" style="width:20%"><p>
+
+    </p></div>
 </body>
 </html>

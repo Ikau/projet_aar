@@ -39,33 +39,36 @@
         </form>
 
         <%-- Pour naviguer entre les différentes pages --%>
-        <%-- TODO Il faudrait mettre en forme la div de navigation --%>
-        <div>
+        <div class="w3-bar">
             <c:if test="${indexPage != null}">
                 <c:choose>
                     <c:when test="${indexPage == 0}">
-                        <a>
-                            <
+                        <a  class="w3-button">
+                            &#10094; Précédent
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                            <
+                        <a class="fleches-pages w3-button" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                            &#10094; Précédent
                         </a>
                     </c:otherwise>
                 </c:choose>
 
-                Page <input id="inputPage1" type="number" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
+                <%-- TODO remplacer la dummy variable nombredepagetotal --%>
+                <% int nombrepagetotal =3; for(int i=1;i<= nombrepagetotal ;i++){%>
+                    <a class="w3-button" onclick="rechercherFleche(<%=i%>, ${categorieActuelle});"><%=i%></a>
+                <%}%>
+
 
                 <c:choose>
                     <c:when test="${estDernierePage}">
-                        <a>
-                            >
+                        <a class="w3-button w3-right">
+                            Suivant &#10095;
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                            >
+                        <a class="fleches-pages w3-button w3-right" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                            Suivant &#10095;
                         </a>
                     </c:otherwise>
                 </c:choose>
@@ -100,33 +103,35 @@
         </c:forEach>
 
         <%-- Pour naviguer entre les différentes pages --%>
-        <%-- TODO Il faudrait mettre en forme la div de navigation --%>
-        <div>
+
+        <div class="w3-bar">
             <c:if test="${indexPage != null}">
                 <c:choose>
                     <c:when test="${indexPage == 0}">
-                        <a>
-                            <
+                        <a  class="w3-button">
+                            &#10094; Précédent
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                            <
+                        <a class="fleches-pages w3-button" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
+                            &#10094; Précédent
                         </a>
                     </c:otherwise>
                 </c:choose>
-
-                Page <input id="inputPage2" type="number" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
+                <%-- TODO remplacer la dummy variable --%>
+                <% int nombrepagetotal =3; for(int i=1;i<= nombrepagetotal ;i++){%>
+                <a class="w3-button" onclick="rechercherFleche(<%=i%>, ${categorieActuelle});"><%=i%></a>
+                <%}%>
 
                 <c:choose>
                     <c:when test="${estDernierePage}">
-                        <a>
-                            >
+                        <a class="w3-button w3-right">
+                            Suivant &#10095;
                         </a>
                     </c:when>
                     <c:otherwise>
-                        <a class="fleches-pages" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                            >
+                        <a class="fleches-pages w3-button w3-right" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
+                            Suivant &#10095;
                         </a>
                     </c:otherwise>
                 </c:choose>

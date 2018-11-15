@@ -26,22 +26,27 @@
         <br>
         <br>
         <div class="w3-container w3-cell">
-            <ul class="w3-ul w3-border" >
-                <li><h2>Mes derniers projets</h2></li>
-                <c:forEach items="${derniersProjetsDeposes}" var="projet">
-                <li class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></li>
-                </c:forEach>
-                <li class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></li>
-            </ul>
+            <table class="w3-table w3-border w3-bordered">
+                <tr>
+                    <th><h2>Mes derniers projets</h2></th>
+                    <th></th>
+                </tr>
+
+                    <c:forEach items="${derniersProjetsDeposes}" var="projet">
+                        <tr>
+                        <td class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></td>
+                        <td class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></td>
+                        </tr>
+                    </c:forEach>
+                <tr>
+                    <td class="w3-hover-theme"><a href="/profil/projets">Voir tous mes projets</a></td>
+                </tr>
+            </table>
+
         </div>
         <div class="w3-container w3-cell">
-            <ul class="w3-ul" >
-                <li><h2>Modifier mes projets</h2></li>
-                <c:forEach items="${derniersProjetsDeposes}" var="projet">
-                    <li class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></li>
-                </c:forEach>
-            </ul>
         </div>
+
         <div class="w3-container w3-cell">
             <ul class="w3-ul w3-border" >
                 <li><h2>Mes derniers financements</h2></li>
