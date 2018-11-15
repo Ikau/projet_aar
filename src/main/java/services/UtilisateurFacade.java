@@ -54,10 +54,9 @@ public class UtilisateurFacade {
      * Ajoute un nouvel utilisateur dans la base de donnees.
      * @param u L'utilisateur a ajouter.
      */
-    public void creer(Utilisateur u)
+    public void save(Utilisateur u)
     {
         this.repository.save(u);
-        LOGGER.fine("(Utilisateur)");
     }
 
     /**
@@ -66,11 +65,10 @@ public class UtilisateurFacade {
      * @param motdepasse Le mot de passe du nouvel utilisateur.
      * @return L'utilisateur nouvellement créé.
      */
-    public Utilisateur creer(String login, String motdepasse)
+    public Utilisateur save(String login, String motdepasse)
     {
         Utilisateur nouveau = new Utilisateur(login, motdepasse);
         this.repository.save(nouveau);
-        LOGGER.fine("(String, String)");
         return nouveau;
     }
 
