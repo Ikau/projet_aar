@@ -1,14 +1,15 @@
 
-var com = 1;
-
 function ajouter() {
+
+    var com = parseInt(document.getElementById("compN").innerText);
 
     // pour ajouter une compensation
     var bigDiv = document.createElement('div');
     bigDiv.className = "w3-container";
     var id = com;
-    com = com +1;
+    com = com + 1;
     bigDiv.id = com;
+    document.getElementById("compN").innerText = com;
 
     var boutton = document.getElementById('addC');
     var newdiv = document.createElement('div');
@@ -63,9 +64,14 @@ function ajouter() {
 }
 
 function enlever(){
+    var com = parseInt(document.getElementById("compN").innerText);
+
     var div = document.getElementById(com);
+    if(div === null) return;
+
     document.getElementById('compensation').removeChild(div);
-    com =com-1;
+
+    document.getElementById("compN").innerText = com-1;
 
 }
 

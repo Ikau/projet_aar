@@ -44,10 +44,10 @@ public class ProjetFacade {
 
 
     /* ===========================================================
-     *                            READ
+     *                           CREATE
      * ===========================================================
      */
-    public void creer(Projet p)
+    public void save(Projet p)
     {
         this.repository.save(p);
     }
@@ -103,17 +103,12 @@ public class ProjetFacade {
 
     /**
      * Renvoie les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.
-     * @param page Le numéro de la page correspondant à la limite inférieure de la plage souhaitée.
-     * @param nbResultat Le nombre de résultat à afficher par page.
      * @param idCategorie L'ID de la catégorie définissant la recherche.
+     * @param pageable Indique quel page de la porte récuper.
      * @return Les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.
      */
-    public List<Projet> getProjetParCategorieEtPage(int page, int nbResultat, int idCategorie)
+    public List<Projet> getProjetParCategorieEtPage(int idCategorie, Pageable pageable)
     {
-        // Init de la portée de résultats voulue
-        // On souhaite rechercher la page n°page en sachant que chaque page affichera nbResultat max
-        Pageable pageable = new PageRequest(page, nbResultat);
-
         return this.repository.findProjetsByCategoriesRange(idCategorie, pageable).getContent();
     }
 
@@ -147,5 +142,13 @@ public class ProjetFacade {
     {
         return this.repository.existsById(id);
     }
+
+    /**
+     * Indique si un projet spécifique est portée par un utilisateur particulier.
+     * @param projetId L'ID du projet à tester.
+     * @param porteurId L'ID de l'utilisateur à tester.
+     * @return true si le projet spécifique existe avec l'utilisateur spécifique, false sinon.
+     */
+    public boolean projetEstPortePar(int projetId, int porteurId) { return this.repository.existsByIdAndPorteur_Id(projetId, porteurId); }
 
 }

@@ -1,13 +1,16 @@
 package modele;
 
 import services.DateService;
+import wrappers.ProjetWrapper;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -309,6 +312,52 @@ public class Projet {
     public boolean estComplete()
     {
         return this.getFinancement() >= this.objectif;
+    }
+
+    /**
+     * Met à jour les informations du projet ainsi que les palliers à partir du wrapper de modification.
+     * @param wrapper Le wrapper contenant les inputs utilisateur.
+     */
+    public void MAJ(ProjetWrapper wrapper, List<Categorie> categories)
+    {
+        // Modification basique
+        this.resume      = wrapper.getResume();
+        this.description = wrapper.getDescription();
+
+        // Modification des palliers
+        List<Pallier> nouveauxPalliers = new ArrayList<>();
+        for(Pallier pWrapper : wrapper.getPallierList())
+        {
+            // On regarde si un des palliers du wrapper a le même intitule que ceux deja existants
+            boolean nouveau = true;
+            for(Pallier p : this.palliers)
+            {
+                // En cas d'égalité c'est une MAJ...
+                if(pWrapper.getIntitule().equals(p.getIntitule()))
+                {
+                    p.setDescription(pWrapper.getDescription());
+                    p.setIntitule(pWrapper.getIntitule());
+                    nouveau = false;
+                    break;
+                }
+            }
+
+            // ... sinon c'est un nouveau : on l'ajoute
+            if(nouveau)
+            {
+                nouveauxPalliers.add(new Pallier(this, pWrapper.getSeuil(), pWrapper.getIntitule(), pWrapper.getDescription()));
+            }
+
+        }
+
+        // Ajout des nouveaux palliers
+        for(Pallier p : nouveauxPalliers) this.palliers.add(p);
+
+        // Ajout de nouvelles catégories le cas échéant
+        for(Categorie c : categories)
+        {
+            if(!this.categories.contains(c)) this.categories.add(c);
+        }
     }
 
     /**

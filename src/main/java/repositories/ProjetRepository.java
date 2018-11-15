@@ -97,4 +97,12 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
      * @return true si un projet existe, false sinon.
      */
     public boolean existsById(int id);
+
+    /**
+     * Indique si un projet spécifique est portée par un utilisateur particulier.
+     * @param projetId L'ID du projet à tester.
+     * @param porteurId L'ID de l'utilisateur à tester.
+     * @return true si le projet spécifique existe avec l'utilisateur spécifique, false sinon.
+     */
+    public boolean existsByIdAndPorteur_Id(int projetId, int porteurId);
 }

@@ -30,6 +30,16 @@ public class ProjetWrapper {
      */
 
     /**
+     * Id du projet dans le cas d'une modification
+     */
+    private Integer id;
+
+    /**
+     * Indique si le wrapper est pour un nouveau projet ou une modification.
+     */
+    private boolean modifier;
+
+    /**
      * Intitule du projet.
      */
     @NotBlank
@@ -78,8 +88,36 @@ public class ProjetWrapper {
 
     public ProjetWrapper()
     {
+        this.id              = null;
+        this.modifier        = false;
         this.categorieIdList = new ArrayList<>();
         this.pallierList     = new ArrayList<>();
+    }
+
+    /**
+     * Créer un wrapper à partir d'un projet existant en vue d'une modification.
+     * @param projet Le projet à modifier.
+     */
+    public ProjetWrapper(Projet projet)
+    {
+        // Init basique
+        this.id          = projet.getId();
+        this.modifier    = true;
+        this.intitule    = projet.getIntitule();
+        this.resume      = projet.getResume();
+        this.description = projet.getDescription();
+        this.objectif    = projet.getObjectif();
+        this.dateFin     = new Date(projet.getDateFin().getTime());
+
+        // Copy des listes
+        this.categorieIdList = new ArrayList<>();
+        for(Categorie c : projet.getCategories())
+        {
+            this.categorieIdList.add(Integer.toString(c.getId()));
+        }
+
+        this.pallierList = new ArrayList<>();
+        this.pallierList.addAll(projet.getPalliers());
     }
 
 
@@ -116,6 +154,14 @@ public class ProjetWrapper {
      *                           GETTERS
      * ===========================================================
      */
+
+    public Integer getId() {
+        return id;
+    }
+
+    public boolean isModifier() {
+        return modifier;
+    }
 
     public String getIntitule() {
         return intitule;
