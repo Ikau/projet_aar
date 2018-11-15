@@ -292,7 +292,7 @@ public class MonControlleur
      * @return La page du projet si l'ID est correct, la page d'accueil sinon.
      */
     @GetMapping(value="/projets/{id}")
-    public String getProjetId(@PathVariable int id, Model model)
+    public String getProjet(@PathVariable int id, Model model)
     {
         if(this.projetFacade.estExistant(id))
         {

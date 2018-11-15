@@ -23,6 +23,13 @@
         <h1>${projet.getIntitule()}</h1>
         <p>${projet.getResume()}</p>
         <h4> <i class="fa fa-user-circle"></i> ${projet.getPorteur().getLogin()}</h4>
+
+        <%-- TODO Mettre en forme les catégories --%>
+        <c:forEach items="${projet.getCategories()}" var="c">
+            <div class="w3-container w3-cell w3-text-grey"> ${c.getIntitule()}</div>
+        </c:forEach>
+        <br>
+
         <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-start"></i> ${projet.getStringDepot()}</div>
         <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-half"></i> ${projet.getTempsRestant()}</div>
         <div class="w3-container w3-cell w3-text-grey"> <i class="fa fa-hourglass-3"></i> ${projet.getStringFin()}</div>

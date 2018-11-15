@@ -55,7 +55,7 @@
                     </c:otherwise>
                 </c:choose>
 
-                Page <input id="inputPage1" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
+                Page <input id="inputPage1" type="number" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage1", ${categorieActuelle});'/>
 
                 <c:choose>
                     <c:when test="${estDernierePage}">
@@ -116,7 +116,7 @@
                     </c:otherwise>
                 </c:choose>
 
-                Page <input id="inputPage2" type="text" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
+                Page <input id="inputPage2" type="number" value="${indexPage+1}" onkeyup='rechercherInput(event, "inputPage2", ${categorieActuelle});'/>
 
                 <c:choose>
                     <c:when test="${estDernierePage}">
