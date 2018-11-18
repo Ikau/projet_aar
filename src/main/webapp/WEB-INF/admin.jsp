@@ -19,14 +19,15 @@
 
     <jsp:include page="navbar.jsp"/>
 
-    <div class="w3-col" style="width:20%"><p>
-
-    </p></div>
+    <div class="w3-col" style="width:20%"><p></p></div>
 
     <div class="w3-col" style="width:60%"><p>
 
-
-
+    <%-- ================= Console BDD ================= --%>
+    <h2>Base de données</h2>
+    <a class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" href="/console">Portail web de gestion de la BDD</a>
+    <br/>
+    <hr/>
 
     <%-- ================= Catégorie ================= --%>
     <h2>Catégories</h2>
