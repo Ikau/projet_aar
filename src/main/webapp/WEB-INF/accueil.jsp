@@ -38,44 +38,7 @@
         </select>
         </form>
 
-        <%-- Pour naviguer entre les différentes pages --%>
-        <div class="w3-bar">
-            <c:if test="${indexPage != null}">
-                <c:choose>
-                    <c:when test="${indexPage == 0}">
-                        <a  class="w3-button">
-                            &#10094; Précédent
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="fleches-pages w3-button" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                            &#10094; Précédent
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-
-                <%-- TODO remplacer la dummy variable nombredepagetotal --%>
-                <% int nombrepagetotal =3; for(int i=1;i<= nombrepagetotal ;i++){%>
-                    <a class="w3-button" onclick="rechercherFleche(<%=i%>, ${categorieActuelle});"><%=i%></a>
-                <%}%>
-
-
-                <c:choose>
-                    <c:when test="${estDernierePage}">
-                        <a class="w3-button w3-right">
-                            Suivant &#10095;
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="fleches-pages w3-button w3-right" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                            Suivant &#10095;
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-                <br/>
-                <br/>
-            </c:if>
-        </div>
+        <%@include file="navigation-recherche.jsp"%>
 
         <%-- Les 3 derniers projets OU le résultat de la recherche --%>
         <c:forEach items="${projets}" var="p">
@@ -102,40 +65,8 @@
             <br>
         </c:forEach>
 
-        <%-- Pour naviguer entre les différentes pages --%>
+        <%@include file="navigation-recherche.jsp"%>
 
-        <div class="w3-bar">
-            <c:if test="${indexPage != null}">
-                <c:choose>
-                    <c:when test="${indexPage == 0}">
-                        <a  class="w3-button">
-                            &#10094; Précédent
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="fleches-pages w3-button" onclick="rechercherFleche(${indexPage}, ${categorieActuelle});">
-                            &#10094; Précédent
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-                <%-- TODO remplacer la dummy variable --%>
-                <% int nombrepagetotal =3; for(int i=1;i<= nombrepagetotal ;i++){%>
-                <a class="w3-button" onclick="rechercherFleche(<%=i%>, ${categorieActuelle});"><%=i%></a>
-                <%}%>
-
-                <c:choose>
-                    <c:when test="${estDernierePage}">
-                        <a class="w3-button w3-right">
-                            Suivant &#10095;
-                        </a>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="fleches-pages w3-button w3-right" onclick="rechercherFleche(${indexPage+2}, ${categorieActuelle});">
-                            Suivant &#10095;
-                        </a>
-                    </c:otherwise>
-                </c:choose>
-            </c:if>
         </div>
     </p></div>
     <div class="w3-col" style="width:20%"><p></p></div>

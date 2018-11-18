@@ -4,6 +4,7 @@ package controller;
 import config.LoggerConfig;
 import modele.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import wrappers.ProjetWrapper;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -189,27 +191,45 @@ public class MonControlleur
      * @return La page 'accueil' avec le résultat de la recherche.
      */
     @GetMapping(value="/recherche")
-    public String getRecherchePage(@RequestParam("page")   int page,
+    public String getRecherchePage(@RequestParam("page")   int numero,
                                    @RequestParam("option") int categorieId, Model model)
     {
         // Par principe de user-experience, on va devoir décrémenter
-        page = page < 1 ? 1 : page - 1;
+        int index = numero < 1 ? 1 : numero - 1;
 
         // Init de la portée de résultats voulue.
         // On veut rechercher la page n° numero en sachant que chaque page contient au max 10 résultats
         // Attention : numero commence à partir de 0
-        Pageable pageable = new PageRequest(page, 10);
+        Pageable pageable = new PageRequest(index, 10);
+        Page<Projet> page = this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable);
+        int nombreIndex   = page.getTotalPages() - 1;
 
-        // On vérifie ici si la prochaine page contient des résultats.
-        List<Projet> prochainePage = this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable.next());
+        // Creation de la portée de navigations
+        List<Integer> numeroGauche = new ArrayList<>();
+        if(index == 1) numeroGauche.add(0);
+        else if(index >= 2)
+        {
+            numeroGauche.add(index-2);
+            numeroGauche.add(index-1);
+        }
+
+        List<Integer> numerosDroite = new ArrayList<>();
+        if(index == (nombreIndex-1)) numerosDroite.add(nombreIndex);
+        else if(index <= (nombreIndex-2))
+        {
+            numerosDroite.add(index+1);
+            numerosDroite.add(index+2);
+        }
 
         // On ajoute quelques attributs en plus pour l'affichage de la recherche
-        model.addAttribute("indexPage", page);
-        model.addAttribute("estDernierePage", prochainePage.size() == 0);
+        model.addAttribute("indexPage", index);
+        model.addAttribute("dernierIndex", nombreIndex);
+        model.addAttribute("numerosGauche", numeroGauche);
+        model.addAttribute("numerosDroite", numerosDroite);
         model.addAttribute("categorieActuelle", categorieId);
 
         // Ajout des éléments essentiels à la page
-        model.addAttribute("projets", this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable));
+        model.addAttribute("projets", page.getContent());
         model.addAttribute("categorieChoisie", this.categorieFacade.getCategorie(categorieId));
         model.addAttribute("categories", this.categorieFacade.getCategories());
 

@@ -3,29 +3,11 @@
  * @param numeroPage Le numero de la page à afficher.
  * @param categorieId L'ID de la catégorie à rechercher.
  */
-function rechercherFleche(numeroPage, categorieId)
+function rechercherNumero(numeroPage, categorieId)
 {
     var form = creerGetFormulaire(numeroPage, categorieId);
     submitForm(form);
 
-}
-
-/**
- * Permet d'effectuer une recherche via le champ de texte.
- * @param event L'évènement reçu dans l'input.
- * @param inputId L'ID de l'input.
- * @param categorieId L'ID de la catégorie.
- */
-function rechercherInput(event, inputId, categorieId)
-{
-    if(event.key === "Enter")
-    {
-        var numero = document.getElementById(inputId).value;
-        if(numero <= 0) return;
-
-        var form = creerGetFormulaire(numero, categorieId);
-        submitForm(form);
-    }
 }
 
 /**
@@ -39,8 +21,9 @@ function creerGetFormulaire(numeroPage, categorieId)
     var form = document.createElement("form");
     form.method = "get";
     form.action = "/recherche";
-    form.appendChild(creerHiddenParam("page", numeroPage));
-    form.appendChild(creerHiddenParam("option", categorieId));
+    form.hidden = true;
+    form.appendChild(creerHInputParam("page", numeroPage));
+    form.appendChild(creerHInputParam("option", categorieId));
     return form;
 }
 
@@ -50,12 +33,12 @@ function creerGetFormulaire(numeroPage, categorieId)
  * @param valeurParam La valeur du paramètre.
  * @returns {HTMLInputElement} La balise <hidden>.
  */
-function creerHiddenParam(nomParam, valeurParam)
+function creerHInputParam(nomParam, valeurParam)
 {
-    var hidden   = document.createElement("input");
-    hidden.name  = nomParam;
-    hidden.value = valeurParam;
-    return hidden;
+    var input   = document.createElement("input");
+    input.name  = nomParam;
+    input.value = valeurParam;
+    return input;
 
 }
 

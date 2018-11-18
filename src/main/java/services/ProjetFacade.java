@@ -3,6 +3,7 @@ package services;
 import config.LoggerConfig;
 import modele.Projet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -107,9 +108,9 @@ public class ProjetFacade {
      * @param pageable Indique quel page de la porte récuper.
      * @return Les projets de la plage [page*nbResultat, page*(nbResultat+1)] ayant la catégorie idCategorie.
      */
-    public List<Projet> getProjetParCategorieEtPage(int idCategorie, Pageable pageable)
+    public Page<Projet> getProjetParCategorieEtPage(int idCategorie, Pageable pageable)
     {
-        return this.repository.findProjetsByCategoriesRange(idCategorie, pageable).getContent();
+        return this.repository.findProjetsByCategoriesRange(idCategorie, pageable);
     }
 
 
