@@ -35,6 +35,7 @@ public interface DonRepository extends CrudRepository<Don, Integer> {
      * @param projetId L'ID du projet.
      * @return Tous les dons versés par un utilisateur à un projet précis
      */
+    @EntityGraph(value="fetch-projet", type = EntityGraph.EntityGraphType.FETCH)
     List<Don> findDonByFinanceur_IdAndProjetSoutenu_IdAndActifIsTrue(int financeurId, int projetId);
 
     /**
@@ -42,7 +43,7 @@ public interface DonRepository extends CrudRepository<Don, Integer> {
      * @param financeurId L'ID de l'utilisateur
      * @return La liste de tous les dons d'un utilisateur.
      */
-    //@EntityGraph(value="fetch-projet", type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(value="fetch-projet", type = EntityGraph.EntityGraphType.FETCH)
     List<Don> findByFinanceur_IdOrderByDateCreationDesc(int financeurId);
 
 
@@ -56,5 +57,6 @@ public interface DonRepository extends CrudRepository<Don, Integer> {
      * @param id L'ID du don.
      * @return Le don identifié par id.
      */
+    @EntityGraph(value="fetch-projet", type = EntityGraph.EntityGraphType.FETCH)
     Don findDonById(int id);
 }
