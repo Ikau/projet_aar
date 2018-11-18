@@ -12,7 +12,7 @@
 
 <body>
 
-<jsp:include page="navbar.jsp"/>
+<jsp:include page="../../inclusions/navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:10%"><p>

@@ -156,7 +156,7 @@ public class MonControlleur
         model.addAttribute("indexPage", null);
 
         LOGGER.fine("[OK] return 'accueil'");
-        return "accueil";
+        return "vues/root/accueil";
     }
 
     /**
@@ -180,12 +180,12 @@ public class MonControlleur
         model.addAttribute("utilisateurTemp", new Utilisateur());
 
         LOGGER.fine("[OK] return 'connexion'");
-        return "connexion";
+        return "vues/root/connexion";
     }
 
     /**
      * Affiche le résultat de la recherche par catégorie avec au max 10 résultats par pages.
-     * @param page Le numero de la page (commence à 1).
+     * @param numero Le numero de la page (commence à 1).
      * @param categorieId L'ID de la catégorie de la recherche.
      * @param model Le model de la session.
      * @return La page 'accueil' avec le résultat de la recherche.
@@ -234,7 +234,7 @@ public class MonControlleur
         model.addAttribute("categories", this.categorieFacade.getCategories());
 
         LOGGER.fine("[OK] Affichage recherche 'accueil'");
-        return "accueil";
+        return "vues/root/accueil";
     }
 
     /**
@@ -276,7 +276,7 @@ public class MonControlleur
     {
         model.addAttribute("utilisateurTemp", new Utilisateur());
         LOGGER.fine("[OK] return 'inscription'");
-        return "inscription";
+        return "vues/root/inscription";
     }
 
     /**
@@ -293,7 +293,7 @@ public class MonControlleur
         model.addAttribute("categories", this.categorieFacade.getCategories());
 
         LOGGER.fine("[OK] Affichage du formulaire de creation de projet");
-        return "formulaire_projet";
+        return "vues/root/formulaire_projet";
     }
 
 
@@ -330,7 +330,7 @@ public class MonControlleur
 
             model.addAttribute("projet", this.projetFacade.getProjetById(id));
             LOGGER.fine("[OK] Affichage du projet {"+id+"}");
-            return "projet";
+            return "vues/root/projet";
         }
 
         LOGGER.info("[ERR] ID de projet invalide");
@@ -358,7 +358,7 @@ public class MonControlleur
         model.addAttribute("derniersFinancements", this.donFacade.getTroisDerniersDonsDeFinanceur(id));
 
         LOGGER.fine("[OK] Affichage profil de {"+id+"}");
-        return "profil";
+        return "vues/profil/profil";
     }
 
     /**
@@ -372,7 +372,7 @@ public class MonControlleur
         if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
         LOGGER.fine("[OK] Affichage page de modification du mot de passe");
-        return "changermdp";
+        return "vues/profil/changermdp";
     }
 
     /**
@@ -386,7 +386,7 @@ public class MonControlleur
         if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
         LOGGER.fine("[OK] Affichage page de modification du login");
-        return "changerlogin";
+        return "vues/profil/changerlogin";
     }
 
 
@@ -402,7 +402,7 @@ public class MonControlleur
 
         model.addAttribute("financements", this.donFacade.getDons(this.getIdCourant(model)));
         LOGGER.fine("[OK] affichage 'profil-financements'");
-        return "profil-financements";
+        return "vues/profil/profil-financements";
     }
 
     /**
@@ -416,7 +416,7 @@ public class MonControlleur
         if(!this.estConnecte(model)) return REDIRECT_CONNEXION;
 
         model.addAttribute("projets", this.projetFacade.getProjetsDePorteur(this.getIdCourant(model)));
-        return "profil-projets";
+        return "vues/profil/profil-projets";
     }
 
     /**
@@ -435,7 +435,7 @@ public class MonControlleur
         int id = this.getIdCourant(model);
         Projet projet = this.projetFacade.getProjetById(projetId);
 
-        if(projet == null) return "redirect:/profil/projets";
+        if(projet == null || projet.estTermine()) return "redirect:/profil/projets";
         if(id != projet.getPorteur().getId()) return "redirect;/profil/projets";
 
         // Création du wrapper
@@ -448,7 +448,7 @@ public class MonControlleur
         model.addAttribute("dateFin", DateService.getDateHumain(projetWrapper.getDateFin().getTime()));
 
         LOGGER.fine("[OK] affichage 'formulaire_projet' pour modification de {"+projet.getId()+"}");
-        return "formulaire_projet";
+        return "vues/root/formulaire_projet";
     }
 
 
@@ -472,10 +472,13 @@ public class MonControlleur
         model.addAttribute("categories", this.categorieFacade.getCategories());
 
         // Ajout des variables temporaires
-        model.addAttribute("categorieTemp", new Categorie());
+        if(!model.containsAttribute("categorieTemp"))
+        {
+            model.addAttribute("categorieTemp", new Categorie());
+        }
 
         LOGGER.info("[OK] Page admin du compte {"+this.getIdCourant(model)+"}");
-        return "admin";
+        return "vues/admin";
     }
 
 
@@ -497,7 +500,7 @@ public class MonControlleur
         }
 
         LOGGER.fine("[OK] return 'test'");
-        return "test";
+        return "vues/autres/test";
     }
 
 
@@ -540,7 +543,7 @@ public class MonControlleur
         else
         {
             result.addError(new FieldError("utilisateurTemp", "login", "L'identifiant est indisponible."));
-            return "inscription";
+            return "vues/root/inscription";
         }
     }
 
@@ -601,7 +604,7 @@ public class MonControlleur
         if(result.hasErrors())
         {
             model.addAttribute("categories", this.categorieFacade.getCategories());
-            return "formulaire_projet";
+            return "vues/root/formulaire_projet";
         }
 
         // Récupération de l'utilisateur et des catégories sélectionnées
@@ -751,14 +754,14 @@ public class MonControlleur
         if(result.hasFieldErrors("login"))
         {
             LOGGER.info("[ERR] Login non valide {"+id+"} : {"+temp.getLogin()+"}");
-            return "changerlogin";
+            return "vues/profil/changerlogin";
         }
 
         if(this.utilisateurFacade.estExistant(temp.getLogin()))
         {
             result.addError(new FieldError("utilisateurTemp", "login", "Ce login est déjà existant"));
             LOGGER.info("[ERR] Login déjà existant {"+id+"} : {"+temp.getLogin()+"}");
-            return "changerLogin";
+            return "vues/profil/changerlogin";
         }
 
         this.utilisateurFacade.updateLogin(id, temp.getLogin());
@@ -787,7 +790,7 @@ public class MonControlleur
         if(result.hasFieldErrors("motdepasse"))
         {
             LOGGER.info("[ERR] Mot de passe non valide {"+id+"} : {"+temp.getMotdepasse()+"}");
-            return "changermdp";
+            return "vues/profil/changermdp";
         }
 
         this.utilisateurFacade.updateMotdepasse(id, temp.getMotdepasse(), courant.getSel());
@@ -928,11 +931,15 @@ public class MonControlleur
      */
     @PostMapping("/admin/categories")
     public String postCreerCategorie(@ModelAttribute("categorieTemp") @Valid Categorie categorieTemp,
-                                     BindingResult result, Model model)
+                                     BindingResult result, RedirectAttributes redirectAttributes,  Model model)
     {
         // Vérification
         if(!this.estAdmin(model)) return REDIRECT_404;
-        if(result.hasErrors()) return "admin";
+        if(result.hasErrors())
+        {
+            this.persistError(redirectAttributes, result, "categorieTemp", categorieTemp);
+            return "redirect:/admin";
+        }
 
         // Création
         Categorie categorie = new Categorie(categorieTemp.getIntitule());
@@ -1054,7 +1061,7 @@ public class MonControlleur
     @RequestMapping(value = "errors", method = RequestMethod.GET)
     public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
 
-        ModelAndView errorPage = new ModelAndView("errorPage");
+        ModelAndView errorPage = new ModelAndView("autres/errorPage");
         String errorMsg = "";
         int httpErrorCode = getErrorCode(httpRequest);
 

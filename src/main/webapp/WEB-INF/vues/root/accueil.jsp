@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<jsp:include page="navbar.jsp"/>
+<jsp:include page="../../inclusions/navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:20%"><p>
@@ -38,7 +38,7 @@
         </select>
         </form>
 
-        <%@include file="navigation-recherche.jsp"%>
+        <%@include file="../../inclusions/navigation-recherche.jsp"%>
 
         <%-- Les 3 derniers projets OU le résultat de la recherche --%>
         <c:forEach items="${projets}" var="p">
@@ -65,7 +65,7 @@
             <br>
         </c:forEach>
 
-        <%@include file="navigation-recherche.jsp"%>
+        <%@include file="../../inclusions/navigation-recherche.jsp"%>
 
         </div>
     </p></div>

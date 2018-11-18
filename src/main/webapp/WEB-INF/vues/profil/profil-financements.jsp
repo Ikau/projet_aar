@@ -15,7 +15,7 @@
     <title>Mes financements</title>
 </head>
 <body>
-    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="../../inclusions/navbar.jsp"/>
     <div class="w3-col" style="width:20%"><p>
 
     </p></div>
@@ -38,9 +38,14 @@
                         <c:when test="${don.isActif()}">
                             <td>${don.getMontant()}</td>
                             <td>
-                                <form onsubmit="return confirmer();" method="post" action="/financements/${don.getId()}">
-                                    <input type="submit" value="Annuler" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme"/>
-                                </form>
+                                <c:choose>
+                                    <c:when test="${!don.getProjetSoutenu().estTermine()}">
+                                        <form onsubmit="return confirmer();" method="post" action="/financements/${don.getId()}">
+                                            <input type="submit" value="Annuler" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme"/>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>(TERMINÉ)</c:otherwise>
+                                </c:choose>
                             </td>
                         </c:when>
                         <c:otherwise>

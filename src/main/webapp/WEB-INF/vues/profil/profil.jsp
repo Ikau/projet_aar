@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<jsp:include page="navbar.jsp"/>
+<jsp:include page="../../inclusions/navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:20%"><p>
@@ -35,7 +35,12 @@
                     <c:forEach items="${derniersProjetsDeposes}" var="projet">
                         <tr>
                         <td class="w3-hover-theme"><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></td>
-                        <td class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></td>
+                        <c:choose>
+                            <c:when test="${projet.estTermine()}"><td>(TERMINÉ)</td></c:when>
+                            <c:otherwise>
+                                <td class="w3-hover-theme"><a href="/profil/projets/${projet.getId()}">modifier</a></td>
+                            </c:otherwise>
+                        </c:choose>
                         </tr>
                     </c:forEach>
                 <tr>
@@ -52,7 +57,14 @@
                 <li><h2>Mes derniers financements</h2></li>
                 <c:forEach items="${derniersFinancements}" var="don">
                     <li class="w3-hover-theme">
-                        ${don.getMontant()} € (<a href="/projets/${don.getProjetSoutenu().getId()}">${don.getProjetSoutenu().getIntitule()}</a>)
+                    <c:choose>
+                        <c:when test="${don.isActif()}">
+                            ${don.getMontant()} € (<a href="/projets/${don.getProjetSoutenu().getId()}">${don.getProjetSoutenu().getIntitule()}</a>)
+                        </c:when>
+                        <c:otherwise>
+                            (ANNULÉ) ${don.getMontant()} € (<a href="/projets/${don.getProjetSoutenu().getId()}">${don.getProjetSoutenu().getIntitule()}</a>)
+                        </c:otherwise>
+                    </c:choose>
                     </li>
                 </c:forEach>
                 <li class="w3-hover-theme"><a href="/profil/financements">Voir tous mes financements</a></li>

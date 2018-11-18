@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<jsp:include page="navbar.jsp"/>
+<jsp:include page="../../inclusions/navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:25%"><p>
@@ -17,20 +17,23 @@
 
     <div class="w3-col" style="width:50%"><p>
         <%--@elvariable id="utilisateurTemp" type="modele.Utilisateur"--%>
-        <form:form class="w3-container" action="/profil/motdepasse" method="post" modelAttribute="utilisateurTemp">
+        <form:form class="w3-container" action="/connexion" method="post" modelAttribute="utilisateurTemp">
 
-        <label> Nouveau Mot de passe</label>
+            <label> Login</label>
+            <form:input class="w3-input" type="text" path="login"/>
+        <br>
+            <label> Mot de passe</label>
             <form:input class="w3-input" type="password" path="motdepasse"/>
             <form:errors path="motdepasse" cssStyle="color:red;" />
         <br>
         <br>
-        <div class="w3-display-container">
-            <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Envoyer"/></div>
-        </div>
+            <div class="w3-display-container">
+                <div class="w3-display-middle"><input class="w3-button w3-white w3-border w3-border-theme w3-hover-theme" type="submit" value="Connexion"/></div>
+            </div>
         </form:form>
 
 
-        </p></div>
+    </p></div>
 
 
     <div class="w3-col" style="width:25%"><p>

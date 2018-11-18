@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<jsp:include page="navbar.jsp"/>
+<jsp:include page="../../inclusions/navbar.jsp"/>
 
 <div class="w3-row">
     <div class="w3-col" style="width:4%"><p>
@@ -38,7 +38,7 @@
             <%-- --------------------------  COMMENTAIRE  ------------------------- --%>
             <c:forEach items="${projet.getMessagesRacines()}" var="message">
                 <c:set var="message" scope="request" value="${message}"/>
-                <jsp:include page="message.jsp"/>
+                <jsp:include page="../../inclusions/message.jsp"/>
             </c:forEach>
             <%-- ------------------------------------------------------------------ --%>
 

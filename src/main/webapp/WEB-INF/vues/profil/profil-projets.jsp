@@ -14,7 +14,7 @@
     <title>Tous mes projets</title>
 </head>
 <body>
-    <jsp:include page="navbar.jsp"/>
+    <jsp:include page="../../inclusions/navbar.jsp"/>
     <div class="w3-col" style="width:20%"><p>
 
     </p></div>
@@ -34,7 +34,9 @@
                         <td><a href="/projets/${projet.getId()}">${projet.getIntitule()}</a></td>
                         <td>${projet.getFinancement()} € / ${projet.getObjectif()} € (${projet.getPourcentage()} %)</td>
                         <td>${projet.getTempsRestant()}</td>
-                        <td><a href="/profil/projets/${projet.getId()}" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme">Modifier</a></td>
+                        <c:if test="${!projet.estTermine()}">
+                                <td><a href="/profil/projets/${projet.getId()}" class="w3-button w3-white w3-border w3-border-theme w3-hover-theme">Modifier</a></td>
+                        </c:if>
                     </tr>
                 </c:forEach>
             </table>
