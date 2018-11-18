@@ -4,6 +4,9 @@
  */
 function afficherFormCategorie(categorieId)
 {
+    // On vérifie s'il n'y a pas déjà un form
+    if(document.getElementById("td-form-cat"+categorieId) !== null) return;
+
     // On enleve visuellement ce qui existe deja
     document.getElementById("intitule-cat"+categorieId).hidden = true;
     document.getElementById("bouton-cat"+categorieId).hidden   = true;
