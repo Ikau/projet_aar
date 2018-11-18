@@ -91,6 +91,21 @@ public class InitFacade {
          */
         this.projets = new HashSet<>();
 
+        // 90 projets de tests pour tester la fonctionnalité de recherche
+        for(int i=0; i<90; i++)
+        {
+            Projet p = new Projet(tt,
+                    "Projet test n°"+i,
+                    "Un resume test",
+                    "Une description longue test",
+                    1337,
+                    new Timestamp(System.currentTimeMillis()+420000)
+            );
+            p.getCategories().add(catAut);
+            this.projets.add(p);
+            this.attendreMillis(10);
+        }
+
         // Projet 1
         Projet p1 = new Projet(dt,
                                "Sabre laser",
@@ -120,21 +135,8 @@ public class InitFacade {
         p2.getPalliers().add(new Pallier(p2, 50, "R2D2", "Pallier 2 description"));
         p2.getPalliers().add(new Pallier(p2, 100, "GLaDOS","Pallier 3 description"));
 
-        // Projet 3
-        Projet p3 = new Projet(tt,
-                               "Projet test",
-                               "Un resume test",
-                               "Une description longue test",
-                               1337,
-                                new Timestamp(System.currentTimeMillis()+420000)
-        );
-        p3.getCategories().add(catAut);
-        p2.getPalliers().add(new Pallier(p3, 0, "Pallier0", "Pallier 0 description"));
-        p2.getPalliers().add(new Pallier(p3, 1, "Pallier1", "Pallier 1 description"));
-        p2.getPalliers().add(new Pallier(p3, 2, "Pallier2", "Pallier 2 description"));
-        p2.getPalliers().add(new Pallier(p3, 3, "Pallier3", "Pallier 3 description"));
+        Collections.addAll(this.projets, p1, p2);
 
-        Collections.addAll(this.projets, p1, p2, p3);
 
 
         /* --------------------------------------------
