@@ -31,7 +31,6 @@ public class Categorie {
     /**
      * Intitule de la categorie.
      */
-    @NotEmpty
     @NotBlank
     private String intitule;
 
