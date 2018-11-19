@@ -22,7 +22,7 @@ import java.util.Properties;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = {"controller,services" +
+@ComponentScan(basePackages = {"controleur,services" +
         ""})
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "repositories")
