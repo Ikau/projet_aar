@@ -113,6 +113,16 @@ public class ProjetFacade {
         return this.repository.findProjetsByCategoriesRange(idCategorie, pageable);
     }
 
+    /**
+     * Renvoie tous les projets selon la portée définie par pageable.
+     * @param pageable L'intervalle des projets à rechercher.
+     * @return Tous les projets selon la portée définie par pageable.
+     */
+    public Page<Projet> getProjetsParPage(Pageable pageable)
+    {
+        return this.repository.findAllByRange(pageable);
+    }
+
 
     /* ---------------------------
      *           UNIQUE

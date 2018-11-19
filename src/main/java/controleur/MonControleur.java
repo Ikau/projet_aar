@@ -1,4 +1,4 @@
-package controller;
+package controleur;
 
 
 import config.LoggerConfig;
@@ -32,7 +32,7 @@ import java.util.logging.Logger;
         types={Utilisateur.class, Boolean.class}
 )
 @RequestMapping("/")
-public class MonControlleur
+public class MonControleur
 {
     /* ===============================================================
      *                         PROPRIETES
@@ -104,7 +104,7 @@ public class MonControlleur
     /**
      * Logger pour la classe actuelle.
      */
-    private static final Logger LOGGER = Logger.getLogger(MonControlleur.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MonControleur.class.getName());
 
 
     /* ===============================================================
@@ -201,24 +201,39 @@ public class MonControlleur
         // On veut rechercher la page n° numero en sachant que chaque page contient au max 10 résultats
         // Attention : numero commence à partir de 0
         Pageable pageable = new PageRequest(index, 10);
-        Page<Projet> page = this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable);
+        Page<Projet> page;
+        if(categorieId == -1) // 'tous les projets'
+        {
+            page = this.projetFacade.getProjetsParPage(pageable);
+        }
+        else
+        {
+            page = this.projetFacade.getProjetParCategorieEtPage(categorieId, pageable);
+        }
         int nombreIndex   = page.getTotalPages() - 1;
 
-        // Creation de la portée de navigations
+        // Creation de la portée de navigation gauche
         List<Integer> numeroGauche = new ArrayList<>();
-        if(index == 1) numeroGauche.add(0);
-        else if(index >= 2)
+        if(nombreIndex > 0)
         {
-            numeroGauche.add(index-2);
-            numeroGauche.add(index-1);
+            if(index == 1) numeroGauche.add(0);
+            else if(index >= 2)
+            {
+                numeroGauche.add(index-2);
+                numeroGauche.add(index-1);
+            }
         }
 
+        // Création de la portée de navigation droite
         List<Integer> numerosDroite = new ArrayList<>();
-        if(index == (nombreIndex-1)) numerosDroite.add(nombreIndex);
-        else if(index <= (nombreIndex-2))
+        if(nombreIndex > 0)
         {
-            numerosDroite.add(index+1);
-            numerosDroite.add(index+2);
+            if(index == (nombreIndex-1)) numerosDroite.add(nombreIndex);
+            else if(index <= (nombreIndex-2))
+            {
+                numerosDroite.add(index+1);
+                numerosDroite.add(index+2);
+            }
         }
 
         // On ajoute quelques attributs en plus pour l'affichage de la recherche

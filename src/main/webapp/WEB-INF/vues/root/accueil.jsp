@@ -20,22 +20,24 @@
     <div class="w3-col" style="width:60%"><p>
         <%-- Recherche par catégorie --%>
         <form name='cat' action="/recherche" method="get">
-        <input hidden name="page" value="1"/>
-        <select class="w3-select w3-border w3-text-theme" name="option" onchange="this.form.submit();">
-            <c:choose>
-                <c:when test="${empty categorieChoisie}">
-                    <option value="" disabled selected>Rechercher par catégorie</option>
-                </c:when>
-                <c:otherwise>
-                    <option value="" disabled selected>${categorieChoisie.getIntitule()}</option>
-                </c:otherwise>
-            </c:choose>
+            <select class="w3-select w3-border w3-text-theme" name="option" onchange="this.form.submit();">
+                <c:choose>
+                    <c:when test="${empty categorieChoisie}">
+                        <option value="" disabled selected>Rechercher par catégorie</option>
+                    </c:when>
+                    <c:otherwise>
+                        <option value="" disabled selected>${categorieChoisie.getIntitule()}</option>
+                    </c:otherwise>
+                </c:choose>
 
-            <c:forEach items="${categories}" var="c">
-                <option value="${c.getId()}">${c.getIntitule()}</option>
-            </c:forEach>
+                <c:forEach items="${categories}" var="c">
+                    <option value="${c.getId()}">${c.getIntitule()}</option>
+                </c:forEach>
 
-        </select>
+                <option value="-1">Tous les projets</option>
+            </select>
+
+            <input hidden name="page" value="1"/>
         </form>
 
         <%@include file="../../inclusions/navigation-recherche.jsp"%>

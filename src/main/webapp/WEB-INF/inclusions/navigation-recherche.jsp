@@ -11,13 +11,13 @@
 <div class="w3-bar w3-center">
     <c:if test="${indexPage != null}">
         <c:choose>
-            <c:when test="${indexPage == 0}">
-                <a class="w3-button w3-left">&#10094; Précédent</a>
-            </c:when>
-            <c:otherwise>
+            <c:when test="${indexPage != 0 && dernierIndex >= 0}">
                 <a class="w3-button w3-left" onclick="rechercherNumero(${indexPage}, ${categorieActuelle});">
                     &#10094; Précédent
                 </a>
+            </c:when>
+            <c:otherwise>
+                <a class="w3-button w3-left">&#10094; Précédent</a>
             </c:otherwise>
         </c:choose>
 
@@ -42,13 +42,13 @@
         </c:if>
 
         <c:choose>
-            <c:when test="${indexPage == dernierIndex}">
-                <a class="w3-button w3-right">Suivant &#10095;</a>
-            </c:when>
-            <c:otherwise>
+            <c:when test="${indexPage != dernierIndex && dernierIndex >= 0}">
                 <a class="w3-button w3-right" onclick="rechercherNumero(${indexPage+2}, ${categorieActuelle});">
                     Suivant &#10095;
                 </a>
+            </c:when>
+            <c:otherwise>
+                <a class="w3-button w3-right">Suivant &#10095;</a>
             </c:otherwise>
         </c:choose>
         <br/>

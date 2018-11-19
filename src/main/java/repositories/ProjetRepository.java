@@ -66,12 +66,21 @@ public interface ProjetRepository extends CrudRepository<Projet, Integer>
     /**
      * Renvoie les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
      * @param idCategorie L'ID de la catégorie définissant la recherche.
-     * @param pageable L'intervallle des projets à recherches.
+     * @param pageable L'intervalle des projets à rechercher.
      * @return Les projets les plus récents ayant la catégorie idCategorie sur la portée définie par pageable.
      */
     @EntityGraph(value="joinAll", type= EntityGraph.EntityGraphType.FETCH)
     @Query("select p from Projet p join p.categories c where c.id = ?1 order by p.dateDepot desc")
     public Page<Projet> findProjetsByCategoriesRange(int idCategorie, Pageable pageable);
+
+    /**
+     * Renvoie tous les projets selon la portée définie par pageable.
+     * @param pageable L'intervalle des projets à rechercher.
+     * @return Tous les projets selon la portée définie par pageable.
+     */
+    @EntityGraph(value="joinAll", type= EntityGraph.EntityGraphType.FETCH)
+    @Query("select p from Projet p order by p.dateDepot desc")
+    public Page<Projet> findAllByRange(Pageable pageable);
 
     /* ---------------------------
      *            UNIQUE
