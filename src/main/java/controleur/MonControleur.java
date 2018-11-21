@@ -594,7 +594,7 @@ public class MonControleur
 
         result.addError(new FieldError("utilisateurTemp", "motdepasse", "Les informations ne correspondent pas"));
         LOGGER.fine("[ERR] Connexion echouee");
-        return("connexion");
+        return("vues/root/connexion");
     }
 
     /* ---------------------------
