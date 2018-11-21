@@ -222,8 +222,9 @@ public class ProjetWrapper {
         }
 
         // Ajout des palliers
-        for(Pallier p : this.pallierList)
+        for(Pallier pTemp : this.pallierList)
         {
+            Pallier p = new Pallier(projet, pTemp.getSeuil(), pTemp.getIntitule(), pTemp.getDescription());
             projet.getPalliers().add(p);
         }
 
