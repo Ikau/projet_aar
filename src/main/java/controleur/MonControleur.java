@@ -548,6 +548,8 @@ public class MonControleur
 
         if(!this.utilisateurFacade.estExistant(temp.getLogin()))
         {
+            if(result.hasErrors()) return "vues/root/inscription";
+
             Utilisateur nouveau = this.utilisateurFacade.save(temp.getLogin(), temp.getMotdepasse());
             model.addAttribute("courant", nouveau);
             model.addAttribute("auth", true);
